@@ -1,0 +1,82 @@
+# ==========================
+# Client (React/Vite) ignores
+# ==========================
+
+# Node modules
+client/node_modules/
+
+# Vscode settings
+client/.vscode/
+
+# Build output
+client/dist/
+client/build/
+
+# Public & assets (if you don't want them tracked)
+client/public/
+client/assets/
+
+# Firebase config (if sensitive)
+client/src/firebase/
+
+# Client TODO file
+client/TODO.js
+
+# Environment files
+client/.env*
+client/.env.local
+client/.env.development
+client/.env.production
+
+# ==========================
+# Server (Node/Mongoose) ignores
+# ==========================
+
+# Node modules
+server/node_modules/
+
+# VSCode settings
+server/.vscode/
+
+# Configuration files (sensitive)
+server/config/
+
+# Uploads or generated files
+server/uploads/
+
+# Mongoose schemas (optional to ignore if generated or sensitive)
+server/mongoose/
+
+#Server seed file
+server/superAdminSeeder.js
+
+
+# Backup files
+backups/
+
+# Seed folder
+server/seed/
+
+# Environment files
+server/.env*
+server/.env.local
+server/.env.development
+server/.env.production
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Optional OS files
+.DS_Store
+Thumbs.db
+
+# Ignore local debug files
+*.env.test
+*.local
+
+# Ignore VSCode workspace settings globally
+*.code-workspace
+"server/.env" 
