@@ -62,7 +62,7 @@ server/.env*
 server/.env.local
 server/.env.development
 server/.env.production
-server/constants.js
+server/utils/constants.js
 
 # Logs
 *.log
