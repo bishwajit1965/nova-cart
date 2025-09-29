@@ -219,7 +219,7 @@ const ProductDetails = () => {
             </Link>
           </div>
           {/* Variants display */}
-          <div className="flex items-center space-x-4 gap-3 mt-4">
+          <div className="flex items-center space-x-2 gap-3 mt-4 flex-wrap">
             {colors.map((color, index) => (
               <div
                 key={index}

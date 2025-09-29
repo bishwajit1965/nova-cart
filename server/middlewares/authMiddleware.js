@@ -1,11 +1,4 @@
-// import { COOKIE_NAME, REFRESH_TOKEN_SECRET } from "../utils/constants.js";
-
-import {
-  ACCESS_TOKEN_SECRET,
-  COOKIE_NAME,
-  REFRESH_TOKEN_SECRET,
-} from "../utils/constants.js";
-
+import { JWT } from "../utils/constants.js";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 
@@ -24,8 +17,8 @@ export const authenticationMiddleware = async (req, res, next) => {
     }
 
     // 2️⃣ Fallback: check JWT cookie
-    if (!token && req.cookies?.[COOKIE_NAME]) {
-      token = req.cookies[COOKIE_NAME];
+    if (!token && req.cookies?.[JWT.COOKIE_NAME]) {
+      token = req.cookies[JWT.COOKIE_NAME];
       console.log("🍪 Token from cookie:", token);
     }
 
@@ -37,7 +30,7 @@ export const authenticationMiddleware = async (req, res, next) => {
     // 4️⃣ Verify access token
     let decoded;
     try {
-      decoded = jwt.verify(token, ACCESS_TOKEN_SECRET);
+      decoded = jwt.verify(token, JWT.ACCESS_SECRET);
     } catch (err) {
       // If access token expired, try refresh token
       if (err.name === "TokenExpiredError") {
@@ -49,7 +42,7 @@ export const authenticationMiddleware = async (req, res, next) => {
         }
 
         try {
-          const refreshDecoded = jwt.verify(refreshToken, REFRESH_TOKEN_SECRET);
+          const refreshDecoded = jwt.verify(refreshToken, JWT.REFRESH_SECRET);
           // Attach user ID from refresh token
           decoded = { id: refreshDecoded.id };
           console.log("♻️ Token refreshed, decoded user id:", decoded.id);
@@ -102,69 +95,6 @@ export const authenticationMiddleware = async (req, res, next) => {
     return res.status(401).json({ message: "Unauthorized: Invalid token" });
   }
 };
-// export const authenticationMiddleware = async (req, res, next) => {
-//   console.log("🔐 Incoming request to:", req.originalUrl);
-//   try {
-//     console.log("📨 All headers:", req.headers);
-
-//     // 1️⃣ Check Authorization header
-//     let token;
-//     const authHeader = req.headers?.authorization;
-//     if (authHeader?.startsWith("Bearer")) {
-//       token = authHeader.split(" ")[1];
-//     }
-
-//     // 2️⃣ Fallback: check JWT cookie
-//     if (!token && req.cookies?.JWT) {
-//       token = req.cookies.JWT;
-//       console.log("🍪 Token from cookie:", token);
-//     }
-
-//     // 3️⃣ Still no token
-//     if (!token) {
-//       return res.status(401).json({ message: "Not authorized, no token" });
-//     }
-
-//     // 4️⃣ Verify token
-//     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-//     console.log("✅ Decoded token:", decoded);
-
-//     const user = await User.findById(decoded.id).populate({
-//       path: "roles",
-//       select: "name",
-//       populate: { path: "permissions" },
-//     });
-
-//     if (!user) {
-//       return res.status(401).json({ message: "Unauthorized: User not found" });
-//     }
-
-//     // Normalize roles & permissions
-//     const roleNames = (user.roles || []).map((r) => r.name);
-//     const permissions = Array.from(
-//       new Set(
-//         (user.roles || [])
-//           .flatMap((r) => (r.permissions || []).map((p) => p.key))
-//           .filter(Boolean)
-//       )
-//     );
-
-//     req.user = {
-//       _id: user._id.toString(),
-//       name: user.name,
-//       email: user.email,
-//       roles: roleNames,
-//       permissions,
-//       isActive: user.isActive,
-//     };
-//     console.log("✅ Authenticated user object:", req.user);
-
-//     next();
-//   } catch (err) {
-//     console.error("Auth middleware error:", err);
-//     return res.status(401).json({ message: "Unauthorized: Invalid token" });
-//   }
-// };
 
 // Permission check helper
 export const authorizePermission =

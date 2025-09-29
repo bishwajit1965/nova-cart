@@ -1,3 +1,4 @@
+import { SERVER } from "../server/utils/constants.js";
 import adminAnalyticsRoutes from "./routes/admin/adminAnalyticsRoutes.js";
 import adminOrderRoutes from "./routes/admin/adminOrderRoutes.js";
 import adminReportsRoutes from "./routes/admin/adminReportsRoutes.js";
@@ -42,7 +43,8 @@ dotenv.config(); // ✅ load .env first
 connectDb();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = SERVER.PORT || 3000;
+// const port = process.env.PORT || 3000;
 
 // For image display
 const __filename = fileURLToPath(import.meta.url);

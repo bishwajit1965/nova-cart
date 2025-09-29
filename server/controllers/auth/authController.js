@@ -1,9 +1,11 @@
-import {
-  COOKIE_NAME,
-  GOOGLE,
-  NODE_ENV,
-  REFRESH_TOKEN_SECRET,
-} from "../../utils/constants.js";
+// import {
+//   COOKIE_NAME,
+//   GOOGLE,
+//   NODE_ENV,
+//   REFRESH_TOKEN_SECRET,
+// } from "../../utils/constants.js";
+
+import { CLIENT, GOOGLE, JWT } from "../../utils/constants.js";
 
 import Role from "../../models/Role.js";
 import User from "../../models/User.js";
@@ -85,7 +87,7 @@ export const register = async (req, res) => {
     await populatedUser.save();
 
     // Set refresh token cookie
-    res.cookie(COOKIE_NAME, refreshToken, {
+    res.cookie(JWT.COOKIE_NAME, refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
@@ -162,7 +164,7 @@ export const login = async (req, res) => {
     user.save();
 
     // Send refresh token in HTTP-only cookie
-    res.cookie(COOKIE_NAME, refreshToken, {
+    res.cookie(JWT.COOKIE_NAME, refreshToken, {
       httpOnly: true,
       secure: NODE_ENV === "production",
       sameSite: "strict",
@@ -189,7 +191,7 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
   try {
-    res.clearCookie(COOKIE_NAME, {
+    res.clearCookie(JWT.COOKIE_NAME, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
@@ -231,11 +233,11 @@ export const getMe = async (req, res) => {
 };
 
 export const refreshToken = async (req, res) => {
-  const token = req.cookies?.[COOKIE_NAME];
+  const token = req.cookies?.[JWT.COOKIE_NAME];
   if (!token) return res.status(401).json({ message: "No refresh token" });
 
   try {
-    const decoded = jwt.verify(token, REFRESH_TOKEN_SECRET);
+    const decoded = jwt.verify(token, JWT.REFRESH_SECRET);
     console.log("DECODED", decoded);
 
     const user = await User.findById(decoded.id).populate({
@@ -264,7 +266,7 @@ export const refreshToken = async (req, res) => {
     await user.save();
 
     // ✅ Set new refreshToken cookie
-    res.cookie(COOKIE_NAME, newRefreshToken, {
+    res.cookie(JWT.COOKIE_NAME, newRefreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: "Strict",
@@ -303,7 +305,7 @@ export const forgotPassword = async (req, res) => {
     const resetToken = user.generatePasswordResetToken();
     await user.save({ validateBeforeSave: false });
 
-    const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+    const resetUrl = `${CLIENT.URL}/reset-password/${resetToken}`;
     const message = `Click the link to reset your password: ${resetUrl}`;
 
     console.log("RESET URL:", resetUrl);
