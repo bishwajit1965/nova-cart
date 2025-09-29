@@ -1,9 +1,13 @@
 import { Link, useLoaderData } from "react-router-dom";
+import { containerVariants, itemVariants } from "../service/animations";
 
+import API_PATHS from "../../superAdmin/services/apiPaths/apiPaths";
 import Button from "../../common/components/ui/Button";
 import DynamicPageTitle from "../../common/utils/pageTitle/DynamicPageTitle";
 import { LucideIcon } from "../../common/lib/LucideIcons";
+import { motion } from "framer-motion";
 import toast from "react-hot-toast";
+import { useApiMutation } from "../../superAdmin/services/hooks/useApiMutation";
 import usePageTitle from "../../superAdmin/services/hooks/usePageTitle";
 import { useState } from "react";
 
@@ -12,8 +16,40 @@ const ProductDetails = () => {
 
   const pageTitle = usePageTitle();
   const product = useLoaderData();
+  const productData = product?.data;
+  const [cart, setCart] = useState([]);
+  const [wishList, setWishList] = useState([]);
 
   console.log("Product", product);
+
+  /*** ------> Add to Cart Mutation Query ------> */
+  const addToCartMutation = useApiMutation({
+    method: "create",
+    path: `${API_PATHS.CLIENT_CARTS.CLIENT_ENDPOINT}`,
+    key: API_PATHS.CLIENT_CARTS.CLIENT_KEY,
+    onSuccess: (res) => {
+      setCart(res.data.items); // update cart with latest
+    },
+    onError: (err) => {
+      toast.error("Failed to add product to cart");
+      console.error(err);
+    },
+  });
+
+  /*** ------> Add to wish-list ------> */
+  const addToWishListMutation = useApiMutation({
+    method: "create",
+    path: `${API_PATHS.CLIENT_WISH_LISTS.CLIENT_WISH_LIST_ENDPOINT}`,
+    key: API_PATHS.CLIENT_WISH_LISTS.CLIENT_KEY,
+    onSuccess: (res) => {
+      setWishList(res.data.items); // update cart with latest
+      toast.success("Product added to cart");
+    },
+    onError: (err) => {
+      toast.error("Failed to add product to cart");
+      console.error(err);
+    },
+  });
 
   const productDetail = {
     image: product.data.image || null,
@@ -35,6 +71,8 @@ const ProductDetails = () => {
     product.data.variants.find((v) => v.color === colors[0])
   );
 
+  console.log("Selected variants", selectedVariant);
+
   // Variant sizes
   const sizes = selectedColor
     ? product.data.variants
@@ -53,20 +91,50 @@ const ProductDetails = () => {
   };
 
   const handleAddToCart = () => {
-    if (productDetail.stock <= 0) {
+    if (!selectedVariant || selectedVariant.stock <= 0) {
       toast.error("Out of stock!");
       return;
     }
-    // 🚀 Replace with real cart logic
-    toast.success(`${quantity} x ${productDetail.name} added to cart`);
+    const finalQuantity = Math.min(quantity, selectedVariant.stock);
+
+    const cartItemPayload = {
+      data: {
+        productId: productData._id,
+        name: productData.name,
+        variantId: selectedVariant._id,
+        color: selectedColor,
+        size: selectedSize,
+        price: selectedVariant.price,
+        quantity: finalQuantity,
+        image: selectedVariant.image || productDetail.image,
+      },
+    };
+    console.log("Cart Item payload", cartItemPayload);
+    addToCartMutation.mutate(cartItemPayload, {
+      onSuccess: () => {
+        toast.success(`${finalQuantity} x ${productData.name} added to cart`);
+      },
+      onError: () => {},
+    });
   };
 
-  const handleWishlist = () => {
+  const handleAddToWishlist = (productId) => {
     if (inWishList) {
       toast.success("Already added in wish list!");
     }
     setInWishList(true);
-    toast.success("Added to wishlist ❤️");
+    addToWishListMutation.mutate(
+      { data: { productId } },
+      {
+        onSuccess: (res) => {
+          setWishList(res.data.items);
+        },
+        onError: (err) => {
+          toast.error("Failed to add product to wishlist");
+          console.error(err);
+        },
+      }
+    );
   };
 
   const handleColorSelect = (color) => {
@@ -80,8 +148,17 @@ const ProductDetails = () => {
     <div className="">
       <DynamicPageTitle pageTitle={pageTitle} />
 
-      <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-8 gap-2 justify-between lg:py-10">
-        <div className="lg:col-span-6 col-span-2 lg:min-h-96 bg-base-300 rounded-md lg:p-4">
+      <motion.div
+        className="grid lg:grid-cols-12 grid-cols-1 lg:gap-8 gap-2 justify-between lg:py-10"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: false }}
+        variants={containerVariants}
+      >
+        <motion.div
+          className="lg:col-span-6 col-span-2 lg:min-h-96 bg-base-300 rounded-md lg:p-4"
+          variant={itemVariants}
+        >
           {productDetail?.image ? (
             <img
               src={
@@ -151,8 +228,11 @@ const ProductDetails = () => {
                   ))
               : ""}
           </div>
-        </div>
-        <div className="lg:col-span-6 col-span-2 lg:space-y-4 space-y-2">
+        </motion.div>
+        <motion.div
+          className="lg:col-span-6 col-span-2 lg:space-y-4 space-y-2"
+          variant={itemVariants}
+        >
           <h2 className="lg:text-2xl text-xl lg:font-extrabold font-bold">
             Product: {productDetail.name}
           </h2>
@@ -196,6 +276,7 @@ const ProductDetails = () => {
               icon={LucideIcon.ShoppingCart}
               className="btn lg:btn-lg"
               onClick={handleAddToCart}
+              disabled={selectedVariant?.stock <= 0}
             >
               Add to Cart
             </Button>
@@ -204,7 +285,7 @@ const ProductDetails = () => {
               variant="indigo"
               icon={LucideIcon.Heart}
               className="btn lg:btn-lg"
-              onClick={handleWishlist}
+              onClick={() => handleAddToWishlist(productData?._id)}
             >
               {inWishList ? "In Wishlist" : "Add to Wishlist"}
             </Button>
@@ -250,8 +331,8 @@ const ProductDetails = () => {
               ))}
             </div>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 };

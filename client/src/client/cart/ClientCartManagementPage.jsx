@@ -109,7 +109,6 @@ const ClientCartManagementPage = () => {
     key: API_PATHS.CLIENT_CARTS.CLIENT_KEY,
     onSuccess: (res) => {
       setCart(res.data.items); // update cart with latest
-      toast.success("Product added to cart");
     },
     onError: (err) => {
       toast.error("Failed to add product to cart");
@@ -124,7 +123,7 @@ const ClientCartManagementPage = () => {
     key: API_PATHS.CLIENT_WISH_LISTS.CLIENT_KEY,
     onSuccess: (res) => {
       setWishList(res.data.items); // update cart with latest
-      toast.success("Product added to cart");
+      // toast.success("Product added to wish list");
     },
     onError: (err) => {
       toast.error("Failed to add product to cart");
@@ -175,7 +174,7 @@ const ClientCartManagementPage = () => {
     });
   };
 
-  /** --------> Update cart product quantity --------> */
+  /** ----> Update cart product quantity ----> */
   const updateQuantity = (productId, newQty) => {
     const payload = { data: { productId, quantity: newQty } };
 
@@ -199,7 +198,7 @@ const ClientCartManagementPage = () => {
     });
   };
 
-  /** --------> Increase cart product quantity --------> */
+  /** ---> Increase cart product quantity ---> */
   const handleIncreaseQuantity = (productId) => {
     setCart((prevCart) => {
       const updatedCart = prevCart.map((item) =>
@@ -232,7 +231,7 @@ const ClientCartManagementPage = () => {
     );
   };
 
-  /** --------> Add product to wishlist handler -------- */
+  /** ----> Add product to wishlist handler ----> */
   const handleAddToWishlist = (productId) => {
     addToWishListMutation.mutate(
       {

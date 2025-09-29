@@ -5,7 +5,7 @@
 //   REFRESH_TOKEN_SECRET,
 // } from "../../utils/constants.js";
 
-import { CLIENT, GOOGLE, JWT } from "../../utils/constants.js";
+import { CLIENT, GOOGLE, JWT, SERVER } from "../../utils/constants.js";
 
 import Role from "../../models/Role.js";
 import User from "../../models/User.js";
@@ -89,7 +89,7 @@ export const register = async (req, res) => {
     // Set refresh token cookie
     res.cookie(JWT.COOKIE_NAME, refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: SERVER.NODE_ENV === "production",
       sameSite: "Strict",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
@@ -166,7 +166,7 @@ export const login = async (req, res) => {
     // Send refresh token in HTTP-only cookie
     res.cookie(JWT.COOKIE_NAME, refreshToken, {
       httpOnly: true,
-      secure: NODE_ENV === "production",
+      secure: SERVER.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
@@ -193,7 +193,7 @@ export const logout = async (req, res) => {
   try {
     res.clearCookie(JWT.COOKIE_NAME, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: SERVER.NODE_ENV === "production",
       sameSite: "Strict",
     });
     return res.status(200).json({ message: "Logout is successful!" });
@@ -354,81 +354,6 @@ export const resetPassword = async (req, res) => {
 
   res.status(200).json({ message: "Password has been reset" });
 };
-// export const googleAuthController = async (req, res) => {
-//   const { token } = req.body; // frontend should send { token }
-//   if (!token) {
-//     return res.status(400).json({ message: "Missing Google token" });
-//   }
-
-//   try {
-//     const ticket = await client.verifyIdToken({
-//       idToken: token,
-//       audience: process.env.GOOGLE_CLIENT_ID,
-//     });
-
-//     const payload = ticket.getPayload();
-//     const { email, name, sub: googleId, picture } = payload;
-
-//     let user = await User.findOne({ email })
-//       .populate("roles")
-//       .populate("permissions");
-
-//     if (!user) {
-//       const userRole = await Role.findOne({ name: "user" });
-//       const defaultPermissions = await Permission.find({
-//         name: { $in: ["create_products"] },
-//       });
-
-//       user = await User.create({
-//         name,
-//         email,
-//         password: null,
-//         googleId,
-//         avatar: picture,
-//         provider: "google",
-//         roles: userRole ? [userRole._id] : [],
-//         permissions: defaultPermissions.map((p) => p._id),
-//         acceptedTerms: true,
-//         acceptedAt: new Date(),
-//         termsVersion: "v1.0",
-//         signupIp: req.ip,
-//       });
-
-//       user = await User.findById(user._id)
-//         .populate("roles")
-//         .populate("permissions");
-//     }
-
-//     const accessToken = generateAccessToken(user);
-//     const refreshToken = generateRefreshToken(user._id);
-
-//     user.refreshToken = refreshToken;
-//     await user.save();
-
-//     res.cookie("jwt", refreshToken, {
-//       httpOnly: true,
-//       secure: process.env.NODE_ENV === "production",
-//       sameSite: "strict",
-//       maxAge: 7 * 24 * 60 * 60 * 1000,
-//     });
-
-//     res.status(200).json({
-//       message: "Google login successful",
-//       accessToken,
-//       user: {
-//         _id: user._id,
-//         name: user.name,
-//         email: user.email,
-//         avatar: user.avatar,
-//         roles: user.roles.map((r) => r.name),
-//         permissions: user.permissions.map((p) => p.name),
-//       },
-//     });
-//   } catch (error) {
-//     console.error("❌ Google login error:", error);
-//     res.status(401).json({ message: "Google login failed" });
-//   }
-// };
 
 export const googleAuthController = async (req, res) => {
   const { token } = req.body; // frontend sends { token }
@@ -484,7 +409,7 @@ export const googleAuthController = async (req, res) => {
 
     res.cookie("jwt", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: SERVER.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -589,7 +514,7 @@ export const googleSignUpController = async (req, res) => {
     // ✅ Send refreshToken as cookie
     res.cookie("jwt", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: SERVER.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
@@ -611,223 +536,6 @@ export const googleSignUpController = async (req, res) => {
     return res.status(401).json({ message: "Google sign up failed" });
   }
 };
-
-// export const googleAuthController = async (req, res) => {
-//   const { code } = req.body;
-
-//   try {
-//     const tokenResponse = await axios.post(
-//       "https://oauth2.googleapis.com/token",
-//       qs.stringify({
-//         code,
-//         client_id: process.env.GOOGLE_CLIENT_ID,
-//         client_secret: process.env.GOOGLE_CLIENT_SECRET,
-//         redirect_uri: process.env.GOOGLE_REDIRECT_URI,
-//         grant_type: "authorization_code",
-//       }),
-//       {
-//         headers: {
-//           "Content-Type": "application/x-www-form-urlencoded",
-//         },
-//       }
-//     );
-
-//     const { access_token, id_token } = tokenResponse.data;
-
-//     const userInfo = await axios.get(
-//       `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`
-//     );
-
-//     const { email, name, picture, sub } = userInfo.data;
-//     let user = await User.findOne({ email })
-//       .populate("roles")
-//       .populate("permissions");
-
-//     // let user = await User.findOne({ email })
-//     //   .populate("roles")
-//     //   .populate("permissions")
-//     //   .populate({
-//     //     path: "plan",
-//     //     select: "_id tier name features price createdAt updatedAt",
-//     //     populate: { path: "features", select: "key title description icon" },
-//     //   });
-
-//     if (!user) {
-//       user = await User.create({
-//         name,
-//         email,
-//         avatar: picture,
-//         provider: "google",
-//         providerId: sub,
-//         password: null,
-//       });
-//     }
-
-//     // ✅ Generate access and refresh tokens
-//     const accessToken = generateTokens(user);
-//     const refreshToken = generateTokens(user._id);
-//     console.log("Access token=>", accessToken);
-//     user.refreshToken = refreshToken;
-//     await user.save();
-
-//     // ✅ Set refreshToken cookie
-//     res.cookie("jwt", refreshToken, {
-//       httpOnly: true,
-//       secure: process.env.NODE_ENV === "production",
-//       sameSite: "strict",
-//       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-//     });
-
-//     // ✅ Send access token + user info
-//     res.status(200).json({
-//       message: "Login successful",
-//       accessToken,
-//       user: {
-//         _id: user._id,
-//         name: user.name,
-//         email: user.email,
-//         avatar: user.avatar,
-//         roles: user.roles.map((role) => role.name),
-//         permissions: user.permissions.map((perm) => perm.name),
-//         plan: serializePlan(user.plan),
-//       },
-//     });
-//   } catch (error) {
-//     console.error(
-//       "Google login failed",
-//       error?.response?.data || error.message
-//     );
-//     res.status(401).json({ message: "Google login failed" });
-//   }
-// };
-
-// export const googleSignUpController = async (req, res) => {
-//   console.log("Sign up with Google called");
-//   const { code } = req.body;
-//   console.log("👉 Received code:", code);
-
-//   if (!code) {
-//     return res.status(400).json({ message: "Missing authorization code" });
-//   }
-
-//   try {
-//     // ✅ Exchange code for token
-//     const tokenResponse = await axios.post(
-//       "https://oauth2.googleapis.com/token",
-//       qs.stringify({
-//         code,
-//         client_id: process.env.GOOGLE_CLIENT_ID,
-//         client_secret: process.env.GOOGLE_CLIENT_SECRET,
-//         redirect_uri: "postmessage",
-//         grant_type: "authorization_code",
-//       }),
-//       {
-//         headers: {
-//           "Content-Type": "application/x-www-form-urlencoded",
-//         },
-//       }
-//     );
-
-//     const { id_token } = tokenResponse.data;
-//     if (!id_token) {
-//       return res.status(401).json({ message: "ID token not received" });
-//     }
-
-//     // ✅ Verify ID token
-//     const ticket = await client.verifyIdToken({
-//       idToken: id_token,
-//       audience: process.env.GOOGLE_CLIENT_ID,
-//     });
-
-//     const payload = ticket.getPayload();
-//     const { email, name, sub: googleId, picture } = payload;
-
-//     if (!email) {
-//       return res.status(400).json({ message: "Email not found in token" });
-//     }
-
-//     let user = await User.findOne({ email })
-//       .populate("roles")
-//       .populate("permissions");
-
-//     // let user = await User.findOne({ email })
-//     //   .populate("roles")
-//     //   .populate("permissions")
-//     //   .populate({
-//     //     path: "plan",
-//     //     select: "_id tier name features price createdAt updatedAt",
-//     //     populate: { path: "features", select: "key title description icon" },
-//     //   });
-
-//     console.log("GOOGLE USER", user);
-//     const userRole = await Role.findOne({ name: "user" });
-//     // const defaultPlan = await Plan.findOne({ tier: "free" });
-//     const defaultPermissions = await Permission.find({
-//       name: { $in: ["create_products"] },
-//     });
-//     console.log("userRole found:", userRole);
-
-//     if (!user) {
-//       user = await User.create({
-//         name,
-//         email,
-//         password: null,
-//         googleId,
-//         avatar: picture,
-//         provider: "google",
-//         roles: userRole ? [userRole._id] : [],
-//         permissions: defaultPermissions.map((p) => p._id),
-//         // plan: defaultPlan ? defaultPlan._id : null,
-//         acceptedTerms: true,
-//         acceptedAt: new Date(),
-//         termsVersion: "v1.0",
-//         signupIp: req.ip, // ✅ stores IP
-//       });
-
-//       user = await User.findById(user._id)
-//         .populate("roles")
-//         .populate("permissions");
-//       // user = await User.findById(user._id)
-//       //   .populate("roles")
-//       //   .populate("permissions")
-//       //   .populate({
-//       //     path: "plan",
-//       //     select: "_id tier name features price createdAt updatedAt",
-//       //     populate: { path: "features", select: "key" },
-//       //   });
-//     }
-
-//     const accessToken = generateTokens(user);
-//     const refreshToken = generateTokens(user._id);
-
-//     user.refreshToken = refreshToken;
-//     await user.save();
-
-//     res.cookie("jwt", refreshToken, {
-//       httpOnly: true,
-//       secure: process.env.NODE_ENV === "production",
-//       sameSite: "strict",
-//       maxAge: 7 * 24 * 60 * 60 * 1000,
-//     });
-
-//     res.status(200).json({
-//       message: "Google sign up is successful",
-//       accessToken,
-//       user: {
-//         _id: user._id,
-//         name: user.name,
-//         email: user.email,
-//         avatar: user.avatar,
-//         roles: user.roles.map((role) => role.name),
-//         permissions: user.permissions.map((perm) => perm.name),
-//         // plan: serializePlan(user.plan),
-//       },
-//     });
-//   } catch (error) {
-//     console.error("❌ Google Sign-up Error:", error?.response?.data || error);
-//     return res.status(401).json({ message: "Google sign up failed" });
-//   }
-// };
 
 export const facebookAuthController = async (req, res) => {
   const { token } = req.body;
@@ -877,7 +585,7 @@ export const facebookAuthController = async (req, res) => {
     // Set cookie
     res.cookie("jwt", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: SERVER.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -974,7 +682,7 @@ export const facebookSignUpController = async (req, res) => {
 
     res.cookie("jwt", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: SERVER.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
