@@ -1,9 +1,9 @@
 import Cart from "../../models/Cart.js";
 
-// Add product to cart
 export const addToCart = async (req, res) => {
   try {
-    const { productId, quantity } = req.body;
+    const { productId, variantId, name, color, size, price, quantity, image } =
+      req.body;
 
     if (!productId || !quantity) {
       return res.status(400).json({
@@ -18,18 +18,40 @@ export const addToCart = async (req, res) => {
       // Create new cart
       cart = await Cart.create({
         user: req.user._id,
-        items: [{ product: productId, quantity }],
+        items: [
+          {
+            product: productId,
+            variantId,
+            name,
+            color,
+            size,
+            price,
+            quantity,
+            image,
+          },
+        ],
       });
     } else {
-      // Update existing cart
+      // Update existing cart (check if same product + same variant already exists)
       const itemIndex = cart.items.findIndex(
-        (item) => item.product.toString() === productId
+        (item) =>
+          item.product.toString() === productId &&
+          item.variantId?.toString() === variantId
       );
 
       if (itemIndex > -1) {
         cart.items[itemIndex].quantity += quantity; // increase quantity
       } else {
-        cart.items.push({ product: productId, quantity });
+        cart.items.push({
+          product: productId,
+          variantId,
+          name,
+          color,
+          size,
+          price,
+          quantity,
+          image,
+        });
       }
       await cart.save();
     }
@@ -49,11 +71,62 @@ export const addToCart = async (req, res) => {
     });
   }
 };
+
+// Add product to cart
+// export const addToCart = async (req, res) => {
+//   try {
+//     const { productId, quantity } = req.body;
+
+//     if (!productId || !quantity) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Product ID and quantity are required",
+//       });
+//     }
+
+//     let cart = await Cart.findOne({ user: req.user._id });
+
+//     if (!cart) {
+//       // Create new cart
+//       cart = await Cart.create({
+//         user: req.user._id,
+//         items: [{ product: productId, quantity }],
+//       });
+//     } else {
+//       // Update existing cart
+//       const itemIndex = cart.items.findIndex(
+//         (item) => item.product.toString() === productId
+//       );
+
+//       if (itemIndex > -1) {
+//         cart.items[itemIndex].quantity += quantity; // increase quantity
+//       } else {
+//         cart.items.push({ product: productId, quantity });
+//       }
+//       await cart.save();
+//     }
+
+//     const populatedCart = await cart.populate("items.product");
+//     res.status(201).json({
+//       success: true,
+//       message: "Product added to cart successfully!",
+//       data: populatedCart,
+//     });
+//   } catch (error) {
+//     console.error("Error in adding to cart", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Internal server error",
+//       error: error.message,
+//     });
+//   }
+// };
+
 export const getAllCarts = async (req, res) => {
   try {
     const cartsData = await Cart.find({}).populate({
       path: "items.product",
-      select: "name price image category",
+      select: "name price image images category",
       match: { _id: { $ne: null } }, // skip missing products
     });
 

@@ -4,29 +4,27 @@ import Button from "../../../common/components/ui/Button";
 import { Link } from "react-router-dom";
 import { useMemo } from "react";
 
-const CartSummaryPanel = ({ cart, handleGenerateCouponCode, coupons }) => {
+const CartSummaryPanel = ({ cart, handleGenerateCouponCode }) => {
   console.log("Cart summary", cart);
+  const productsOnly = [];
+  const productWithVariants = [];
 
-  // Group products by ID and sum quantities
-  const summary = useMemo(() => {
-    if (!cart) return [];
-    return cart.reduce((acc, item) => {
-      const existing = acc.find((i) => i.product._id === item.product._id);
-      if (existing) {
-        existing.quantity += item.quantity;
-      } else {
-        acc.push({ ...item });
-      }
-      return acc;
-    }, []);
-  }, [cart]);
+  cart?.forEach((item) => {
+    if (item.variantId) {
+      productWithVariants.push(item);
+    } else {
+      productsOnly.push(item);
+    }
+  });
 
-  // Calculate total items & subtotal
-  const totalItems = summary.reduce((sum, item) => sum + item.quantity, 0);
-  const subTotal = summary.reduce(
-    (sum, item) => sum + item.quantity * item.product.price,
-    0
-  );
+  const totalItems =
+    productsOnly.reduce((sum, i) => sum + i.quantity, 0) +
+    productWithVariants.reduce((sum, i) => sum + i.quantity, 0);
+
+  const subTotal =
+    productsOnly.reduce((sum, i) => sum + i.product.price * i.quantity, 0) +
+    productWithVariants.reduce((sum, i) => sum + i.price * i.quantity, 0);
+
   return (
     <div className="">
       <div className="flex items-center space-x-2 border-b border-base-content/20 lg:p-5 p-2 bg-base-200">
@@ -38,14 +36,30 @@ const CartSummaryPanel = ({ cart, handleGenerateCouponCode, coupons }) => {
           <p className="text-center text-red-500">Your cart is empty</p>
         ) : null}
 
-        <div className="flex flex-col gap-2">
-          {summary.map((item) => (
+        <div className="flex flex-col gap-2 text-sm">
+          {productsOnly?.map((item) => (
             <div key={item.product._id} className="flex justify-between">
               <span className="font-medium">
                 {item.product.name} x {item.quantity}
               </span>
               <span className="font-semibold">
                 ${(item.product.price * item.quantity).toFixed(2)}
+              </span>
+            </div>
+          ))}
+
+          {/* Products with variants */}
+          {productWithVariants.map((item) => (
+            <div
+              key={`${item.product._id}-${item.variantId}`}
+              className="flex justify-between"
+            >
+              <span className="font-medium">
+                {item.product.name} ({item.color}, {item.size}) x{" "}
+                {item.quantity}
+              </span>
+              <span className="font-semibold">
+                ${(item.price * item.quantity).toFixed(2)}
               </span>
             </div>
           ))}

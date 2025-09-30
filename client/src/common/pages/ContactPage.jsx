@@ -158,7 +158,7 @@ const ContactPage = () => {
             </h2>
             <form
               onSubmit={handleSubmit}
-              className="grid lg:grid-cols-12 grid-cols-1 lg:gap-6 gap-3 bg-base-100 lg:p-8 p-2 rounded-xl shadow hover:shadow-lg transition"
+              className="grid lg:grid-cols-12 grid-cols-1 lg:gap-6 gap-3 bg-base-100 lg:p-14 p-2 rounded-xl shadow hover:shadow-lg transition"
             >
               <div className="lg:col-span-6 colspan-12 space-y-4">
                 <Input

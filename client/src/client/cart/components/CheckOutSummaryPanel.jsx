@@ -6,13 +6,11 @@ import { useState } from "react";
 const CheckOutSummaryPanel = ({
   items,
   handleOrderConfirmation,
-  couponCode,
   setCouponCode,
   applyCouponHandler,
   isApplyingCoupon,
   appliedCoupon,
   discountAmount,
-  orders,
   coupons,
 }) => {
   const [coupon, setCoupon] = useState("");
@@ -24,10 +22,26 @@ const CheckOutSummaryPanel = ({
   }, [coupons]);
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-  const subtotal = items.reduce(
-    (sum, item) => sum + item.product.price * item.quantity,
-    0
-  );
+  const subtotal = items.reduce((sum, item) => {
+    // Prefer variant price stored in cart; fallback to product price
+    const price = item.price ?? item.product?.price ?? 0;
+    return sum + price * item.quantity;
+  }, 0);
+
+  // const subtotal = items.reduce(
+  //   (sum, item) => sum + (item.price ?? 0) * item.quantity,
+  //   0
+  // );
+
+  // const subtotal = items.reduce((sum, item) => {
+  //   const price = item.price ?? item.product?.price ?? 0; // ✅ use variant price first
+  //   return sum + price * item.quantity;
+  // }, 0);
+
+  // const subtotal = items.reduce(
+  //   (sum, item) => sum + item.product.price * item.quantity,
+  //   0
+  // );
   const finalTotal = subtotal - discountAmount;
 
   return (

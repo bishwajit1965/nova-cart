@@ -110,6 +110,7 @@ const ProductDetails = () => {
       },
     };
     console.log("Cart Item payload", cartItemPayload);
+    console.log("Selected variant", selectedVariant);
     addToCartMutation.mutate(cartItemPayload, {
       onSuccess: () => {
         toast.success(`${finalQuantity} x ${productData.name} added to cart`);

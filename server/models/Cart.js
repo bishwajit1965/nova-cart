@@ -7,10 +7,31 @@ const cartItemSchema = new mongoose.Schema(
       ref: "Product",
       required: true,
     },
+    variantId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product.variants", // reference to subdocument if you want
+    },
+    name: { type: String },
+    color: { type: String },
+    size: { type: String },
+    price: { type: Number },
+    image: { type: String },
     quantity: { type: Number, default: 1, min: 1 },
   },
-  { _id: false } // we don’t need separate _id for each cart item
+  { _id: false }
 );
+
+// const cartItemSchema = new mongoose.Schema(
+//   {
+//     product: {
+//       type: mongoose.Schema.Types.ObjectId,
+//       ref: "Product",
+//       required: true,
+//     },
+//     quantity: { type: Number, default: 1, min: 1 },
+//   },
+//   { _id: false } // we don’t need separate _id for each cart item
+// );
 
 const cartSchema = new mongoose.Schema(
   {

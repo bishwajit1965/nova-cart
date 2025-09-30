@@ -50,7 +50,6 @@ const CheckOutPage = () => {
     isDefault: true,
   });
 
-  console.log("Form Data", formData);
   /** --------> Fetch Cart --------> */
   const {
     data: cartsData,
