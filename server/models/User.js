@@ -17,6 +17,7 @@ const userSchema = new mongoose.Schema(
       minlength: 6,
     },
     phone: { type: String }, // <-- add this line
+    avatar: { type: String },
     passwordResetToken: {
       type: String,
     },

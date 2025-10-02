@@ -28,7 +28,9 @@ export const getMe = async (req, res) => {
 // GET profile
 export const getProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select("name email phone");
+    const user = await User.findById(req.user._id).select(
+      "name avatar email phone"
+    );
     res.json(user);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch profile" });

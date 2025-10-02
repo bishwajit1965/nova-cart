@@ -2,6 +2,8 @@ import { LucideIcon } from "../../../common/lib/LucideIcons";
 import NoDataFound from "../../../common/components/ui/NoDataFound";
 
 const CheckOutItemList = ({ items }) => {
+  console.log("Items", items);
+  const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
   const pageTitle = "Verify Checkout Items";
   return (
     <div className="lg:space-y-2 space-y-2">
@@ -20,11 +22,13 @@ const CheckOutItemList = ({ items }) => {
             className="flex items-center justify-between border border-base-content/15 w-full bg-base-200 rounded-lg"
           >
             <div className="lg:min-w-1/4 min-w-1/4 lg:p-3 p-2">
-              <img
-                src={item.product.image}
-                alt={item.product.name}
-                className="lg:h-16 w-14 object-contain"
-              />
+              {item.product.images && (
+                <img
+                  src={`${apiURL}${item?.product?.images}`}
+                  alt={item?.product?.name}
+                  className="lg:h-16 w-14 object-contain"
+                />
+              )}
             </div>
             <div className="lg:min-w-1/4 min-w-1/4 lg:p-4 p-2">
               <p className="lg:text-xl text-xs lg:font-bold">

@@ -17,6 +17,7 @@ import { useState } from "react";
 const WishListItemPage = () => {
   const [cart, setCart] = useState([]);
   const pageTitle = usePageTitle();
+  const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
   // ---------- Fetch wish list items from the server ----------
   const {
     data: wishListData,
@@ -139,30 +140,30 @@ const WishListItemPage = () => {
                     </Button>
                   </Link>
                   <Link to="/client-cart-management">
-                    <Button variant="global" className="">
+                    <Button variant="indigo" className="">
                       <CheckCircleIcon size={25} />
                       Your Cart
                     </Button>
                   </Link>
                 </div>
-                <div className="grid lg:grid-cols-12 grid-cols-1 justify-between lg:gap-4 gap-2">
+                <div className="grid lg:grid-cols-12 grid-cols-1 justify-between lg:gap-6 gap-2">
                   {wishListData?.items?.map((item) => (
                     <div
                       key={item.product._id}
-                      className="lg:col-span-4 col-span-12 border border-base-content/15 rounded-xl p-4 shadow-md bg-base-100 relative lg:min-h-48"
+                      className="lg:col-span-4 col-span-12 border border-base-content/15 rounded-xl shadow-md bg-base-100 relative lg:min-h-48"
                     >
                       <div className="lg:min-h-64 mb-4">
-                        <p>{item.product._id}</p>
                         <img
-                          src={item.product.image}
+                          src={`${apiURL}${item?.product?.images[0]}`}
                           alt={item.product.name}
                           className="lg:h-64 object-cover rounded mb-2"
                         />
                       </div>
-                      <div className="lg:min-h-36 min-h-36">
+                      <div className="lg:min-h-36 min-h-36 p-4">
                         <h3 className="text-lg font-semibold">
                           {item.product.name}
                         </h3>
+                        <p>{item.product._id}</p>
                         <p className="text-sm text-gray-500">
                           {item.product.description}
                         </p>
@@ -173,7 +174,7 @@ const WishListItemPage = () => {
                       <div className="absolute bottom-0 right-0 p-2 w-full flex justify-between items-center">
                         <Button
                           className="text-red-500"
-                          variant="remove"
+                          variant="danger"
                           icon={LucideIcon.Trash2}
                           onClick={() => handleRemove(item.product._id)}
                         >
@@ -181,7 +182,7 @@ const WishListItemPage = () => {
                         </Button>
                         <Button
                           className=""
-                          variant="global"
+                          variant="indigo"
                           icon={LucideIcon.ShoppingCart}
                           onClick={() => handleMoveToCart(item.product._id)}
                         >

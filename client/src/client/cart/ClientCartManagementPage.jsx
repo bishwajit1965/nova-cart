@@ -91,15 +91,12 @@ const ClientCartManagementPage = () => {
     },
   });
 
-  console.log("Coupon", coupons);
-
   useEffect(() => {
     if (cartsData?.items) {
       setCart(cartsData.items);
     } else {
       setCart([]);
     }
-    console.log("Cart State:", cart);
   }, [cartsData, cart]);
 
   /*** ------> Add to Cart Mutation Query ------> */
@@ -344,27 +341,12 @@ const ClientCartManagementPage = () => {
                       key={item.product._id}
                       className="border border-base-content/10 lg:p-3 rounded-lg border-b-none relative min-h-auto shadow"
                     >
-                      {item.product?.image ? (
-                        <img
-                          src={
-                            item.product?.image
-                              ? item.product.image
-                              : item.product.images[0]
-                          }
-                          alt={item.product?.name}
-                          className="h-36 object-contain w-full"
-                        />
-                      ) : (
-                        item.product.images[0] && (
-                          <img
-                            src={`${apiURL}${
-                              item.product.images[0].startsWith("/") ? "" : "/"
-                            }${item.product.images[0]}`}
-                            alt={item.product.name || ""}
-                            className="h-36 object-contain w-full"
-                          />
-                        )
-                      )}
+                      <img
+                        src={`${apiURL}${item.product.images[0]}`}
+                        alt={item.product.name || ""}
+                        className="h-36 object-contain w-full"
+                      />
+
                       <div className="lg:min-h-44 min-h-40">
                         <h3 className="font-semibold">{item.product.name}</h3>
                         <p className="text-sm text-gray-500">
@@ -477,7 +459,7 @@ const ClientCartManagementPage = () => {
               <div className="mt-4 space-x-3">
                 <Button
                   icon={LucideIcon.ShoppingCart}
-                  variant="global"
+                  variant="indigo"
                   onClick={() => handleAddToCart(isModalOpen.product)}
                 >
                   Add to Cart

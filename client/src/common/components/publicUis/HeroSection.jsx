@@ -43,14 +43,14 @@ const HeroSection = () => {
   };
 
   return (
-    <motion.section
-      className="lg:py-16 py-6 bg-gradient-to-r from-blue-500 to-blue-200 rounded-md shadow"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true }}
-      variants={containerVariants}
-    >
-      <div className="max-w-6xl mx-auto bg-gradient-to-r from-blue-400 to-blue-200 lg:p-12 p-4 rounded-lg">
+    <section className="lg:py-16 py-6 bg-gradient-to-r from-blue-500 to-blue-200 rounded-md shadow">
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={containerVariants}
+        className="max-w-6xl mx-auto bg-gradient-to-r from-blue-400 to-blue-200 lg:p-12 p-4 rounded-lg"
+      >
         <Carousel {...settings}>
           {slides.map((slide, idx) => (
             <div
@@ -64,23 +64,12 @@ const HeroSection = () => {
                     className="flex-1 text-center lg:text-left text-base-content"
                     variants={itemVariants}
                   >
-                    <motion.h2
-                      className="lg:text-3xl text-xl md:text-4xl font-extrabold mb-2"
-                      variants={itemVariants}
-                    >
+                    <h2 className="lg:text-3xl text-xl md:text-4xl font-extrabold mb-2">
                       {slide.title}
-                    </motion.h2>
-                    <motion.p
-                      className="text-base-content mb-4"
-                      variants={itemVariants}
-                    >
-                      {slide.subtitle}
-                    </motion.p>
+                    </h2>
+                    <p className="text-base-content mb-4">{slide.subtitle}</p>
 
-                    <motion.div
-                      className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4"
-                      variants={itemVariants}
-                    >
+                    <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
                       <Link to="/client-cart-management">
                         <Button
                           variant="indigo"
@@ -99,13 +88,10 @@ const HeroSection = () => {
                           Explore Categories
                         </Button>
                       </Link>
-                    </motion.div>
+                    </div>
 
                     {coupons.length > 0 && (
-                      <motion.div
-                        className="mt-4 flex flex-wrap gap-2 justify-center lg:justify-start"
-                        variants={itemVariants}
-                      >
+                      <div className="mt-4 flex flex-wrap gap-2 justify-center lg:justify-start">
                         {coupons.slice(0, 3).map((c) => (
                           <span
                             key={c.code}
@@ -117,29 +103,29 @@ const HeroSection = () => {
                             – Use code: {c.code}
                           </span>
                         ))}
-                      </motion.div>
+                      </div>
                     )}
                   </motion.div>
                 </div>
-                <motion.div
+                <div
                   className="lg:col-span-6 col-span-12 rounded-lg shadow-xl"
                   variants={itemVariants}
                 >
                   {/* Image */}
-                  <motion.div className="flex-1" variants={itemVariants}>
+                  <div className="flex-1" variants={itemVariants}>
                     <img
                       src={slide.image}
                       alt={slide.title}
                       className="w-ful object-contain rounded-lg mx-auto"
                     />
-                  </motion.div>
-                </motion.div>
+                  </div>
+                </div>
               </div>
             </div>
           ))}
         </Carousel>
-      </div>
-    </motion.section>
+      </motion.div>
+    </section>
   );
 };
 

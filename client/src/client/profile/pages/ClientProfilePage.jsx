@@ -1,5 +1,6 @@
 // client/pages/ProfilePage.jsx
 
+import { containerVariants, itemVariants } from "../../service/animations";
 import { useEffect, useState } from "react";
 
 import API_PATHS from "../../../superAdmin/services/apiPaths/apiPaths";
@@ -9,6 +10,7 @@ import { Input } from "../../../common/components/ui/Input";
 import { LucideIcon } from "../../../common/lib/LucideIcons";
 import PageMeta from "../../../common/components/ui/PageMeta";
 import { SlashSquare } from "lucide-react";
+import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { useApiMutation } from "../../../superAdmin/services/hooks/useApiMutation";
 import { useApiQuery } from "../../../superAdmin/services/hooks/useApiQuery";
@@ -44,6 +46,8 @@ const ClientProfilePage = () => {
     queryKey: API_PATHS.CLIENT_ORDERS.CLIENT_KEY,
     options: { staleTime: 0 },
   });
+
+  console.log("Orders", orders);
 
   /***------> Set user data when fetched ------> */
   useEffect(() => {
@@ -115,16 +119,31 @@ const ClientProfilePage = () => {
         description="You can know about yourself from here in details."
       />
       <DynamicPageTitle pageTitle={pageTitle} />
+
       <div className="max-w-7xl mx-auto bg-base-200 rounded-xl shadow">
         {/*** ---------> USER INFO SECTION ---------> */}
         {userDataStatus.status !== "success" ? (
           userDataStatus.content
         ) : (
-          <div className="max-w-3xl mx-auto lg:p-6 p- space-y-6">
+          <div className="lg:max-w-4xl mx-auto lg:py-16 py-4 lg:space-y-6 space-y-4">
             {/* Personal Info */}
-            <div className="bg-base-100 rounded-xl shadow p-6 space-y-4">
-              <h2 className="text-2xl font-bold">Personal Info</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <motion.div
+              className="bg-base-100 rounded-xl shadow lg:p-12 p-2 space-y-4 hover:shadow-2xl"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: false }}
+              variants={containerVariants}
+            >
+              <motion.h2
+                className="text-2xl font-extrabold"
+                variants={itemVariants}
+              >
+                👤 Personal Info
+              </motion.h2>
+              <motion.div
+                className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                variants={itemVariants}
+              >
                 <Input
                   type="text"
                   value={userData.name}
@@ -157,9 +176,13 @@ const ClientProfilePage = () => {
                     isEditing ? "input-bordered" : "input-disabled"
                   }`}
                   disabled={!isEditing}
+                  placeholder="Phone..."
                 />
-              </div>
-              <div className="flex space-x-2 mt-4">
+              </motion.div>
+              <motion.div
+                className="flex space-x-2 mt-4"
+                variants={itemVariants}
+              >
                 {isEditing ? (
                   <>
                     <Button
@@ -186,20 +209,49 @@ const ClientProfilePage = () => {
                     Edit Profile
                   </Button>
                 )}
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
 
             {/*** --------> ORDERS INFO SECTION --------> */}
-            <div className="bg-base-100 rounded-xl shadow lg:p-6 space-y-4">
-              <h2 className="text-2xl font-bold">My Orders</h2>
+            <motion.div
+              className="rounded-xl"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: false }}
+              variants={containerVariants}
+            >
+              <motion.div
+                className="lg:mb-6 mb-4 lg:px-12 px-2 py-4  bg-base-100 rounded-xl shadow"
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: false }}
+                variants={containerVariants}
+              >
+                <motion.h2
+                  className="lg:text-2xl text-xl font-extrabold"
+                  variants={itemVariants}
+                >
+                  🛒 My Orders
+                </motion.h2>
+              </motion.div>
               {ordersDataStatus.status !== "success" ? (
                 ordersDataStatus.content
               ) : orders?.length ? (
-                <div className="space-y-4">
+                <motion.div
+                  className="lg:space-y-8 space-y-4 rounded-2xl"
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: false }}
+                  variants={containerVariants}
+                >
                   {orders?.map((order) => (
-                    <div
+                    <motion.div
                       key={order._id}
-                      className="border border-base-content/25 rounded-lg p-4 bg-base-200 flex flex-col space-y-2"
+                      className="lg:p-12 p-2 flex flex-col space-y-2 bg-base-100 shadow rounded-xl hover:shadow-2xl"
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: false }}
+                      variants={containerVariants}
                     >
                       <p>
                         <span className="font-bold">Order ID:</span>{" "}
@@ -214,43 +266,40 @@ const ClientProfilePage = () => {
                         {order.totalAmount.toFixed(2)}
                       </p>
 
-                      <div className="flex flex-wrap gap-2 mt-2">
+                      <motion.div
+                        className="grid lg:grid-cols-12 grid-cols-1 lg:gap-4 gap-2 justify-between mt-2"
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: false }}
+                        variants={containerVariants}
+                      >
                         {order?.items.map((item) => (
                           <div
                             key={item._id}
-                            className="flex items-center gap-2 border border-base-content/25 p-2 rounded"
+                            className="lg:col-span-3 col-span-12 border border-base-content/15 rounded-md shadow hover:shadow-lg"
                           >
-                            {item?.image ? (
-                              <img
-                                src={item?.image ? item.image : item.images[0]}
-                                alt={item?.name}
-                                className="h-36 object-contain w-full"
-                              />
-                            ) : (
-                              item.images && (
+                            {item?.product?.images && (
+                              <div className="flex justify-center">
                                 <img
-                                  src={`${apiURL}${
-                                    item.images[0].startsWith("/") ? "" : "/"
-                                  }${item.images[0]}`}
+                                  src={`${apiURL}${item?.product?.images[0]}`}
                                   alt={item.name || ""}
-                                  className="h-36 object-contain w-full"
+                                  className="h-20 w-full object-contain"
                                 />
-                              )
+                              </div>
                             )}
-                            {/* <img
-                              src={item.image}
-                              alt={item.name}
-                              className="w-12 h-12"
-                            /> */}
-                            <div>
+                            <div className="p-2">
                               <p className="font-semibold">{item.name}</p>
                               <p className="text-sm">
                                 ${item.price.toFixed(2)} x {item.quantity}
+                                <span className="font-bold">
+                                  {" "}
+                                  = ${(item.price * item.quantity).toFixed(2)}
+                                </span>
                               </p>
                             </div>
                           </div>
                         ))}
-                      </div>
+                      </motion.div>
 
                       {order.status === "pending" && (
                         <Button
@@ -261,13 +310,13 @@ const ClientProfilePage = () => {
                           <SlashSquare /> <span>Cancel Order</span>
                         </Button>
                       )}
-                    </div>
+                    </motion.div>
                   ))}
-                </div>
+                </motion.div>
               ) : (
-                <p>No orders found.</p>
+                <p className="font-bold text-center">No orders found.</p>
               )}
-            </div>
+            </motion.div>
           </div>
         )}
       </div>

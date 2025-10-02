@@ -126,7 +126,7 @@ export const getAllCarts = async (req, res) => {
   try {
     const cartsData = await Cart.find({}).populate({
       path: "items.product",
-      select: "name price image images category",
+      select: "name price images category",
       match: { _id: { $ne: null } }, // skip missing products
     });
 
@@ -160,7 +160,7 @@ export const getCart = async (req, res) => {
   try {
     let cart = await Cart.findOne({ user: req.user._id }).populate({
       path: "items.product",
-      select: "name price image category",
+      select: "name price images category",
       match: { _id: { $ne: null } },
     });
 

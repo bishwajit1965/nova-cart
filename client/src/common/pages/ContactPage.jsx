@@ -1,10 +1,17 @@
+import {
+  containerVariants,
+  itemVariants,
+} from "../../client/service/animations";
+
 import API_PATHS from "../../superAdmin/services/apiPaths/apiPaths";
 import Button from "../components/ui/Button";
 import DynamicPageTitle from "../utils/pageTitle/DynamicPageTitle";
+import FAQSection from "../components/publicUis/FAQSection";
 import { Input } from "../components/ui/Input";
 import { LucideIcon } from "../lib/LucideIcons";
 import PageMeta from "../components/ui/PageMeta";
 import Textarea from "../components/ui/Textarea";
+import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { useApiMutation } from "../../superAdmin/services/hooks/useApiMutation";
 import usePageTitle from "../../superAdmin/services/hooks/usePageTitle";
@@ -110,57 +117,101 @@ const ContactPage = () => {
       <div className="max-w-7xl mx-auto lg:space-y-16 space-y-6">
         <div className="bg-base-200 shadow rounded-xl lg:space-y-8 space-y-4 lg:p-12 p-2">
           {/* Hero */}
-          <div className="text-center">
-            <h1 className="lg:text-3xl text-xl font-extrabold text-primary mb-2">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false }}
+            variants={containerVariants}
+            className="text-center"
+          >
+            <motion.h1
+              className="lg:text-3xl text-xl font-extrabold text-primary mb-2"
+              variant={itemVariants}
+            >
               Get in Touch
-            </h1>
-            <p className="text-lg text-base-content/70">
+            </motion.h1>
+            <motion.p
+              className="text-lg text-base-content/70"
+              variant={itemVariants}
+            >
               We’d love to hear from you. Reach out with questions, feedback, or
               support requests.
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
+
           {/* Info Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-base-100 shadow rounded-xl lg:p-6 p-2 text-center hover:shadow-2xl transition">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false }}
+            variants={containerVariants}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+          >
+            <motion.div
+              className="bg-base-100 shadow rounded-xl lg:p-6 p-2 text-center hover:shadow-2xl transition"
+              variants={itemVariants}
+            >
               <LucideIcon.MapPin className="w-8 h-8 text-primary mx-auto mb-3" />
               <h4 className="font-semibold">Address</h4>
               <p className="text-sm text-base-content/70">
                 123 Nova Street, Dhaka, BD
               </p>
-            </div>
-            <div className="bg-base-100 shadow rounded-xl lg:p-6 p-2 text-center hover:shadow-2xl transition">
+            </motion.div>
+            <motion.div
+              className="bg-base-100 shadow rounded-xl lg:p-6 p-2 text-center hover:shadow-2xl transition"
+              variant={itemVariants}
+            >
               <LucideIcon.Phone className="w-8 h-8 text-primary mx-auto mb-3" />
               <h4 className="font-semibold">Phone</h4>
               <p className="text-sm text-base-content/70">+880 1234 567 890</p>
-            </div>
-            <div className="bg-base-100 shadow rounded-xl lg:p-6 p-2 text-center hover:shadow-2xl transition">
+            </motion.div>
+            <motion.div
+              className="bg-base-100 shadow rounded-xl lg:p-6 p-2 text-center hover:shadow-2xl transition"
+              variant={itemVariants}
+            >
               <LucideIcon.Mail className="w-8 h-8 text-primary mx-auto mb-3" />
               <h4 className="font-semibold">Email</h4>
               <p className="text-sm text-base-content/70">
                 support@nova-cart.com
               </p>
-            </div>
-            <div className="bg-base-100 shadow rounded-xl lg:p-6 p-2 text-center hover:shadow-2xl transition">
+            </motion.div>
+            <motion.div
+              className="bg-base-100 shadow rounded-xl lg:p-6 p-2 text-center hover:shadow-2xl transition"
+              variants={itemVariants}
+            >
               <LucideIcon.Clock className="w-8 h-8 text-primary mx-auto mb-3" />
               <h4 className="font-semibold">Working Hours</h4>
               <p className="text-sm text-base-content/70">
                 Sat–Thu: 9am – 6pm <br /> Fri: Closed
               </p>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
 
         {/* Contact Form */}
         <div className="bg-base-200 shadow rounded-xl lg:space-y-8 space-y-4 lg:p-12 p-2">
-          <div className="lg:max-w-3xl mx-auto">
-            <h2 className="lg:text-3xl text-xl font-extrabold lg:mb-8 mb-4 text-center text-primary">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false }}
+            variants={containerVariants}
+            className="lg:max-w-4xl mx-auto lg:px-6 px-"
+          >
+            <motion.h2
+              className="lg:text-3xl text-xl font-extrabold lg:mb-8 mb-4 text-center text-primary"
+              variants={itemVariants}
+            >
               Contact Form
-            </h2>
-            <form
+            </motion.h2>
+            <motion.form
               onSubmit={handleSubmit}
               className="grid lg:grid-cols-12 grid-cols-1 lg:gap-6 gap-3 bg-base-100 lg:p-14 p-2 rounded-xl shadow hover:shadow-lg transition"
+              variants={itemVariants}
             >
-              <div className="lg:col-span-6 colspan-12 space-y-4">
+              <motion.div
+                className="lg:col-span-6 colspan-12 space-y-4"
+                variant={itemVariants}
+              >
                 <Input
                   name="name"
                   placeholder="Your Name..."
@@ -181,8 +232,11 @@ const ContactPage = () => {
                 {errors.email && (
                   <p className="text-red-600 text-xs mt-1">{errors.email}</p>
                 )}
-              </div>
-              <div className="lg:col-span-6 colspan-12 space-y-4">
+              </motion.div>
+              <motion.div
+                className="lg:col-span-6 colspan-12 space-y-4"
+                variant={itemVariants}
+              >
                 <Input
                   name="subject"
                   placeholder="Subject..."
@@ -203,8 +257,11 @@ const ContactPage = () => {
                 {errors.phone && (
                   <p className="text-red-600 text-xs mt-1">{errors.phone}</p>
                 )}
-              </div>
-              <div className="lg:col-span-12 colspan-12">
+              </motion.div>
+              <motion.div
+                className="lg:col-span-12 colspan-12"
+                variant={itemVariants}
+              >
                 <Input
                   name="avatar"
                   placeholder="Avatar url..."
@@ -215,8 +272,11 @@ const ContactPage = () => {
                 {errors.avatar && (
                   <p className="text-red-600 text-xs mt-1">{errors.avatar}</p>
                 )}
-              </div>
-              <div className="lg:col-span-12 colspan-12">
+              </motion.div>
+              <motion.div
+                className="lg:col-span-12 colspan-12"
+                variants={itemVariants}
+              >
                 <Textarea
                   name="message"
                   placeholder="Your Message..."
@@ -228,8 +288,11 @@ const ContactPage = () => {
                 {errors.message && (
                   <p className="text-red-600 text-xs mt-1">{errors.message}</p>
                 )}
-              </div>
-              <div className="lg:col-span-12 flex justify-center">
+              </motion.div>
+              <motion.div
+                className="lg:col-span-12 flex justify-center"
+                variants={itemVariants}
+              >
                 <Button
                   type="submit"
                   disabled={loading}
@@ -243,9 +306,13 @@ const ContactPage = () => {
                   )}
                   {loading ? "Sending..." : "Send Message"}
                 </Button>
-              </div>
-            </form>
-          </div>
+              </motion.div>
+            </motion.form>
+          </motion.div>
+        </div>
+
+        <div className="bg-base-200 shadow rounded-xl">
+          <FAQSection />
         </div>
 
         {/* Map */}

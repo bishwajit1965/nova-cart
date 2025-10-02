@@ -3,6 +3,8 @@ import { Minus, Plus } from "lucide-react";
 import Button from "../../../common/components/ui/Button";
 import { LucideIcon } from "../../../common/lib/LucideIcons";
 
+const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
 const CartItemList = ({
   cart,
   handleIncreaseQuantity,
@@ -24,7 +26,7 @@ const CartItemList = ({
         >
           <div className="lg:col-span-4 col-span-12 flex items-center gap-3">
             <img
-              src={item.product.image}
+              src={`${apiURL}${item?.product?.images[0]}`}
               alt={item.product.name}
               className="w-16 h-16 object-contain rounded"
             />

@@ -12,6 +12,7 @@ const cartItemSchema = new mongoose.Schema(
       ref: "Product.variants", // reference to subdocument if you want
     },
     name: { type: String },
+    brand: { type: String },
     color: { type: String },
     size: { type: String },
     price: { type: Number },

@@ -20,8 +20,6 @@ const ProductDetails = () => {
   const [cart, setCart] = useState([]);
   const [wishList, setWishList] = useState([]);
 
-  console.log("Product", product);
-
   /*** ------> Add to Cart Mutation Query ------> */
   const addToCartMutation = useApiMutation({
     method: "create",
@@ -109,8 +107,7 @@ const ProductDetails = () => {
         image: selectedVariant.image || productDetail.image,
       },
     };
-    console.log("Cart Item payload", cartItemPayload);
-    console.log("Selected variant", selectedVariant);
+
     addToCartMutation.mutate(cartItemPayload, {
       onSuccess: () => {
         toast.success(`${finalQuantity} x ${productData.name} added to cart`);

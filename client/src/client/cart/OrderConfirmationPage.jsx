@@ -9,6 +9,7 @@ const OrderConfirmationPage = () => {
   const location = useLocation();
   const order = location?.state?.order;
   const pageTitle = usePageTitle();
+  const apiURL = import.meta.env.VITE_API_URL || "http://localhost:300";
   if (!order?.items || order?.items?.length === 0) {
     return (
       <div className="text-center py-6 font-semibold">No order found.</div>
@@ -51,17 +52,19 @@ const OrderConfirmationPage = () => {
               className="flex items-center justify-between border-b border-base-content/15 w-full"
             >
               <div className="lg:w-1/4 w-1/4 pb-2">
-                <img
-                  src={item?.product?.image}
-                  alt={item?.product?.name}
-                  className="lg:w-2/5 w-12 object-cover"
-                />
+                {item?.product?.images && (
+                  <img
+                    src={`${apiURL}${item?.product?.images[0]}`}
+                    alt={item?.product?.name}
+                    className="lg:w-2/5 w-12 object-cover"
+                  />
+                )}
               </div>
               <div className="w-1/4">
                 {item?.product?.name} x {item?.quantity}
               </div>
               <div className="w-1/4 text-right font-bold">
-                ${item?.product?.price * item?.quantity}
+                ${(item?.product?.price * item?.quantity).toFixed(2)}
               </div>
             </div>
           ))}
@@ -69,7 +72,7 @@ const OrderConfirmationPage = () => {
         <div className="lg:space-y-10 space-y-2">
           <div className="flex justify-between font-bold text-lg lg:my-10">
             <span>Total</span>
-            <span>${totalAmount}</span>
+            <span>${totalAmount.toFixed(2)}</span>
           </div>
 
           <div className="text-center lg:pt-12 pt-4 border-t border-base-content/15">

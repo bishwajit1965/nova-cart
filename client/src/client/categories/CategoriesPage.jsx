@@ -1,9 +1,13 @@
 import { Link, useSearchParams } from "react-router-dom";
 
 import API_PATHS from "../../superAdmin/services/apiPaths/apiPaths";
+import Button from "../../common/components/ui/Button";
 import DynamicPageTitle from "../../common/utils/pageTitle/DynamicPageTitle";
+import { LucideIcon } from "../../common/lib/LucideIcons";
 import NoDataFound from "../../common/components/ui/NoDataFound";
 import PageMeta from "../../common/components/ui/PageMeta";
+import toast from "react-hot-toast";
+import { useApiMutation } from "../../superAdmin/services/hooks/useApiMutation";
 import { useApiQuery } from "../../superAdmin/services/hooks/useApiQuery";
 import { useEffect } from "react";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
@@ -13,10 +17,15 @@ import { useState } from "react";
 const CategoriesPage = () => {
   const pageTile = usePageTitle();
   const [products, setProducts] = useState([]);
+  const [cart, setCart] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [addedToCart, setAddedToCart] = useState([]);
+  const CART_LIMIT = 10;
+
   const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 });
   const [selectedBrand, setSelectedBrand] = useState("All Brands");
+  const apiURL = import.meta.env.VITE_API_URL || "http:localhost:3000";
 
   // Filters from URL
   const categorySlug = searchParams.get("category") || "";
@@ -49,8 +58,6 @@ const CategoriesPage = () => {
     },
   });
 
-  console.log("All categories", categories);
-
   /*** -----> Fetch sub_Categories Query -----> */
   const {
     data: subCategories,
@@ -82,8 +89,6 @@ const CategoriesPage = () => {
       refetchOnReconnect: true,
     },
   });
-
-  console.log("All products", productsData);
 
   /*** -------> PRICE & BRAND RELATED SEARCH -------> */
   const allBrands = [
@@ -162,6 +167,64 @@ const CategoriesPage = () => {
     });
   };
 
+  /*** ------> Add to Cart Mutation Query ------> */
+  const addToCartMutation = useApiMutation({
+    method: "create",
+    path: `${API_PATHS.CLIENT_CARTS.CLIENT_ENDPOINT}`,
+    key: API_PATHS.CLIENT_CARTS.CLIENT_KEY,
+    onSuccess: (res) => {
+      setCart(res.data.items); // update cart with latest
+    },
+    onError: (err) => {
+      toast.error("Failed to add product to cart");
+      console.error(err);
+    },
+  });
+
+  /** --------> Add product to cart --------> */
+  const handleAddToCart = (product) => {
+    if (addedToCart.length >= CART_LIMIT) {
+      toast.success("You have added 10 items!");
+      return; // prevent adding more
+    }
+    addToCartMutation.mutate(
+      {
+        data: {
+          productId: product._id,
+          quantity: 1,
+        },
+      },
+      {
+        onSuccess: (res) => {
+          setAddedToCart((prev) => {
+            const existing = prev.find((item) => item._id === product._id);
+            if (existing) {
+              // update quantity
+              return prev.map((item) =>
+                item._id === product._id
+                  ? { ...item, quantity: item.quantity + 1 }
+                  : item
+              );
+              // toast.error("Item already added! try new one!");
+            } else {
+              return [
+                ...prev,
+                {
+                  _id: product._id,
+                  name: product.name,
+                  brand: product.brand,
+                  image: product.images?.[0], // first image
+                  price: product.price,
+                  quantity: 1,
+                },
+              ];
+            }
+          });
+        },
+      }
+    );
+  };
+
   /*** -----> Use Fetched CATEGORY Data Status Handler -----> */
   const categoriesStatus = useFetchedDataStatusHandler({
     isLoading: isLoadingCategories,
@@ -176,8 +239,6 @@ const CategoriesPage = () => {
     error: errorSubCategories,
     label: "sub-categories",
   });
-
-  console.log("SUB_CATEGORIES", subCategories);
 
   /*** -----> Use Fetched PRODUCT Data Status Handler -----> */
   const productsStatus = useFetchedDataStatusHandler({
@@ -212,7 +273,7 @@ const CategoriesPage = () => {
                   className={`${
                     selectedCategory
                       ? "hover:bg-base-200"
-                      : "bg-base-200 border-b border-base-content/15 text-amber-500 font-semibold hover:bg-base-200"
+                      : "bg-base-200 border-b border-base-content/15 text-indigo-500 font-semibold hover:bg-base-200"
                   }`}
                 >
                   <Link to="/product-categories">All Products</Link>
@@ -223,7 +284,7 @@ const CategoriesPage = () => {
                     <button
                       className={`block rounded hover:bg-base-100 cursor-pointer w-full text-left ${
                         selectedCategory === cat.slug
-                          ? "bg-base-200 border-base-content/15 text-amber-500 font-semibold cursor-pointer w-full border-b"
+                          ? "bg-base-200 border-base-content/15 text-indigo-500 font-semibold cursor-pointer w-full border-b"
                           : ""
                       }`}
                       onClick={() => handleCategoryClick(cat.slug)}
@@ -233,13 +294,13 @@ const CategoriesPage = () => {
 
                     {cat.subcategories?.length &&
                       cat.subcategories.length > 0 && (
-                        <ul className="pl- space-y-1 text-sm w-full block">
+                        <ul className="pl-4 space-y-1 text-sm w-full block">
                           {cat.subcategories.map((sub) => (
                             <li key={sub._id}>
                               <button
                                 className={`block px-2 py-1 rounded hover:bg-gray-100 ${
                                   selectedCategory === sub.slug
-                                    ? "bg-gray-200 font-semibold px-2 block cursor-pointer w-full"
+                                    ? "bg-base-200 text-indigo-500 font-semibold px-2 block cursor-pointer w-full"
                                     : "cursor-pointer"
                                 }`}
                                 onClick={() =>
@@ -366,16 +427,62 @@ const CategoriesPage = () => {
         )}
 
         {/*** -----> Main content section PRODUCTS -----> */}
-
         {productsStatus.status !== "success" ? (
           productsStatus.content
         ) : (
-          <main className="lg:col-span-9 col-span-12 shadow rounded-lg">
+          <main className="lg:col-span-9 col-span-12 rounded-lg">
             {/* Breadcrumb */}
-            <div className="mb-4 text-sm text-gray-500 bg-base-200 p-2 lg:text-2xl font-bold border border-base-content/15 rounded-t-lg">
+            <div className="mb-4 text-sm text-gray-500 bg-base-200 p-2 lg:text-2xl font-bold rounded-t-lg">
               <Link to="/">Home</Link>
               {selectedCategory && <> &gt; {selectedCategory}</>}
             </div>
+
+            {/*Added product limit to cart pop-up*/}
+            {addedToCart.length > 0 && (
+              <div className="border border-base-content/15 rounded-xl mb-10 shadow">
+                <div className="space-y-2">
+                  <div className=" p-2 text-base-content">
+                    <h2 className="lg:text-2xl text-xl font-bold text-center">
+                      Products Added to Cart Calculation Panel ➡️
+                      <span className="w-10 h-10 rounded-full p-1 bg-white text-red-500">
+                        {addedToCart.length}
+                      </span>{" "}
+                    </h2>
+                  </div>
+                  {addedToCart.length >= CART_LIMIT && (
+                    <p className="text-xl text-red-600 text-center">
+                      You have reached the limit of 10 products!!!
+                    </p>
+                  )}
+                  <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-6 gap-4 justify-between lg:p-4 p-2 bg-base-100">
+                    {addedToCart?.map((c, idx) => (
+                      <div className="lg:col-span-3 col-span-6" key={c._id}>
+                        <div className="flex items-center flex-wrap p-2 border border-base-content/15 rounded-lg shadow space-y-2 min-h-20 space-x-2">
+                          <div className="">
+                            {c?.image && (
+                              <img
+                                src={`${apiURL}${c?.image}`}
+                                alt={c?.brand}
+                                className="w-14 h-14 object-cover"
+                              />
+                            )}
+                          </div>
+                          <div className="">
+                            <h2 className="font-bold text-sm">
+                              {idx + 1} {") "}
+                              {c?.brand}
+                              {<br />}
+                              ➡️
+                              {c?.name}
+                            </h2>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Products grid */}
             {products?.length > 0 ? (
@@ -385,18 +492,73 @@ const CategoriesPage = () => {
                     key={p._id}
                     className="lg:col-span-4 col-span-1 border border-base-content/20 rounded-lg hover:shadow-lg transition"
                   >
-                    <img
-                      src={p.image}
-                      alt={p.name}
-                      className="w-full h-44 object-contain mb-2"
-                    />
+                    {p.images && (
+                      <img
+                        src={`${apiURL}${p?.images[0]}`}
+                        alt={p.name}
+                        className="w-full h-44 object-contain mb-2"
+                      />
+                    )}
                     <div className="p-2">
                       <h3 className="font-medium">{p.name}</h3>
                       <p className="text-gray-600">${p.price.toFixed(2)}</p>
                     </div>
-                    <button className="mt-2 w-full bg-indigo-600 text-white py-1 rounded hover:bg-indigo-700">
-                      Add to Cart
-                    </button>
+                    <div className="flex justify-between items-center">
+                      <Link to={`/product-details/${p._id}`}>
+                        <Button
+                          variant="indigo"
+                          className=" hover:bg-indigo-700"
+                        >
+                          View Details
+                        </Button>
+                      </Link>
+
+                      <div
+                        className={`${
+                          addedToCart.some((item) => item._id === p._id)
+                            ? "cursor-not-allowed"
+                            : ""
+                        }`}
+                      >
+                        <Button
+                          disabled={addedToCart.some(
+                            (item) =>
+                              item._id === p._id ||
+                              addedToCart.length >= CART_LIMIT
+                          )}
+                          type="submit"
+                          variant={`${
+                            addedToCart.some((item) => item._id === p._id)
+                              ? "base"
+                              : "indigo"
+                          }`}
+                          onClick={() => handleAddToCart(p)}
+                          className={` ${
+                            addedToCart.some((item) => item._id === p._id)
+                              ? "disabled cursor-not-allowed"
+                              : "visible"
+                          }`}
+                        >
+                          {addedToCart.some((item) => item._id === p._id) ? (
+                            <LucideIcon.CircleCheckBig
+                              size={20}
+                              className="text-base-content"
+                            />
+                          ) : (
+                            <LucideIcon.ShoppingCart
+                              size={20}
+                              className="text-white"
+                            />
+                          )}
+
+                          {addedToCart.some((item) => item._id === p._id)
+                            ? "Added"
+                            : addedToCart.length >= CART_LIMIT
+                            ? "Cart Full!"
+                            : "Add to Cart"}
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
