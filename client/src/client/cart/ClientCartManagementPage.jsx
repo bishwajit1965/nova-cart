@@ -10,6 +10,7 @@ import DynamicPageTitle from "../../common/utils/pageTitle/DynamicPageTitle";
 import { LucideIcon } from "../../common/lib/LucideIcons";
 import Modal from "../../common/components/ui/Modal";
 import PageMeta from "../../common/components/ui/PageMeta";
+import textShortener from "../../utils/textShortener";
 import toast from "react-hot-toast";
 import { useApiMutation } from "../../superAdmin/services/hooks/useApiMutation";
 import { useApiQuery } from "../../superAdmin/services/hooks/useApiQuery";
@@ -24,8 +25,15 @@ const ClientCartManagementPage = () => {
   const [allProducts, setAllProducts] = useState([]); // all available products
   const [isModalOpen, setIsModalOpen] = useState(null);
   const [wishList, setWishList] = useState([]);
-
+  const [addedToWishList, setAddedToWishList] = useState([]);
+  const [addedToCart, setAddedToCart] = useState([]);
+  const [isExpanded, setIsExpanded] = useState(false);
   const navigate = useNavigate();
+
+  const CART_LIMIT = 10;
+  const WISH_LIST_LIMIT = 10;
+  console.log("Added to cart", addedToCart);
+  console.log("Wish list", wishList);
 
   /** ------> View product details in modal ------> */
   const handleModalToggleView = (productId) => {
@@ -120,11 +128,12 @@ const ClientCartManagementPage = () => {
     key: API_PATHS.CLIENT_WISH_LISTS.CLIENT_KEY,
     onSuccess: (res) => {
       setWishList(res.data.items); // update cart with latest
-      // toast.success("Product added to wish list");
     },
-    onError: (err) => {
-      toast.error("Failed to add product to cart");
-      console.error(err);
+    onError: (error) => {
+      toast.error(
+        error?.response?.data?.message || "Failed to add product to cart"
+      );
+      console.error(error);
     },
   });
 
@@ -163,12 +172,46 @@ const ClientCartManagementPage = () => {
 
   /** --------> Add product to cart --------> */
   const handleAddToCart = (product) => {
-    addToCartMutation.mutate({
-      data: {
-        productId: product._id,
-        quantity: 1,
+    if (addedToCart.length >= CART_LIMIT) {
+      toast.error("Cart Full! Maximum 10 products allowed.");
+      return;
+    }
+    addToCartMutation.mutate(
+      {
+        data: {
+          productId: product._id,
+          quantity: 1,
+        },
       },
-    });
+      {
+        onSuccess: (res) => {
+          setAddedToCart((prev) => {
+            const existing = prev.find((item) => item._id === product._id);
+            if (existing) {
+              // update quantity
+              return prev.map((item) =>
+                item._id === product._id
+                  ? { ...item, quantity: item.quantity + 1 }
+                  : item
+              );
+              // toast.error("Item already added! try new one!");
+            } else {
+              return [
+                ...prev,
+                {
+                  _id: product._id,
+                  name: product.name,
+                  brand: product.brand,
+                  image: product.images?.[0], // first image
+                  price: product.price,
+                  quantity: 1,
+                },
+              ];
+            }
+          });
+        },
+      }
+    );
   };
 
   /** ----> Update cart product quantity ----> */
@@ -229,19 +272,45 @@ const ClientCartManagementPage = () => {
   };
 
   /** ----> Add product to wishlist handler ----> */
-  const handleAddToWishlist = (productId) => {
+  const handleAddToWishlist = (product) => {
+    if (addedToWishList.length >= WISH_LIST_LIMIT) {
+      toast.error("Wishlist Full! Maximum 10 products allowed.");
+      return;
+    }
+
     addToWishListMutation.mutate(
       {
-        data: { productId },
+        data: { productId: product._id, quantity: 1 },
       },
       {
         onSuccess: (res) => {
           setWishList(res.data.items);
-          toast.success("Product added to wishlist");
+          setAddedToWishList((prev) => {
+            const existing = prev.find((item) => item._id === product._id);
+            if (existing) {
+              // update quantity
+              return prev.map((item) =>
+                item._id === product._id
+                  ? { ...item, quantity: item.quantity + 1 }
+                  : item
+              );
+            } else {
+              return [
+                ...prev,
+                {
+                  _id: product._id,
+                  name: product.name,
+                  brand: product.brand,
+                  image: product.images?.[0], // first image
+                  price: product.price,
+                  quantity: 1,
+                },
+              ];
+            }
+          });
         },
-        onError: (err) => {
-          toast.error("Failed to add product to wishlist");
-          console.error(err);
+        onError: (error) => {
+          console.error(error.message);
         },
       }
     );
@@ -331,6 +400,100 @@ const ClientCartManagementPage = () => {
               </div>
             </div>
 
+            {/*Added product limit to cart pop-up*/}
+            {addedToCart.length > 0 && (
+              <div className="rounded-xl lg:mb-10 mb-4 shadow hover:shadow-md lg:p-4 p-2">
+                <div className="space-y-4">
+                  <div className="text-base-content">
+                    <h2 className="lg:text-2xl text-xl font-bold text-center">
+                      🛒 Products Added to Cart Calculation Panel ➡️
+                      <span className="w-10 h-10 rounded-full bg-white text-red-500">
+                        {addedToCart.length}
+                      </span>{" "}
+                    </h2>
+                  </div>
+                  {addedToCart.length >= CART_LIMIT && (
+                    <p className="text-xl text-red-600 text-center">
+                      You have reached the limit of 10 products!!!
+                    </p>
+                  )}
+                  <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-6 gap-4 justify-between bg-base-100 rounded-2xl">
+                    {addedToCart?.map((c, idx) => (
+                      <div className="lg:col-span-3 col-span-6" key={c._id}>
+                        <div className="flex items-center flex-wrap p-2 border border-base-content/15 rounded-lg shadow space-y-2 min-h-20 space-x-2">
+                          <div className="">
+                            {c?.image && (
+                              <img
+                                src={`${apiURL}${c?.image}`}
+                                alt={c?.brand}
+                                className="w-14 h-14 object-cover"
+                              />
+                            )}
+                          </div>
+                          <div className="">
+                            <h2 className="font-bold text-sm">
+                              {idx + 1} {") "}
+                              {c?.brand}
+                              {<br />}
+                              ➡️
+                              {c?.name}
+                            </h2>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/*Added product limit to cart pop-up*/}
+            {addedToWishList?.length > 0 && (
+              <div className="rounded-xl lg:mb-10 mb-4 shadow hover:shadow-md lg:p-4 p-2">
+                <div className="space-y-4">
+                  <div className="text-base-content">
+                    <h2 className="lg:text-2xl text-xl font-bold text-center">
+                      🛒 Products Added to Wish List Calculation Panel ➡️
+                      <span className="w-10 h-10 rounded-full bg-white text-red-500">
+                        {addedToWishList?.length}
+                      </span>{" "}
+                    </h2>
+                  </div>
+                  {addedToWishList.length >= WISH_LIST_LIMIT && (
+                    <p className="text-xl text-red-600 text-center">
+                      You have reached the limit of 10 products!!!
+                    </p>
+                  )}
+                  <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-6 gap-4 justify-between bg-base-100 rounded-2xl">
+                    {addedToWishList?.map((c, idx) => (
+                      <div className="lg:col-span-3 col-span-6" key={c._id}>
+                        <div className="flex items-center flex-wrap p-2 border border-base-content/15 rounded-lg shadow space-y-2 min-h-20 space-x-2">
+                          <div className="">
+                            {c?.image && (
+                              <img
+                                src={`${apiURL}${c?.image}`}
+                                alt={c?.brand}
+                                className="w-14 h-14 object-cover"
+                              />
+                            )}
+                          </div>
+                          <div className="">
+                            <h2 className="font-bold text-sm">
+                              {idx + 1} {") "}
+                              {c?.brand}
+                              {<br />}
+                              ➡️
+                              {c?.name}
+                            </h2>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="lg:space-y-4 space-y-2 pt-6">
               {productsDataStatus.status !== "success" ? (
                 productsDataStatus.content
@@ -339,7 +502,7 @@ const ClientCartManagementPage = () => {
                   {allProducts.map((item) => (
                     <div
                       key={item.product._id}
-                      className="border border-base-content/10 lg:p-3 rounded-lg border-b-none relative min-h-auto shadow"
+                      className="border border-base-content/10 lg:p-3 p-2 rounded-lg border-b-none relative min-h-auto shadow"
                     >
                       <img
                         src={`${apiURL}${item.product.images[0]}`}
@@ -350,7 +513,7 @@ const ClientCartManagementPage = () => {
                       <div className="lg:min-h-44 min-h-40">
                         <h3 className="font-semibold">{item.product.name}</h3>
                         <p className="text-sm text-gray-500">
-                          {item.product.description}
+                          {textShortener(item.product.description, 68)}
                         </p>
                         <p className="font-bold mt-1">
                           ${item.product.price.toFixed(2)}
@@ -359,6 +522,7 @@ const ClientCartManagementPage = () => {
                       <div className="flex justify-between items-center mt-2 absolute bottom-11 space-x-4 w-full left-0">
                         <Button
                           variant="global"
+                          size="sm"
                           icon={LucideIcon.Eye}
                           onClick={() =>
                             handleModalToggleView(item.product._id)
@@ -367,25 +531,110 @@ const ClientCartManagementPage = () => {
                         >
                           View Details
                         </Button>
-                        <Button
-                          icon={LucideIcon.ShoppingCart}
-                          variant="indigo"
-                          onClick={() => handleAddToCart(item.product)}
-                          className="bg-base-content/5 outline-none"
+                        <div
+                          className={`${
+                            addedToCart.some(
+                              (list) => list._id === item.product._id
+                            )
+                              ? "cursor-not-allowed rounded-b-none rounded-t-md bg-red-500 text-white"
+                              : "rounded-t-md rounded-b-none"
+                          }`}
                         >
-                          Add to Cart
-                        </Button>
+                          <Button
+                            onClick={() => handleAddToCart(item.product)}
+                            variant={`${
+                              addedToCart.some(
+                                (list) => list._id === item.product._id
+                              )
+                                ? "base"
+                                : "indigo"
+                            }`}
+                            size="sm"
+                            disabled={addedToCart.some(
+                              (list) =>
+                                list._id === item.product._id ||
+                                addedToCart.length >= CART_LIMIT
+                            )}
+                            className={` ${
+                              addedToWishList.some(
+                                (list) => list._id === item.product._id
+                              )
+                                ? "w-full disabled cursor-not-allowed rounded-t-md rounded-b-none outline outline-base-content/5 bg-base-content/5 outline-none text-white"
+                                : "w-full border-none rounded-t-md rounded-b-none outline-none text-white"
+                            }`}
+                          >
+                            {addedToCart.some(
+                              (list) => list._id === item.product._id
+                            ) ? (
+                              <LucideIcon.CircleCheckBig
+                                size={20}
+                                className=""
+                              />
+                            ) : (
+                              <LucideIcon.ShoppingCart size={20} className="" />
+                            )}
+                            {addedToCart.some(
+                              (list) => list._id === item.product._id
+                            )
+                              ? "Added"
+                              : addedToCart.length >= CART_LIMIT
+                              ? "Cart Full !!"
+                              : "Add to Cart"}
+                          </Button>
+                        </div>
                       </div>
                       <div className="w-full absolute bottom-0 left-0 right-0 px-0 border-t border-base-content/20">
-                        <Button
-                          variant="global"
-                          icon={LucideIcon.Heart}
-                          size="sm"
-                          onClick={() => handleAddToWishlist(item.product._id)}
-                          className="w-full rounded-t-none rounded-b-lg outline outline-base-content/5 bg-base-content/5 outline-none"
+                        <div
+                          className={`${
+                            addedToWishList.some(
+                              (list) => list._id === item.product._id
+                            )
+                              ? "cursor-not-allowed rounded-b-md bg-red-500 text-white"
+                              : ""
+                          }`}
                         >
-                          Add to Wishlist
-                        </Button>
+                          <Button
+                            variant={`${
+                              addedToWishList.some(
+                                (list) => list._id === item.product._id
+                              )
+                                ? "base"
+                                : "base"
+                            }`}
+                            disabled={addedToWishList.some(
+                              (list) =>
+                                list._id === item.product._id ||
+                                addedToWishList.length >= WISH_LIST_LIMIT
+                            )}
+                            size="sm"
+                            onClick={() => handleAddToWishlist(item?.product)}
+                            className={` ${
+                              addedToWishList.some(
+                                (list) => list._id === item.product._id
+                              )
+                                ? "w-full disabled cursor-not-allowed rounded-t-none rounded-b-md outline outline-base-content/5 bg-base-content/5 outline-none text-white"
+                                : "w-full border-none rounded-b-md rounded-t-none outline-none"
+                            }`}
+                          >
+                            {addedToWishList.some(
+                              (list) => list._id === item.product._id
+                            ) ? (
+                              <LucideIcon.CircleCheckBig
+                                size={20}
+                                className=""
+                              />
+                            ) : (
+                              <LucideIcon.Heart size={20} className="" />
+                            )}
+                            {addedToWishList.some(
+                              (list) => list._id === item.product._id
+                            )
+                              ? "Added to Wish List"
+                              : addedToWishList.length >= WISH_LIST_LIMIT
+                              ? "Wish List Full"
+                              : "Add to Wish List"}
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -436,20 +685,29 @@ const ClientCartManagementPage = () => {
             title={isModalOpen.product.name}
           >
             <div className="">
-              <div className="flex flex-row items-center">
-                <div className="lg:w-32 w-16 lg:h-auto h-auto mr-4">
+              <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-4 gap-2 items-center justify-between">
+                <div className="lg:lg:col-span-4 col-span-12">
                   <img
-                    src={isModalOpen.product.image}
+                    src={`${apiURL}${isModalOpen?.product?.images[0]}`}
                     alt={isModalOpen.product.name}
                     className="w-full h-full object-cover rounded-lg shadow"
                   />
                 </div>
-                <div className="">
+                <div className="lg:col-span-8 col-span-12 overflow-y-auto max-h-56">
                   <h3 className="text-lg font-semibold mb-2">
-                    {isModalOpen.product.name}
+                    {isModalOpen.product.name} || {isModalOpen.product.brand}
                   </h3>
                   <p className="text-sm text-gray-500 mb-4">
-                    {isModalOpen.product.description}
+                    {isExpanded
+                      ? isModalOpen?.product?.description
+                      : textShortener(isModalOpen?.product?.description, 200)}
+
+                    <button
+                      onClick={() => setIsExpanded(!isExpanded)}
+                      className="text-indigo-500 link ml-1 text-sm font-semibold"
+                    >
+                      {isExpanded ? "Read Less" : "Read More"}
+                    </button>
                   </p>
                   <p className="font-bold text-xl">
                     ${isModalOpen.product.price.toFixed(2)}
@@ -461,9 +719,17 @@ const ClientCartManagementPage = () => {
                   icon={LucideIcon.ShoppingCart}
                   variant="indigo"
                   onClick={() => handleAddToCart(isModalOpen.product)}
+                  disabled={
+                    addedToCart.some(
+                      (i) => i._id === isModalOpen.product._id
+                    ) || addedToCart.length >= CART_LIMIT
+                  }
                 >
-                  Add to Cart
+                  {addedToCart.length >= CART_LIMIT
+                    ? "Cart Full"
+                    : "Add to Cart"}
                 </Button>
+
                 <Button
                   variant="danger"
                   icon={LucideIcon.X}

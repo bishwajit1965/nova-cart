@@ -432,19 +432,21 @@ const CategoriesPage = () => {
         ) : (
           <main className="lg:col-span-9 col-span-12 rounded-lg">
             {/* Breadcrumb */}
-            <div className="mb-4 text-sm text-gray-500 bg-base-200 p-2 lg:text-2xl font-bold rounded-t-lg">
-              <Link to="/">Home</Link>
+            <div className="mb-4 text-sm text-gray-500 bg-base-200 p-2 rounded-t-lg border-t border-b border-base-content/15">
+              <Link to="/">
+                <h3 className="lg:text-2xl text-xl font-bold">Home</h3>
+              </Link>
               {selectedCategory && <> &gt; {selectedCategory}</>}
             </div>
 
             {/*Added product limit to cart pop-up*/}
             {addedToCart.length > 0 && (
-              <div className="border border-base-content/15 rounded-xl mb-10 shadow">
-                <div className="space-y-2">
-                  <div className=" p-2 text-base-content">
+              <div className="rounded-xl lg:mb-10 mb-4 shadow hover:shadow-md lg:p-4 p-2">
+                <div className="space-y-4">
+                  <div className="text-base-content">
                     <h2 className="lg:text-2xl text-xl font-bold text-center">
-                      Products Added to Cart Calculation Panel ➡️
-                      <span className="w-10 h-10 rounded-full p-1 bg-white text-red-500">
+                      🛒 Products Added to Cart Calculation Panel ➡️
+                      <span className="w-10 h-10 rounded-full bg-white text-red-500">
                         {addedToCart.length}
                       </span>{" "}
                     </h2>
@@ -454,7 +456,7 @@ const CategoriesPage = () => {
                       You have reached the limit of 10 products!!!
                     </p>
                   )}
-                  <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-6 gap-4 justify-between lg:p-4 p-2 bg-base-100">
+                  <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-6 gap-4 justify-between bg-base-100 rounded-2xl">
                     {addedToCart?.map((c, idx) => (
                       <div className="lg:col-span-3 col-span-6" key={c._id}>
                         <div className="flex items-center flex-wrap p-2 border border-base-content/15 rounded-lg shadow space-y-2 min-h-20 space-x-2">
@@ -503,13 +505,10 @@ const CategoriesPage = () => {
                       <h3 className="font-medium">{p.name}</h3>
                       <p className="text-gray-600">${p.price.toFixed(2)}</p>
                     </div>
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items- bg-base-300 rounded-b-lg p-2 shadow">
                       <Link to={`/product-details/${p._id}`}>
-                        <Button
-                          variant="indigo"
-                          className=" hover:bg-indigo-700"
-                        >
-                          View Details
+                        <Button variant="base" className="">
+                          <LucideIcon.EyeIcon size={20} /> View Details
                         </Button>
                       </Link>
 

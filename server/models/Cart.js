@@ -9,7 +9,7 @@ const cartItemSchema = new mongoose.Schema(
     },
     variantId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Product.variants", // reference to subdocument if you want
+      ref: "Product.variants", // reference to sub-document if you want
     },
     name: { type: String },
     brand: { type: String },

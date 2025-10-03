@@ -8,6 +8,7 @@ import NewsLetterSection from "../components/publicUis/NewsLetterSection";
 import PageMeta from "../components/ui/PageMeta";
 import ProductsListSection from "../../client/products/ProductsListSection";
 import PromoSection from "../components/publicUis/PromoSection";
+import RandomProductsSection from "../../client/products/RandomProductsSection";
 import ShopByCategoriesSection from "../components/publicUis/ShopByCategoriesSection";
 import TestimonialFormSection from "../components/publicUis/TestimonialFormSection";
 import TestimonialsSection from "../components/publicUis/TestimonialsSection";
@@ -32,6 +33,9 @@ const LandingPage = () => {
       />
       {/*Hero section*/}
       <HeroSection />
+
+      {/* 🔥 Random Products Section (New) */}
+      <RandomProductsSection />
 
       {/* Products List Section */}
       <ProductsListSection />

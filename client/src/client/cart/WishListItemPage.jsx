@@ -194,7 +194,7 @@ const WishListItemPage = () => {
                 </div>
               </div>
             ) : (
-              <NoDataFound />
+              <NoDataFound label={"Products"} />
             )}
           </div>
         </div>

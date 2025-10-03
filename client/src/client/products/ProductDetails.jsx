@@ -6,6 +6,7 @@ import Button from "../../common/components/ui/Button";
 import DynamicPageTitle from "../../common/utils/pageTitle/DynamicPageTitle";
 import { LucideIcon } from "../../common/lib/LucideIcons";
 import { motion } from "framer-motion";
+import textShortener from "../../utils/textShortener";
 import toast from "react-hot-toast";
 import { useApiMutation } from "../../superAdmin/services/hooks/useApiMutation";
 import usePageTitle from "../../superAdmin/services/hooks/usePageTitle";
@@ -19,6 +20,7 @@ const ProductDetails = () => {
   const productData = product?.data;
   const [cart, setCart] = useState([]);
   const [wishList, setWishList] = useState([]);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   /*** ------> Add to Cart Mutation Query ------> */
   const addToCartMutation = useApiMutation({
@@ -53,6 +55,7 @@ const ProductDetails = () => {
     image: product.data.image || null,
     images: product.data.images || [],
     name: product.data.name,
+    brand: product.data.brand,
     description: product.data.description,
     price: product.data.price,
     stock: product.data.stock,
@@ -154,7 +157,7 @@ const ProductDetails = () => {
         variants={containerVariants}
       >
         <motion.div
-          className="lg:col-span-6 col-span-2 lg:min-h-96 bg-base-300 rounded-md lg:p-4"
+          className="lg:col-span-6 col-span-2 lg:min-h-96 bg-base-300s rounded-md lg:p-4"
           variant={itemVariants}
         >
           {productDetail?.image ? (
@@ -232,23 +235,35 @@ const ProductDetails = () => {
           variant={itemVariants}
         >
           <h2 className="lg:text-2xl text-xl lg:font-extrabold font-bold">
-            Product: {productDetail.name}
+            Product: {productDetail?.name} || Brand: {productDetail?.brand}
           </h2>
-          <p>{productDetail.description}</p>
+          <p className="text-justify">
+            {isExpanded
+              ? productDetail?.description
+              : textShortener(productDetail?.description, 500)}
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="text-indigo-500 link ml-1 text-sm font-semibold"
+            >
+              {isExpanded ? "Read Less" : "Read More"}
+            </button>
+          </p>
 
           {/* Variant wise price display */}
           <p className="text-xl font-bold">
             Price: $ {selectedVariant?.price.toFixed(2)}
           </p>
-          <p
-            className={`font-semibold ${
-              selectedVariant.stock > 0 ? "text-green-600" : "text-red-600"
-            }`}
-          >
-            {selectedVariant.stock > 0
-              ? `${selectedVariant.stock} in stock`
-              : "Out of stock!"}
-          </p>
+          {selectedVariant?.stock && (
+            <p
+              className={`font-semibold ${
+                selectedVariant?.stock > 0 ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              {selectedVariant.stock > 0
+                ? `${selectedVariant?.stock} in stock`
+                : "Out of stock!"}
+            </p>
+          )}
 
           {/* Quantity selector */}
           <div className="flex items-center gap-4">

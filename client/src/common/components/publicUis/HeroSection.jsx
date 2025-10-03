@@ -43,27 +43,33 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="lg:py-16 py-6 bg-gradient-to-r from-blue-500 to-blue-200 rounded-md shadow">
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={containerVariants}
-        className="max-w-6xl mx-auto bg-gradient-to-r from-blue-400 to-blue-200 lg:p-12 p-4 rounded-lg"
-      >
+    <motion.section
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: false }}
+      variants={containerVariants}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.8, // total animation time
+        ease: "easeInOut", // ease in and out
+      }}
+      className="lg:py-16 py-6 bg-gradient-to-r from-blue-500 to-blue-200 rounded-md shadow"
+    >
+      <div className="max-w-6xl mx-auto bg-gradient-to-r from-blue-400 to-blue-200 lg:p-12 p-4 rounded-lg">
         <Carousel {...settings}>
           {slides.map((slide, idx) => (
             <div
               key={idx}
               className="relative flex flex-col-reverse lg:flex-row items-center lg:gap-10 gap-6"
             >
-              <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-10 gap-4 items-center justify-between">
+              <motion.div
+                className="grid lg:grid-cols-12 grid-cols-1 lg:gap-10 gap-4 items-center justify-between"
+                variants={itemVariants}
+              >
+                {/* Test Messages -> Left */}
                 <div className="lg:col-span-6 col-span-12 bg-gradient-to-r from-blue-500 to-blue-200 lg:p-12 p-6 rounded-lg shadow-xl">
                   {/* Text */}
-                  <motion.div
-                    className="flex-1 text-center lg:text-left text-base-content"
-                    variants={itemVariants}
-                  >
+                  <div className="flex-1 text-center lg:text-left text-base-content">
                     <h2 className="lg:text-3xl text-xl md:text-4xl font-extrabold mb-2">
                       {slide.title}
                     </h2>
@@ -105,27 +111,23 @@ const HeroSection = () => {
                         ))}
                       </div>
                     )}
-                  </motion.div>
-                </div>
-                <div
-                  className="lg:col-span-6 col-span-12 rounded-lg shadow-xl"
-                  variants={itemVariants}
-                >
-                  {/* Image */}
-                  <div className="flex-1" variants={itemVariants}>
-                    <img
-                      src={slide.image}
-                      alt={slide.title}
-                      className="w-ful object-contain rounded-lg mx-auto"
-                    />
                   </div>
                 </div>
-              </div>
+
+                {/* Image -> Right */}
+                <div className="lg:col-span-6 col-span-12 rounded-lg shadow-xl">
+                  <img
+                    src={slide?.image}
+                    alt={slide.title}
+                    className="w-ful object-contain rounded-lg mx-auto"
+                  />
+                </div>
+              </motion.div>
             </div>
           ))}
         </Carousel>
-      </motion.div>
-    </section>
+      </div>
+    </motion.section>
   );
 };
 
