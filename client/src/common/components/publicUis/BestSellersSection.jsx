@@ -7,11 +7,15 @@ import API_PATHS from "../../../superAdmin/services/apiPaths/apiPaths";
 import { Link } from "react-router-dom";
 import NoDataFound from "../ui/NoDataFound";
 import { motion } from "framer-motion";
+import textShortener from "../../../utils/textShortener";
 import { useApiQuery } from "../../../superAdmin/services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../utils/hooks/useFetchedDataStatusHandler";
+import { useState } from "react";
 
 const BestSellersSection = () => {
+  const [isExtended, setIsExtended] = useState(false);
   const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+  const bestSellerIds = [];
 
   const {
     data: bestSellers = [],
@@ -27,6 +31,13 @@ const BestSellersSection = () => {
       refetchOnReconnect: true,
     },
   });
+
+  // Pushing IDS into an empty array -> ids
+  for (const data of bestSellers) {
+    bestSellerIds.push(data.productId);
+  }
+
+  console.log("Best seller Ids", bestSellerIds);
 
   /*** Data fetch status handlers */
   const bestSellersDataStatus = useFetchedDataStatusHandler({
@@ -66,45 +77,56 @@ const BestSellersSection = () => {
             viewport={{ once: false }}
             variants={containerVariants}
           >
-            {bestSellers?.map((product) => (
-              <Link
-                to={`/product-details/${product.productId}`}
-                key={product.productId}
-              >
-                <motion.div
+            {bestSellers.length > 0 ? (
+              bestSellers?.map((product) => (
+                <Link
+                  to={`/product-details/${product.productId}`}
                   key={product.productId}
-                  className="bg-base-100 rounded-2xl shadow hover:shadow-lg transition-all"
-                  variants={itemVariants}
                 >
-                  {product?.image ? (
-                    <motion.img
-                      src={product?.image ? product.image : product.images[0]}
-                      alt={product?.name}
-                      className="h-36 object-contain w-full"
-                      variants={itemVariants}
-                    />
-                  ) : (
-                    product.images[0] && (
+                  <motion.div
+                    key={product.productId}
+                    className="bg-base-100 rounded-2xl shadow hover:shadow-lg transition-all"
+                    variants={itemVariants}
+                  >
+                    {product?.image ? (
                       <motion.img
-                        src={`${apiURL}${
-                          product.images[0].startsWith("/") ? "" : "/"
-                        }${product.images[0]}`}
-                        alt={product.name || ""}
+                        src={product?.image ? product.image : product.images[0]}
+                        alt={product?.name}
                         className="h-36 object-contain w-full"
                         variants={itemVariants}
                       />
-                    )
-                  )}
-                  <motion.div className="p-4" variants={itemVariants}>
-                    <h3 className="text-xl font-semibold mb-2">
-                      {product.name}
-                    </h3>
-                    <p>{product.description}</p>
-                    <p className="text-primary font-bold">$ {product.price}</p>
+                    ) : (
+                      product.images[0] && (
+                        <motion.img
+                          src={`${apiURL}${
+                            product.images[0].startsWith("/") ? "" : "/"
+                          }${product.images[0]}`}
+                          alt={product.name || ""}
+                          className="h-36 object-contain w-full"
+                          variants={itemVariants}
+                        />
+                      )
+                    )}
+                    <motion.div className="p-4" variants={itemVariants}>
+                      <h3 className="text-xl font-semibold mb-2">
+                        {product.name}
+                      </h3>
+
+                      <p className="text-justify">
+                        {isExtended
+                          ? product?.description
+                          : textShortener(product?.description, 60)}
+                      </p>
+                      <p className="text-primary font-bold">
+                        $ {product.price}
+                      </p>
+                    </motion.div>
                   </motion.div>
-                </motion.div>
-              </Link>
-            ))}
+                </Link>
+              ))
+            ) : (
+              <NoDataFound label={"Best sellers data"} />
+            )}
           </motion.div>
         )}
       </motion.div>

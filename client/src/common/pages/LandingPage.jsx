@@ -9,6 +9,8 @@ import PageMeta from "../components/ui/PageMeta";
 import ProductsListSection from "../../client/products/ProductsListSection";
 import PromoSection from "../components/publicUis/PromoSection";
 import RandomProductsSection from "../../client/products/RandomProductsSection";
+import ScrollProgressBar from "../components/scrollProgressBar/ScrollProgressBar";
+import ScrollTopButton from "../components/scrollTopButton/ScrollTopButton";
 import ShopByCategoriesSection from "../components/publicUis/ShopByCategoriesSection";
 import TestimonialFormSection from "../components/publicUis/TestimonialFormSection";
 import TestimonialsSection from "../components/publicUis/TestimonialsSection";
@@ -83,6 +85,12 @@ const LandingPage = () => {
           {!isFormOpen ? "Share Your Experience" : "Close Form"}
         </Button>
       </motion.div>
+
+      {/* Scroll to top button */}
+      <ScrollTopButton />
+
+      {/* Scroll progress bar */}
+      <ScrollProgressBar />
     </div>
   );
 };

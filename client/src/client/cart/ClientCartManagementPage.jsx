@@ -32,8 +32,6 @@ const ClientCartManagementPage = () => {
 
   const CART_LIMIT = 10;
   const WISH_LIST_LIMIT = 10;
-  console.log("Added to cart", addedToCart);
-  console.log("Wish list", wishList);
 
   /** ------> View product details in modal ------> */
   const handleModalToggleView = (productId) => {
@@ -372,22 +370,22 @@ const ClientCartManagementPage = () => {
           {/* -----> ALL PRODUCTS DISPLAYED -----> */}
           <div className="">
             <div className="flex justify-between items-center border border-base-content/20 rounded-t-lg w-full lg:p-4 p-2 bg-base-200">
-              <div className="">
-                <h2 className="lg:text-2xl text-lg font-bold hidden lg:visible">
-                  {wishList && <span>Welcome to - &nbsp;</span>}
+              <div className="hidden lg:block">
+                <h2 className="lg:text-2xl text-lg font-bold ">
+                  {wishList && <span>🛒 Welcome to - &nbsp;</span>}
                   Nova-Cart
                 </h2>
               </div>
-              <div className="flex items-center space-x-4">
-                <span>
+              <div className="flex items-center lg:justify-end justify-center lg:space-x-4 space-x-16">
+                <div>
                   <Link to="/client-product-wishlist">
                     <Button variant="global" className="lg:text-xl font-bold">
                       <ListCheck size={20} />
                       Wish List
                     </Button>
                   </Link>
-                </span>
-                <span>
+                </div>
+                <div>
                   <Button
                     onClick={handleGenerateCouponCode}
                     variant="indigo"
@@ -396,105 +394,107 @@ const ClientCartManagementPage = () => {
                     <ShoppingCart size={20} />
                     Checkout
                   </Button>
-                </span>
+                </div>
               </div>
             </div>
 
-            {/*Added product limit to cart pop-up*/}
-            {addedToCart.length > 0 && (
-              <div className="rounded-xl lg:mb-10 mb-4 shadow hover:shadow-md lg:p-4 p-2">
-                <div className="space-y-4">
-                  <div className="text-base-content">
-                    <h2 className="lg:text-2xl text-xl font-bold text-center">
-                      🛒 Products Added to Cart Calculation Panel ➡️
-                      <span className="w-10 h-10 rounded-full bg-white text-red-500">
-                        {addedToCart.length}
-                      </span>{" "}
-                    </h2>
-                  </div>
-                  {addedToCart.length >= CART_LIMIT && (
-                    <p className="text-xl text-red-600 text-center">
-                      You have reached the limit of 10 products!!!
-                    </p>
-                  )}
-                  <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-6 gap-4 justify-between bg-base-100 rounded-2xl">
-                    {addedToCart?.map((c, idx) => (
-                      <div className="lg:col-span-3 col-span-6" key={c._id}>
-                        <div className="flex items-center flex-wrap p-2 border border-base-content/15 rounded-lg shadow space-y-2 min-h-20 space-x-2">
-                          <div className="">
-                            {c?.image && (
-                              <img
-                                src={`${apiURL}${c?.image}`}
-                                alt={c?.brand}
-                                className="w-14 h-14 object-cover"
-                              />
-                            )}
-                          </div>
-                          <div className="">
-                            <h2 className="font-bold text-sm">
-                              {idx + 1} {") "}
-                              {c?.brand}
-                              {<br />}
-                              ➡️
-                              {c?.name}
-                            </h2>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/*Added product limit to cart pop-up*/}
-            {addedToWishList?.length > 0 && (
-              <div className="rounded-xl lg:mb-10 mb-4 shadow hover:shadow-md lg:p-4 p-2">
-                <div className="space-y-4">
-                  <div className="text-base-content">
-                    <h2 className="lg:text-2xl text-xl font-bold text-center">
-                      🛒 Products Added to Wish List Calculation Panel ➡️
-                      <span className="w-10 h-10 rounded-full bg-white text-red-500">
-                        {addedToWishList?.length}
-                      </span>{" "}
-                    </h2>
-                  </div>
-                  {addedToWishList.length >= WISH_LIST_LIMIT && (
-                    <p className="text-xl text-red-600 text-center">
-                      You have reached the limit of 10 products!!!
-                    </p>
-                  )}
-                  <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-6 gap-4 justify-between bg-base-100 rounded-2xl">
-                    {addedToWishList?.map((c, idx) => (
-                      <div className="lg:col-span-3 col-span-6" key={c._id}>
-                        <div className="flex items-center flex-wrap p-2 border border-base-content/15 rounded-lg shadow space-y-2 min-h-20 space-x-2">
-                          <div className="">
-                            {c?.image && (
-                              <img
-                                src={`${apiURL}${c?.image}`}
-                                alt={c?.brand}
-                                className="w-14 h-14 object-cover"
-                              />
-                            )}
-                          </div>
-                          <div className="">
-                            <h2 className="font-bold text-sm">
-                              {idx + 1} {") "}
-                              {c?.brand}
-                              {<br />}
-                              ➡️
-                              {c?.name}
-                            </h2>
+            <div className="lg:space-y-6 space-y-4 lg:py-8 py-4">
+              {/*Added product limit to cart pop-up*/}
+              {addedToCart.length > 0 && (
+                <div className="rounded-xl shadow hover:shadow-md lg:p-4 p-2">
+                  <div className="space-y-4">
+                    <div className="text-base-content">
+                      <h2 className="lg:text-2xl text-xl font-bold text-center">
+                        🛒 Products Added to Cart Calculation Panel ➡️
+                        <span className="w-10 h-10 rounded-full bg-white text-red-500">
+                          {addedToCart.length}
+                        </span>{" "}
+                      </h2>
+                    </div>
+                    {addedToCart.length >= CART_LIMIT && (
+                      <p className="text-xl text-red-600 text-center">
+                        You have reached the limit of 10 products!!!
+                      </p>
+                    )}
+                    <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-4 gap-2 justify-between bg-base-100 rounded-2xl lg:p-4 p-2">
+                      {addedToCart?.map((c, idx) => (
+                        <div className="lg:col-span-3 col-span-6" key={c._id}>
+                          <div className="flex items-center flex-wrap p-2 border border-base-content/15 rounded-lg shadow space-y-2 min-h-20 space-x-2">
+                            <div className="">
+                              {c?.image && (
+                                <img
+                                  src={`${apiURL}${c?.image}`}
+                                  alt={c?.brand}
+                                  className="w-12 h-12 object-cover"
+                                />
+                              )}
+                            </div>
+                            <div className="">
+                              <h2 className="font-bold text-sm">
+                                {idx + 1} {") "}
+                                {c?.brand}
+                                {<br />}
+                                ➡️
+                                {c?.name}
+                              </h2>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            <div className="lg:space-y-4 space-y-2 pt-6">
+              {/*Added product limit to wish list pop-up*/}
+              {addedToWishList?.length > 0 && (
+                <div className="rounded-xl shadow hover:shadow-md lg:p-4 p-2">
+                  <div className="space-y-4">
+                    <div className="text-base-content">
+                      <h2 className="lg:text-2xl text-xl font-bold text-center">
+                        🛒 Products Added to Wish List Calculation Panel ➡️
+                        <span className="w-10 h-10 rounded-full bg-white text-red-500">
+                          {addedToWishList?.length}
+                        </span>{" "}
+                      </h2>
+                    </div>
+                    {addedToWishList.length >= WISH_LIST_LIMIT && (
+                      <p className="text-xl text-red-600 text-center">
+                        You have reached the limit of 10 products!!!
+                      </p>
+                    )}
+                    <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-4 gap-2 justify-between bg-base-100 rounded-2xl lg:p-4 p-2">
+                      {addedToWishList?.map((c, idx) => (
+                        <div className="lg:col-span-3 col-span-6" key={c._id}>
+                          <div className="flex items-center flex-wrap p-2 border border-base-content/15 rounded-lg shadow space-y-2 min-h-20 space-x-2">
+                            <div className="">
+                              {c?.image && (
+                                <img
+                                  src={`${apiURL}${c?.image}`}
+                                  alt={c?.brand}
+                                  className="w-12 h-12 object-cover"
+                                />
+                              )}
+                            </div>
+                            <div className="">
+                              <h2 className="font-bold text-sm">
+                                {idx + 1} {") "}
+                                {c?.brand}
+                                {<br />}
+                                ➡️
+                                {c?.name}
+                              </h2>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="lg:space-y-4 space-y-2 lg:pt-6">
               {productsDataStatus.status !== "success" ? (
                 productsDataStatus.content
               ) : (

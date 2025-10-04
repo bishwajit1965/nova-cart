@@ -10,6 +10,7 @@ import API_PATHS from "../../../superAdmin/services/apiPaths/apiPaths";
 import Button from "../ui/Button";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { Link } from "react-router-dom";
+import NoDataFound from "../ui/NoDataFound";
 import { motion } from "framer-motion";
 import { useApiQuery } from "../../../superAdmin/services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../utils/hooks/useFetchedDataStatusHandler";
@@ -56,43 +57,47 @@ const ShopByCategoriesSection = () => {
         <h2 className="lg:text-3xl text-xl font-extrabold lg:mb-8 mb-4">
           Shop by Category
         </h2>
-
-        <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6"
-          variants={itemVariants}
-        >
-          {categoryDataStatus.status !== "success"
-            ? categoryDataStatus.content
-            : categoriesData.slice(0, visibleCount).map((category, idx) => (
-                <Link
-                  to={`product-categories?category=${category.slug}`}
-                  key={idx}
-                >
-                  <motion.div
+        <motion.div className="" variants={itemVariants}>
+          {categoryDataStatus.status !== "success" ? (
+            categoryDataStatus.content
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:gap-6 gap-4">
+              {categoriesData.length > 0 ? (
+                categoriesData.slice(0, visibleCount).map((category, idx) => (
+                  <Link
+                    to={`product-categories?category=${category.slug}`}
                     key={idx}
-                    className="rounded-2xl overflow-hidden shadow hover:shadow-lg transition-all cursor-pointer"
-                    variants={itemVariants}
                   >
-                    <LazyLoadImage
-                      src={category.featuredImage}
-                      alt={category.name}
-                      effect="blur"
-                      threshold={100}
-                      delayTime={300}
-                      wrapperProps={{
-                        // If you need to, you can tweak the effect transition using the wrapper style.
-                        style: { transitionDelay: "1s" },
-                      }}
-                    />
+                    <motion.div
+                      key={idx}
+                      className="rounded-2xl overflow-hidden shadow hover:shadow-lg transition-all cursor-pointer"
+                      variants={itemVariants}
+                    >
+                      <LazyLoadImage
+                        src={category.featuredImage}
+                        alt={category.name}
+                        effect="blur"
+                        threshold={100}
+                        delayTime={300}
+                        wrapperProps={{
+                          // If you need to, you can tweak the effect transition using the wrapper style.
+                          style: { transitionDelay: "1s" },
+                        }}
+                      />
 
-                    <div className="p-4 bg-base-100">
-                      <h3 className="text-lg font-medium">{category.name}</h3>
-                    </div>
-                  </motion.div>
-                </Link>
-              ))}
+                      <div className="p-4 bg-base-100">
+                        <h3 className="text-lg font-medium">{category.name}</h3>
+                      </div>
+                    </motion.div>
+                  </Link>
+                ))
+              ) : (
+                <NoDataFound label="Categories" />
+              )}
+            </div>
+          )}
         </motion.div>
-        {visibleCount < categoriesData.length && (
+        {visibleCount < categoriesData?.length && (
           <motion.div
             className="lg:mt-8 mt-4 text-center"
             variants={itemVariants}

@@ -13,6 +13,7 @@ import ClientCartManagementPage from "../../client/cart/ClientCartManagementPage
 import ClientOrderDetailsPage from "../../client/cart/ClientOrderDetailsPage";
 import ClientOrdersPage from "../../client/cart/ClientOrdersPage";
 import ClientProfilePage from "../../client/profile/pages/ClientProfilePage";
+import ComingSoonPage from "../../common/pages/ComingSoonPage";
 import ContactPage from "../../common/pages/ContactPage";
 import ContentManagement from "../../superAdmin/pages/ContentManagement";
 import ForgotPassword from "../../common/pages/ForgotPassword";
@@ -142,6 +143,22 @@ const router = createBrowserRouter([
       {
         path: "/my-portfolio",
         element: <Portfolio />,
+      },
+      {
+        path: "/faq",
+        element: <ComingSoonPage />,
+      },
+      {
+        path: "/shipping-returns",
+        element: <ComingSoonPage />,
+      },
+      {
+        path: "/privacy",
+        element: <ComingSoonPage />,
+      },
+      {
+        path: "/terms",
+        element: <ComingSoonPage />,
       },
       {
         path: "/unauthorized",
