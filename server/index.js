@@ -10,12 +10,14 @@ import categoryRoutes from "./routes/categoryRoutes.js";
 import clientAddressRoutes from "./routes/client/clientAddressRoutes.js";
 import clientCartRoutes from "./routes/client/clientCartRoutes.js";
 import clientCategoryRoutes from "./routes/client/clientCategoryRoutes.js";
+import clientCheckoutRoutes from "./routes/client/clientCheckoutRoutes.js";
 import clientContactRoutes from "./routes/client/clientContactRoutes.js";
 import clientCouponRoutes from "./routes/client/clientCouponRoutes.js";
 import clientNewsletterRoutes from "./routes/client/clientNewsletterRoutes.js";
 import clientOrderRoutes from "./routes/client/clientOrderRoutes.js";
 import clientProductRoutes from "./routes/client/client.product.routes.js";
 import clientProfileRoutes from "./routes/client/clientProfileRoutes.js";
+import clientStripeRoutes from "./routes/client/clientStripeRoutes.js";
 import clientSubCategoryRoutes from "./routes/client/clientSubCategoryRoutes.js";
 import clientTestimonialRoutes from "./routes/client/clientTestimonialRoutes.js";
 import clientWishListRoutes from "./routes/client/clientWishListRoutes.js";
@@ -98,6 +100,8 @@ app.use("/api/client/newsletter/subscribe", clientNewsletterRoutes);
 app.use("/api/client/testimonials", clientTestimonialRoutes);
 app.use("/api/client/contacts", clientContactRoutes);
 app.use("/api/client/coupons", clientCouponRoutes);
+app.use("/api/client/checkout", clientCheckoutRoutes);
+app.use("/api/client/stripe", clientStripeRoutes);
 
 app.get("/", (req, res) => {
   res.send("Listening from Nova-cart!");

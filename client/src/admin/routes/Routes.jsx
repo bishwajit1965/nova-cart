@@ -16,6 +16,7 @@ import ClientProfilePage from "../../client/profile/pages/ClientProfilePage";
 import ComingSoonPage from "../../common/pages/ComingSoonPage";
 import ContactPage from "../../common/pages/ContactPage";
 import ContentManagement from "../../superAdmin/pages/ContentManagement";
+import FaqPage from "../../common/pages/FAQPage";
 import ForgotPassword from "../../common/pages/ForgotPassword";
 import LandingPage from "../../common/pages/LandingPage";
 import Login from "../../common/pages/Login";
@@ -24,6 +25,7 @@ import NotFound from "../../common/pages/NotFound";
 import OrderConfirmationPage from "../../client/cart/OrderConfirmationPage";
 import PermissionManagement from "../../superAdmin/pages/PermissionManagement";
 import Portfolio from "../../client/portfolio/Portfolio";
+import PrivacyPolicyPage from "../../common/pages/PrivacyPolicyPage";
 import ProductDetails from "../../client/products/ProductDetails";
 import ProductOversight from "../../superAdmin/pages/ProductOversight";
 import Profile from "../../users/pages/Profile";
@@ -34,6 +36,7 @@ import ResetPassword from "../../common/pages/ResetPassword";
 import RoleManagement from "../../superAdmin/pages/RoleManagement";
 import RootLayout from "../../common/layouts/RootLayout";
 import SecurityAuditLogManagement from "../../superAdmin/pages/SecurityAuditLogManagement";
+import ShippingReturnsPage from "../../common/pages/ShippingReturnsPage";
 import SuperAdminDashboard from "../../superAdmin/pages/SuperAdminDashboard";
 import SuperAdminLayout from "../../common/layouts/SuperAdminLayout";
 import SuperAdminOrderDetailsPage from "../../superAdmin/pages/SuperAdminOrderDetailsPage";
@@ -43,6 +46,7 @@ import SuperAdminSubcategoryManagement from "../../superAdmin/pages/SuperAdminSu
 import SuperAdminUsersManagementPage from "../../superAdmin/pages/SuperAdminUsersManagementPage";
 import SystemSettingsManagement from "../../superAdmin/pages/SystemSettingsManagement";
 import Terms from "../../common/pages/Terms";
+import TermsConditionsPage from "../../common/pages/TermsConditionsPage";
 import Unauthorized from "../../common/pages/UnauthorizedPage";
 import UserDashboard from "../../users/pages/UserDashboard";
 import UserLayout from "../../common/layouts/UserLayout";
@@ -145,20 +149,20 @@ const router = createBrowserRouter([
         element: <Portfolio />,
       },
       {
-        path: "/faq",
-        element: <ComingSoonPage />,
+        path: "/frequently-asked-questions",
+        element: <FaqPage />,
       },
       {
-        path: "/shipping-returns",
-        element: <ComingSoonPage />,
+        path: "/shipping-and-returns",
+        element: <ShippingReturnsPage />,
       },
       {
-        path: "/privacy",
-        element: <ComingSoonPage />,
+        path: "/privacy-policy",
+        element: <PrivacyPolicyPage />,
       },
       {
-        path: "/terms",
-        element: <ComingSoonPage />,
+        path: "/terms-and-conditions",
+        element: <TermsConditionsPage />,
       },
       {
         path: "/unauthorized",

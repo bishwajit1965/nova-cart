@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import API_PATHS from "../../superAdmin/services/apiPaths/apiPaths";
 import CheckOutItemList from "./components/CheckOutItemList";
 import CheckOutSummaryPanel from "./components/CheckOutSummaryPanel";
+import ClientStripePaymentForm from "../checkout/ClientStripePaymentForm";
 import DynamicPageTitle from "../../common/utils/pageTitle/DynamicPageTitle";
 import { FaAddressCard } from "react-icons/fa";
 import toast from "react-hot-toast";
@@ -92,7 +93,7 @@ const CheckOutPage = () => {
     queryKey: [API_PATHS.CLIENT_ORDERS.CLIENT_KEY, userId],
     enabled: !!userId,
   });
-
+  const latestOrder = savedOrdersData?.[0];
   /** --------> Fetch addresses --------> */
   const {
     data: addressData,
@@ -182,6 +183,7 @@ const CheckOutPage = () => {
   /*** ------> Confirms order submission ------> */
   const handleOrderConfirmation = (e) => {
     e?.preventDefault();
+
     if (!selectedAddress && !formData) {
       toast.error(
         "Please select a saved address or fill in the shipping form!"
@@ -296,7 +298,6 @@ const CheckOutPage = () => {
                     name="fullName"
                     placeholder="Full Name"
                     value={formData.fullName}
-                    handleInputChange
                     onChange={handleInputChange}
                     className="input input-bordered w-full"
                     required
@@ -391,7 +392,7 @@ const CheckOutPage = () => {
                   {addresses.length > 0 && (
                     <button
                       type="button"
-                      className="btn btn-outline mt-2 ml-"
+                      className="btn btn-outline mt-2"
                       onClick={() => setIsNewAddressForm(false)}
                     >
                       <ArrowLeftCircleIcon /> Back to Saved Addresses
@@ -410,7 +411,7 @@ const CheckOutPage = () => {
                       <input
                         type="radio"
                         name="shippingAddress"
-                        checked={selectedAddress._id === addr._id}
+                        checked={selectedAddress?._id === addr._id}
                         onChange={() => setSelectedAddress(addr)}
                       />
                       <div>
@@ -462,19 +463,33 @@ const CheckOutPage = () => {
           </div>
 
           {/*------> Right Panel: Checkout Summary------> */}
-          <div className="lg:col-span-3 col-span-12">
-            <CheckOutSummaryPanel
-              items={cartItems}
-              handleOrderConfirmation={handleOrderConfirmation}
-              couponCode={couponCode}
-              setCouponCode={setCouponCode}
-              applyCouponHandler={applyCouponHandler}
-              isApplyingCoupon={isApplyingCoupon}
-              appliedCoupon={appliedCoupon}
-              discountAmount={discountAmount}
-              orders={savedOrdersData}
-              coupons={coupons}
-            />
+          <div className="lg:col-span-3 col-span-12 space-y-6">
+            {/* Checkout summary panel */}
+            <div className="rounded-lg">
+              <CheckOutSummaryPanel
+                items={cartItems}
+                handleOrderConfirmation={handleOrderConfirmation}
+                couponCode={couponCode}
+                setCouponCode={setCouponCode}
+                applyCouponHandler={applyCouponHandler}
+                isApplyingCoupon={isApplyingCoupon}
+                appliedCoupon={appliedCoupon}
+                discountAmount={discountAmount}
+                orders={savedOrdersData}
+                coupons={coupons}
+              />
+            </div>
+
+            {/* Payment section */}
+            {/* <div className="shadow hover:shadow-lg rounded-lg">
+              <h2 className="lg:text-xl text-xl mt-6 mb-2 font-bold">
+                Payment with Stripe
+              </h2>
+              <ClientStripePaymentForm
+                orderId={latestOrder?._id}
+                amount={latestOrder?.totalAmount}
+              />
+            </div> */}
           </div>
         </div>
       )}

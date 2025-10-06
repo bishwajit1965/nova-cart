@@ -7,8 +7,8 @@ export const quickLinks = [
 ];
 
 export const supportLinks = [
-  { label: "FAQs", href: "/faq" },
-  { label: "Shipping & Returns", href: "/shipping-returns" },
-  { label: "Privacy Policy", href: "/privacy" },
-  { label: "Terms of Service", href: "/terms" },
+  { label: "FAQs", href: "/frequently-asked-questions" },
+  { label: "Shipping & Returns", href: "/shipping-and-returns" },
+  { label: "Privacy Policy", href: "/privacy-policy" },
+  { label: "Terms of Service", href: "/terms-and-conditions" },
 ];

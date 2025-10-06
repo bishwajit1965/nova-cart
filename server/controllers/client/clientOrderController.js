@@ -91,10 +91,18 @@ export const createOrder = async (req, res) => {
           .status(400)
           .json({ message: "Coupon is not valid at this time." });
 
-      if (couponDoc.usedBy.includes(req.user._id))
+      // if (couponDoc.usedBy.includes(req.user._id))
+      //   return res
+      //     .status(400)
+      //     .json( { message: "You have already used this coupon." } );
+      if (
+        couponDoc.usedBy.length > 0 &&
+        String(couponDoc.usedBy[0]) !== String(req.user._id)
+      ) {
         return res
           .status(400)
-          .json({ message: "You have already used this coupon." });
+          .json({ message: "This coupon does not belong to you." });
+      }
 
       // Calculate discount
       discountAmount =

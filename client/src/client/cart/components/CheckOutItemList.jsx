@@ -7,9 +7,9 @@ const CheckOutItemList = ({ items }) => {
   const pageTitle = "Verify Checkout Items";
   return (
     <div className="lg:space-y-2 space-y-2">
-      <div className="lg:p-4 bg-base-200 rounded-t-lg">
+      <div className="lg:p-4 bg-base-200 rounded-t-lg border border-base-content/15">
         <h2 className="lg:text-2xl text-xl font-bold flex items-center space-x-2">
-          <LucideIcon.CheckCircle2Icon size={25} className="w- h-" />
+          <LucideIcon.CircleCheckBig size={25} className="w- h-" />
           <span>{pageTitle}</span>
         </h2>
       </div>

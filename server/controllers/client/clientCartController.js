@@ -72,56 +72,6 @@ export const addToCart = async (req, res) => {
   }
 };
 
-// Add product to cart
-// export const addToCart = async (req, res) => {
-//   try {
-//     const { productId, quantity } = req.body;
-
-//     if (!productId || !quantity) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Product ID and quantity are required",
-//       });
-//     }
-
-//     let cart = await Cart.findOne({ user: req.user._id });
-
-//     if (!cart) {
-//       // Create new cart
-//       cart = await Cart.create({
-//         user: req.user._id,
-//         items: [{ product: productId, quantity }],
-//       });
-//     } else {
-//       // Update existing cart
-//       const itemIndex = cart.items.findIndex(
-//         (item) => item.product.toString() === productId
-//       );
-
-//       if (itemIndex > -1) {
-//         cart.items[itemIndex].quantity += quantity; // increase quantity
-//       } else {
-//         cart.items.push({ product: productId, quantity });
-//       }
-//       await cart.save();
-//     }
-
-//     const populatedCart = await cart.populate("items.product");
-//     res.status(201).json({
-//       success: true,
-//       message: "Product added to cart successfully!",
-//       data: populatedCart,
-//     });
-//   } catch (error) {
-//     console.error("Error in adding to cart", error);
-//     res.status(500).json({
-//       success: false,
-//       message: "Internal server error",
-//       error: error.message,
-//     });
-//   }
-// };
-
 export const getAllCarts = async (req, res) => {
   try {
     const cartsData = await Cart.find({}).populate({

@@ -2,7 +2,6 @@ import { ListOrdered, ShoppingCart } from "lucide-react";
 
 import Button from "../../../common/components/ui/Button";
 import { Link } from "react-router-dom";
-import { useMemo } from "react";
 
 const CartSummaryPanel = ({ cart, handleGenerateCouponCode }) => {
   console.log("Cart summary", cart);

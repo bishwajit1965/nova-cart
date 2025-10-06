@@ -113,6 +113,10 @@ const API_PATHS = {
     CLIENT_ADDRESS_ENDPOINT: "client/address",
     CLIENT_ADDRESS_KEY: ["address"],
   },
+  CLIENT_CHECKOUT: {
+    CLIENT_CHECKOUT_ENDPOINT: "client/checkout",
+    CLIENT_CHECKOUT_KEY: ["checkout"],
+  },
   CLIENT_CONTACT: {
     CLIENT_CONTACT_ENDPOINT: "client/contacts",
     CLIENT_CONTACT_KEY: ["contacts"],
@@ -155,6 +159,10 @@ const API_PATHS = {
   CLIENT_ORDERS: {
     CLIENT_ORDERS_ENDPOINT: "client/orders",
     CLIENT_KEY: ["orders"],
+  },
+  CLIENT_STRIPE: {
+    CLIENT_STRIPE_ENDPOINT: "client/stripe",
+    CLIENT_STRIPE_KEY: ["stripe"],
   },
   CLIENT_TESTIMONIAL: {
     CLIENT_TESTIMONIAL_ENDPOINT: "client/testimonials",
