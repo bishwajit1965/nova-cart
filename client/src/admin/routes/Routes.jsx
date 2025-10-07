@@ -38,9 +38,11 @@ import RootLayout from "../../common/layouts/RootLayout";
 import SecurityAuditLogManagement from "../../superAdmin/pages/SecurityAuditLogManagement";
 import ShippingReturnsPage from "../../common/pages/ShippingReturnsPage";
 import SuperAdminDashboard from "../../superAdmin/pages/SuperAdminDashboard";
+import SuperAdminFeatureManagementPage from "../../superAdmin/pages/SuperAdminFeatureManagementPage";
 import SuperAdminLayout from "../../common/layouts/SuperAdminLayout";
 import SuperAdminOrderDetailsPage from "../../superAdmin/pages/SuperAdminOrderDetailsPage";
 import SuperAdminOrdersOverviewManagement from "../../superAdmin/pages/SuperAdminOrdersOverviewManagement";
+import SuperAdminPlanManagementPage from "../../superAdmin/pages/SuperAdminPlanManagementPage";
 import SuperAdminProductManagementPage from "../../superAdmin/pages/SuperAdminProductManagementPage";
 import SuperAdminSubcategoryManagement from "../../superAdmin/pages/SuperAdminSubcategoryManagement";
 import SuperAdminUsersManagementPage from "../../superAdmin/pages/SuperAdminUsersManagementPage";
@@ -298,6 +300,22 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute allowedRoles={["super-admin", "admin"]}>
             <SuperAdminProductManagementPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "feature-management",
+        element: (
+          <ProtectedRoute allowedRoles={["super-admin", "admin"]}>
+            <SuperAdminFeatureManagementPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "plan-management",
+        element: (
+          <ProtectedRoute allowedRoles={["super-admin", "admin"]}>
+            <SuperAdminPlanManagementPage />
           </ProtectedRoute>
         ),
       },

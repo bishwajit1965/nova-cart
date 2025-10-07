@@ -244,7 +244,7 @@ const WishListItemPage = () => {
                   {wishListData?.items?.map((item) => (
                     <div
                       key={item.product._id}
-                      className="lg:col-span-4 col-span-12 border border-base-content/15 rounded-xl shadow-md bg-base-100"
+                      className="lg:col-span-3 col-span-12 border border-base-content/15 rounded-xl shadow-md bg-base-100 hover:shadow-xl"
                     >
                       <div className=" mb-4">
                         <img
@@ -254,7 +254,7 @@ const WishListItemPage = () => {
                         />
                       </div>
                       <div className="lg:max-h-48 max-h-48 lg:p-4 p-2 overflow-y-auto lg:space-y-2">
-                        <h3 className="lg:text-xl text-lg font-extrabold">
+                        <h3 className="lg:text-xl text-lg font-bold">
                           {item.product.name} || {item.product.brand}
                         </h3>
                         <p className="mt-1 font-bold">
@@ -284,6 +284,11 @@ const WishListItemPage = () => {
                         >
                           Remove
                         </Button>
+                        <Link to={`/product-details/${item.product._id}`}>
+                          <Button variant="base" className="btn btn-sm">
+                            <LucideIcon.Eye />
+                          </Button>
+                        </Link>
                         <Button
                           className="btn btn-sm"
                           variant="indigo"

@@ -1,6 +1,7 @@
 import { Clock, Clock11Icon, FileCheck2Icon, ShoppingCart } from "lucide-react";
 import { useLoaderData, useNavigate } from "react-router-dom";
 
+import Badge from "../../common/components/ui/Badge";
 import Button from "../../common/components/ui/Button";
 import DynamicPageTitle from "../../common/utils/pageTitle/DynamicPageTitle";
 import { LucideIcon } from "../../common/lib/LucideIcons";
@@ -10,6 +11,7 @@ import usePageTitle from "../../superAdmin/services/hooks/usePageTitle";
 import { useState } from "react";
 
 const ClientOrderDetailsPage = () => {
+  const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
   const [loading, setLoading] = useState(true);
   const loaderData = useLoaderData();
   const order = loaderData?.data?.data;
@@ -86,22 +88,25 @@ const ClientOrderDetailsPage = () => {
         <div className="space-y-4">
           {order?.items?.map((item) => (
             <div
-              key={item._id}
+              key={item?._id}
               className="flex items-center justify-between border-b border-base-content/15 pb-2"
             >
               <img
-                src={item.image}
-                alt={item.name}
+                src={`${apiURL}${item?.image}`}
+                alt={item?.name}
                 className="w-20 object-cover rounded"
               />
               <div>
-                <p>{item.name}</p>
-                <p>Qty: {item.quantity}</p>
-                <p>Price: ${item.price}</p>
+                <p>{item?.name}</p>
+                <p>Qty: {item?.quantity}</p>
+                <p>Price: $ {item?.price}</p>
               </div>
-              <div>${(item.price * item.quantity).toFixed(2)}</div>
+              <div>$ {(item?.price * item?.quantity).toFixed(2)}</div>
             </div>
           ))}
+          <div className="flex justify-end text-xl font-black">
+            Total: $ {order?.totalAmount}
+          </div>
         </div>
 
         {/* ---------> Order Status Timeline ---------> */}
@@ -111,9 +116,9 @@ const ClientOrderDetailsPage = () => {
           </h3>
           <ul className="space-y-1">
             {order?.statusHistory?.map((s, idx) => (
-              <li key={idx}>
+              <li key={idx} className="space-x-2">
                 {new Date(s.date).toLocaleString()} ➡️{" "}
-                <span className="capitalize">
+                <span className="capitalize space-x-4">
                   {s.status === "pending" ? (
                     <span className="bg-yellow-100 px-2 py-1 shadow rounded-md font-semibold text-green-600">
                       {s.status}
@@ -137,6 +142,9 @@ const ClientOrderDetailsPage = () => {
                   ) : (
                     ""
                   )}
+                </span>
+                <span className="px-2 py-1 rounded-md bg-purple-500 text-gray-100">
+                  Total: $ {order?.totalAmount}
                 </span>
               </li>
             ))}

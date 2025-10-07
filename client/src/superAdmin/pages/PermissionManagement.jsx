@@ -87,7 +87,6 @@ const PermissionManagement = () => {
     path: (id) => `${API_PATHS.PERMISSIONS.ENDPOINT}/${id}`,
     key: API_PATHS.PERMISSIONS.KEY,
   });
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validate()) return;

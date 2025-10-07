@@ -505,9 +505,9 @@ const CategoriesPage = () => {
                       <h3 className="font-medium">{p.name}</h3>
                       <p className="text-gray-600">${p.price.toFixed(2)}</p>
                     </div>
-                    <div className="flex justify-between items- bg-base-300 rounded-b-lg p-2 shadow">
+                    <div className="flex justify-between rounded-b-lg p-2 shadow">
                       <Link to={`/product-details/${p._id}`}>
-                        <Button variant="base" className="">
+                        <Button variant="base" className="btn btn-sm">
                           <LucideIcon.EyeIcon size={20} /> View Details
                         </Button>
                       </Link>
@@ -532,7 +532,7 @@ const CategoriesPage = () => {
                               : "indigo"
                           }`}
                           onClick={() => handleAddToCart(p)}
-                          className={` ${
+                          className={`btn btn-sm ${
                             addedToCart.some((item) => item._id === p._id)
                               ? "disabled cursor-not-allowed"
                               : "visible"

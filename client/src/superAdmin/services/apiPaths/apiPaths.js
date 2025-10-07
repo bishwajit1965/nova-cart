@@ -46,6 +46,16 @@ const API_PATHS = {
     KEY: ["roles"],
   },
 
+  /*** -----> SUPER ADMIN PLAN & FEATURE RELATED API PATHS -----> */
+  SUP_ADMIN_PLANS: {
+    SUP_ADMIN_PLANS_ENDPOINT: "superAdmin/plans",
+    SUP_ADMIN_PLANS_KEY: "plans",
+  },
+  SUP_ADMIN_FEATURE: {
+    SUP_ADMIN_FEATURE_ENDPOINT: "superAdmin/features",
+    SUP_ADMIN_FEATURE_KEY: "features",
+  },
+
   /** ----> SUPER ADMIN DASH-BOARD ANALYTICS API PATHS ----> */
   DB_SUMMARY: {
     SUPERADMIN_SUMMARY_ENDPOINT: "superAdmin/summary",

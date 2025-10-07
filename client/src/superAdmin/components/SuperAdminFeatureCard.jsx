@@ -1,0 +1,21 @@
+const SuperAdminFeatureCard = ({ feature, onEdit, onDelete }) => {
+  return (
+    <div className="lg:col-span-3 col-span-12">
+      <div className="lg:p-4 p-2 border border-base-content/15 rounded-lg shadow hover:shadow-md transition">
+        <h2 className="text-lg font-semibold">{feature.title}</h2>
+        <p className="text-sm text-gray-500">Key: {feature.key}</p>
+        <p className="text-sm text-gray-400">{feature.description}</p>
+        <div className="flex gap-2 mt-2">
+          <button className="btn btn-sm btn-secondary" onClick={onEdit}>
+            Edit
+          </button>
+          <button className="btn btn-sm btn-error" onClick={onDelete}>
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SuperAdminFeatureCard;

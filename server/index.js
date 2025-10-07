@@ -35,6 +35,8 @@ import supAdmAnalyticsRoutes from "./routes/superAdmin/supAdmAnalyticsRoutes.js"
 import supAdmProductRoutes from "./routes/supAdmProductRoutes.js";
 import supAdmSummaryRoutes from "./routes/superAdmin/supAdmSummaryRoutes.js";
 import supAdminAuditLogRoutes from "./routes/superAdmin/supAdmAuditLogRoutes.js";
+import supAdminFeatureRoutes from "./routes/superAdmin/supAdminFeatureRoutes.js";
+import supAdminPlanRoutes from "./routes/superAdmin/supAdminPlanRoutes.js";
 import supAdminReportsRoutes from "./routes/superAdmin/supAdmReportsRoutes.js";
 import supAdminUsersRoutes from "./routes/superAdmin/supAdminUsersRoutes.js";
 import superAdminOrderRoutes from "./routes/superAdmin/superAdminOrderRoutes.js";
@@ -80,6 +82,8 @@ app.use("/api/superAdmin/reports", supAdminReportsRoutes);
 app.use("/api/superAdmin/summary", supAdmSummaryRoutes);
 app.use("/api/superAdmin/analytics", supAdmAnalyticsRoutes);
 app.use("/api/superAdmin/users-moderation", supAdminUsersRoutes);
+app.use("/api/superAdmin/features", supAdminFeatureRoutes);
+app.use("/api/superAdmin/plans", supAdminPlanRoutes);
 
 // Admin related mounting routes
 app.use("/api/admin/orders", adminOrderRoutes);

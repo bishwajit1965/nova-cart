@@ -157,7 +157,7 @@ const ProductDetails = () => {
         variants={containerVariants}
       >
         <motion.div
-          className="lg:col-span-6 col-span-2 lg:min-h-96 bg-base-300s rounded-md lg:p-4"
+          className="lg:col-span-6 col-span-2 lg:min-h-80 rounded-lg lg:p-4 border border-base-content/15 shadow"
           variant={itemVariants}
         >
           {productDetail?.image ? (
@@ -168,7 +168,7 @@ const ProductDetails = () => {
                   : productDetail.images[0]
               }
               alt={productDetail?.name}
-              className="lg:h-96 lg:w-[31rem] object-contain cursor-pointer transition-transform duration-300 rounded-xl mx-auto"
+              className="lg:h-80 lg:w-[31rem] object-contain cursor-pointer transition-transform duration-300 rounded-xl mx-auto"
               style={{
                 transform: "scale(1)",
                 transition: "transform 0.3s",
@@ -231,7 +231,7 @@ const ProductDetails = () => {
           </div>
         </motion.div>
         <motion.div
-          className="lg:col-span-6 col-span-2 lg:space-y-4 space-y-2"
+          className="lg:col-span-6 col-span-2 lg:space-y-4 space-y-2 border border-base-content/15 shadow p-4 rounded-lg"
           variant={itemVariants}
         >
           <h2 className="lg:text-2xl text-xl lg:font-extrabold font-bold">
@@ -248,10 +248,13 @@ const ProductDetails = () => {
               {isExpanded ? "Read Less" : "Read More"}
             </button>
           </p>
+          <p className="font-bold">
+            Price: $ {productDetail?.price.toFixed(2)}
+          </p>
 
           {/* Variant wise price display */}
           <p className="text-xl font-bold">
-            Price: $ {selectedVariant?.price.toFixed(2)}
+            Variant Price: $ {selectedVariant?.price.toFixed(2)}
           </p>
           {selectedVariant?.stock && (
             <p

@@ -20,6 +20,7 @@ const generateCoupon = () => {
     expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24h expiry
   };
 };
+
 export const createOrder = async (req, res) => {
   try {
     const { items, shippingAddress, addressId, paymentMethod, couponCode } =

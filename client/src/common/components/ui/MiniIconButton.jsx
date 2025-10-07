@@ -27,6 +27,7 @@ const icons = {
 
 const iconLabels = {
   edit: "Edit",
+  edit2: "Edit2",
   delete: "Delete",
   view: "View",
   add: "Add",
@@ -45,8 +46,8 @@ export function MiniIconButton({
   label = false, // 👈 if true, shows "Edit" text
   size = "xs", // "xs", "sm", "md" (default sm)
 }) {
-  const Icon = loading ? Loader2 : icons[icon] || Pencil;
-  const text = tooltip || iconLabels[icon] || "Action";
+  const Icon = loading ? Loader2 : icons[icon] || Pencil || Edit2;
+  const text = tooltip || iconLabels[icon.toLowerCase()] || "Edit" || "Action";
 
   const baseSize = {
     xs: "px-1 py-1 text-xs h-8",

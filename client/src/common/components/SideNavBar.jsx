@@ -52,6 +52,11 @@ const SideNavBar = ({ role }) => {
         icon: <UserCog2Icon size={size} />,
       },
       {
+        path: "/super-admin/feature-management",
+        label: "Feature Management",
+        icon: <UserCog2Icon size={size} />,
+      },
+      {
         path: "/super-admin/plan-management",
         label: "Plan Management",
         icon: <UserCog2Icon size={size} />,

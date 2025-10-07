@@ -443,7 +443,7 @@ const RoleManagement = () => {
                         {!editingRole && (
                           <td className="flex justify-end space-x-2 text-right py-2">
                             <MiniIconButton
-                              variant="default"
+                              variant="indigo"
                               icon="defaultEdit"
                               onClick={() => handleUserSelect(user)}
                             />
