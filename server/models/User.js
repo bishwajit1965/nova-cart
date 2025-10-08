@@ -38,6 +38,12 @@ const userSchema = new mongoose.Schema(
       enum: ["active", "inactive", "banned", "deleted", "pending"],
       default: "active",
     },
+    plan: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Plan",
+      default: null,
+    },
+
     refreshToken: {
       type: String,
       default: "",

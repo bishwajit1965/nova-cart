@@ -1,9 +1,8 @@
-import { File, Key, Puzzle, User } from "lucide-react";
+import { Loader, Puzzle, Save, X } from "lucide-react";
 
 import API_PATHS from "../services/apiPaths/apiPaths";
 import Button from "../../common/components/ui/Button";
 import ConfirmDialog from "../../common/components/ui/ConfirmDialog";
-import DynamicPageTitle from "../../common/utils/pageTitle/DynamicPageTitle";
 import { Input } from "../../common/components/ui/Input";
 import Modal from "../../common/components/ui/Modal";
 import PageMeta from "../../common/components/ui/PageMeta";
@@ -18,7 +17,6 @@ import { useState } from "react";
 import useValidator from "../../common/hooks/useValidator";
 
 const SuperAdminFeatureManagementPage = () => {
-  const { pageTitle } = usePageTitle();
   const [showModal, setShowModal] = useState(false);
   const [editFeature, setEditFeature] = useState(null);
   const [title, setTitle] = useState("");
@@ -171,10 +169,8 @@ const SuperAdminFeatureManagementPage = () => {
         title="Feature Management || Nova-Cart"
         description="You can manage feature data in detail."
       />
-      <DynamicPageTitle pageTitle={pageTitle} />
 
-      <div className="lg:p-6">
-        <h1 className="text-2xl font-bold mb-4">Feature Management</h1>
+      <div className="">
         <button
           className="btn btn-primary mb-4"
           onClick={() => setShowModal(true)}
@@ -193,7 +189,9 @@ const SuperAdminFeatureManagementPage = () => {
                   setEditFeature(feature);
                   setShowModal(true);
                 }}
-                onDelete={() => setConfirmDelete(feature)}
+                onDelete={() => {
+                  setConfirmDelete(feature);
+                }}
               />
             ))}
           </div>
@@ -209,7 +207,7 @@ const SuperAdminFeatureManagementPage = () => {
               setShowModal(false);
             }}
           >
-            <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+            <div className="fixed inset-0 p-6 bg-black bg-opacity-40 flex justify-center items-center z-50">
               <div className="bg-base-100 p-6 rounded shadow w-96">
                 <h2 className="text-xl font-bold mb-4">
                   {editFeature ? "Edit Feature" : "Add Feature"}
@@ -244,25 +242,39 @@ const SuperAdminFeatureManagementPage = () => {
                       {errors.description}
                     </p>
                   )}
-                  <div className="flex justify-end gap-2">
-                    <button
-                      className="btn btn-secondary"
+                  <div className="flex justify-end items-center gap-2">
+                    <Button
+                      variant="warning"
+                      className=" "
                       onClick={() => {
                         setShowModal(false);
                         setEditFeature(null);
                       }}
                       disabled={loading}
                     >
-                      Cancel
-                    </button>
-                    <Button
-                      type="submit"
-                      className="btn btn-primary"
-                      // onClick={handleSubmit}
-                      disabled={loading}
-                    >
-                      {loading ? "Saving..." : "Save"}
+                      <X size={20} /> Cancel
                     </Button>
+                    <div
+                      className={`${
+                        featureMutation.isPending
+                          ? "cursor-not-allowed opacity-50"
+                          : ""
+                      }`}
+                    >
+                      <Button
+                        variant="indigo"
+                        type="submit"
+                        className=""
+                        disabled={featureMutation.isPending}
+                      >
+                        {featureMutation?.isPending ? (
+                          <Loader size={20} className="animate-spin" />
+                        ) : (
+                          <Save size={20} />
+                        )}
+                        {featureMutation?.isPending ? "Saving..." : "Save"}
+                      </Button>
+                    </div>
                   </div>
                 </form>
               </div>
@@ -275,7 +287,9 @@ const SuperAdminFeatureManagementPage = () => {
           <ConfirmDialog
             isOpen={confirmDelete}
             onClose={() => setConfirmDelete(null)}
-            onConfirm={() => handleDeleteFeature(confirmDelete._id)}
+            onConfirm={() => {
+              handleDeleteFeature(confirmDelete._id);
+            }}
           />
         )}
       </div>

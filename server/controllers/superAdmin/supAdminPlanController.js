@@ -1,5 +1,6 @@
 import Feature from "../../models/Feature.js";
 import Plan from "../../models/Plan.js";
+import { serializePlan } from "../../utils/serializePlan.js";
 
 export const createPlan = async (req, res) => {
   try {
@@ -16,7 +17,7 @@ export const createPlan = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Plan created successfully",
-      data: plan,
+      data: plan.map(serializePlan),
     });
   } catch (error) {
     console.error("Error in creating plan!", error);

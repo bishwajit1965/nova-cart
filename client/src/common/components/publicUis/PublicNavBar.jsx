@@ -24,6 +24,7 @@ const PublicNavBar = () => {
     { path: "/contact-us", label: "Contact" },
     { path: "/about-us", label: "About" },
     { path: "/my-profile", label: "Portfolio" },
+    { path: "/client-plan-subscription", label: "Plan" },
   ];
 
   const handleLogout = async () => {

@@ -12,6 +12,7 @@ import ClientAddressBookPage from "../../client/addressBook/ClientAddressBookPag
 import ClientCartManagementPage from "../../client/cart/ClientCartManagementPage";
 import ClientOrderDetailsPage from "../../client/cart/ClientOrderDetailsPage";
 import ClientOrdersPage from "../../client/cart/ClientOrdersPage";
+import ClientPlanSubscriptionPage from "../../client/subscription/ClientPlanSubscriptionPage";
 import ClientProfilePage from "../../client/profile/pages/ClientProfilePage";
 import ComingSoonPage from "../../common/pages/ComingSoonPage";
 import ContactPage from "../../common/pages/ContactPage";
@@ -167,6 +168,16 @@ const router = createBrowserRouter([
         element: <TermsConditionsPage />,
       },
       {
+        path: "/client-plan-subscription",
+        element: (
+          <ProtectedRoute
+            allowedRoles={["user", "super-admin", "admin", "user"]}
+          >
+            <ClientPlanSubscriptionPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
         path: "/unauthorized",
         element: <Unauthorized />,
       },
@@ -216,7 +227,13 @@ const router = createBrowserRouter([
       },
       {
         path: "profile",
-        element: <Profile />,
+        element: (
+          <ProtectedRoute
+            allowedRoles={["super-admin", "admin", "editor", "user"]}
+          >
+            <Profile />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "user-management",

@@ -14,6 +14,7 @@ const router = express.Router();
 router.use(authenticationMiddleware);
 
 router.get("/", authorizeRole("user"), getMe);
+
 router.patch("/:userId", authorizeRole("user"), updateProfile);
 
 export default router;

@@ -3,9 +3,7 @@ import { Layers, Loader, Save, X } from "lucide-react";
 import API_PATHS from "../services/apiPaths/apiPaths";
 import Button from "../../common/components/ui/Button";
 import ConfirmDialog from "../../common/components/ui/ConfirmDialog";
-import DynamicPageTitle from "../../common/utils/pageTitle/DynamicPageTitle";
 import { Input } from "../../common/components/ui/Input";
-import { LucideIcon } from "../../common/lib/LucideIcons";
 import Modal from "../../common/components/ui/Modal";
 import PageMeta from "../../common/components/ui/PageMeta";
 import SuperAdminPlanCard from "../components/SuperAdminPlanCard";
@@ -15,13 +13,10 @@ import { useApiMutation } from "../services/hooks/useApiMutation";
 import { useApiQuery } from "../services/hooks/useApiQuery";
 import { useEffect } from "react";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
-import usePageTitle from "../services/hooks/usePageTitle";
 import { useState } from "react";
 import useValidator from "../../common/hooks/useValidator";
 
 const SuperAdminPlanManagementPage = () => {
-  const { pageTitle } = usePageTitle();
-
   const [showModal, setShowModal] = useState(false);
   const [editPlan, setEditPlan] = useState(null);
   const [name, setName] = useState("");
@@ -217,10 +212,8 @@ const SuperAdminPlanManagementPage = () => {
         title="Plan Management || Nova-Cart"
         description="You can manage plans data in detail."
       />
-      <DynamicPageTitle pageTitle={pageTitle} />
 
-      <div className="lg:p-6">
-        <h1 className="text-2xl font-bold mb-4">Plans Management</h1>
+      <div className="">
         <button
           className="btn btn-primary mb-4"
           onClick={() => setShowModal(true)}

@@ -182,6 +182,13 @@ const API_PATHS = {
     NEWSLETTER_ENDPOINT: "client/newsletter/subscribe",
     NEWSLETTER_KEY: ["newsletter-subscribe"],
   },
+  CLIENT_USER: {
+    CLIENT_USER_ENDPOINT: "client/plan-subscription",
+    CLIENT_USER_KEY: ["plan-subscription"],
+
+    CLIENT_USER_PLAN_ENDPOINT: "client/plan-subscription",
+    CLIENT_USER_PLAN_KEY: ["plan-subscription"],
+  },
 
   // Extend this for other features.....
 };
