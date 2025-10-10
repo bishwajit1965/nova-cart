@@ -43,7 +43,6 @@ const userSchema = new mongoose.Schema(
       ref: "Plan",
       default: null,
     },
-
     refreshToken: {
       type: String,
       default: "",

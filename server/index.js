@@ -15,6 +15,7 @@ import clientContactRoutes from "./routes/client/clientContactRoutes.js";
 import clientCouponRoutes from "./routes/client/clientCouponRoutes.js";
 import clientNewsletterRoutes from "./routes/client/clientNewsletterRoutes.js";
 import clientOrderRoutes from "./routes/client/clientOrderRoutes.js";
+import clientPlanHistoryRoutes from "./routes/client/clientPlanHistoryRoutes.js";
 import clientPlanSubscriptionController from "./controllers/client/clientPlanSubscriptionController.js";
 import clientPlanSubscriptionRoutes from "./routes/client/clientPlanSubscriptionRoutes.js";
 import clientProductRoutes from "./routes/client/client.product.routes.js";
@@ -109,6 +110,7 @@ app.use("/api/client/coupons", clientCouponRoutes);
 app.use("/api/client/checkout", clientCheckoutRoutes);
 app.use("/api/client/stripe", clientStripeRoutes);
 app.use("/api/client/plan-subscription", clientPlanSubscriptionRoutes);
+app.use("/api/client/plan-history", clientPlanHistoryRoutes);
 
 app.get("/", (req, res) => {
   res.send("Listening from Nova-cart!");

@@ -189,6 +189,10 @@ const API_PATHS = {
     CLIENT_USER_PLAN_ENDPOINT: "client/plan-subscription",
     CLIENT_USER_PLAN_KEY: ["plan-subscription"],
   },
+  CLIENT_PAN_HISTORY: {
+    CLIENT_PLAN_HISTORY_ENDPOINT: "client/plan-history",
+    CLIENT_HISTORY_KEY: "plan-history",
+  },
 
   // Extend this for other features.....
 };

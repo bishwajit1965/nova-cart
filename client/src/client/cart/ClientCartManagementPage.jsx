@@ -6,6 +6,7 @@ import API_PATHS from "../../superAdmin/services/apiPaths/apiPaths";
 import Button from "../../common/components/ui/Button";
 import CartItemList from "./components/CartItemList";
 import CartSummaryPanel from "./components/CartSummaryPanel";
+import ConfirmModal from "../../common/components/ui/ConfirmModal";
 import DynamicPageTitle from "../../common/utils/pageTitle/DynamicPageTitle";
 import { LucideIcon } from "../../common/lib/LucideIcons";
 import Modal from "../../common/components/ui/Modal";
@@ -28,10 +29,15 @@ const ClientCartManagementPage = () => {
   const [addedToWishList, setAddedToWishList] = useState([]);
   const [addedToCart, setAddedToCart] = useState([]);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteIdToken, setDeleteIdToken] = useState(null);
+  const [product, setProduct] = useState(null);
   const navigate = useNavigate();
-
   const CART_LIMIT = 10;
   const WISH_LIST_LIMIT = 10;
+  console.log("Delete Id Token", deleteIdToken);
+  console.log("Is delete modal Open", isDeleteModalOpen.toString());
+  console.log("Product", product);
 
   /** ------> View product details in modal ------> */
   const handleModalToggleView = (productId) => {
@@ -113,8 +119,8 @@ const ClientCartManagementPage = () => {
     onSuccess: (res) => {
       setCart(res.data.items); // update cart with latest
     },
-    onError: (err) => {
-      toast.error("Failed to add product to cart");
+    onError: (error) => {
+      toast.error(error?.response?.data?.message);
       console.error(err);
     },
   });
@@ -314,14 +320,23 @@ const ClientCartManagementPage = () => {
     );
   };
 
-  /** --------> Remove product from cart -------- */
+  /*** -----> Handle Delete Modal open Toggle----->  */
+  const handleDeleteModalToggle = (productId) => {
+    setIsDeleteModalOpen(true);
+    setDeleteIdToken(productId);
+  };
+
+  // /** --------> Remove product from cart -------- */
   const handleRemoveItem = async (productId) => {
     try {
-      if (window.confirm("Are you sure you want to delete this category?")) {
-        deleteCartMutation.mutate(productId, {
-          onSuccess: () => {},
-        });
-      }
+      deleteCartMutation.mutate(productId, {
+        onSuccess: () => {
+          setIsDeleteModalOpen(false);
+        },
+        onError: (error) => {
+          toast.error("Error in deleting cart item!", error);
+        },
+      });
     } catch (err) {
       console.error("Failed to remove item:", err);
       toast.error("Failed to remove item");
@@ -519,7 +534,7 @@ const ClientCartManagementPage = () => {
                           ${item.product.price.toFixed(2)}
                         </p>
                       </div>
-                      <div className="flex justify-between items-center mt-2 absolute bottom-11 space-x-4 w-full left-0">
+                      <div className="flex justify-between items-center mt-2 absolute bottom-11 space-x-4 w-full left-0 px-2">
                         <Button
                           variant="global"
                           size="sm"
@@ -655,7 +670,10 @@ const ClientCartManagementPage = () => {
               cart={cart}
               handleIncreaseQuantity={handleIncreaseQuantity}
               handleDecreaseQuantity={handleDecreaseQuantity}
-              handleRemoveItem={handleRemoveItem}
+              onModalToggle={handleDeleteModalToggle}
+              modalOpen={setIsDeleteModalOpen}
+              setDeleteIdToken={setDeleteIdToken}
+              onSet={setProduct}
             />
           )}
         </div>
@@ -742,6 +760,26 @@ const ClientCartManagementPage = () => {
               </div>
             </div>
           </Modal>
+        )}
+
+        {/* Delete Modal Toggle */}
+        {isDeleteModalOpen && (
+          <ConfirmModal
+            isOpen={isDeleteModalOpen}
+            deleteIdToken={deleteIdToken}
+            product={product}
+            title="Remove item from cart ?"
+            message={
+              <>
+                Do you really want to remove{" "}
+                <span className="font-semibold text-red-600">{product}</span>{" "}
+                from your cart?
+              </>
+            }
+            cancelText="Keep"
+            onConfirm={() => handleRemoveItem(deleteIdToken)}
+            onCancel={() => setIsDeleteModalOpen(false)}
+          />
         )}
       </div>
     </>

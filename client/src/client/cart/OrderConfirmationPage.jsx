@@ -1,3 +1,4 @@
+import { CreditCard, CreditCardIcon, LucideCreditCard } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 import API_PATHS from "../../superAdmin/services/apiPaths/apiPaths";
@@ -50,42 +51,51 @@ const OrderConfirmationPage = () => {
     <>
       <DynamicPageTitle pageTitle={pageTitle} />
       <div className="lg:max-w-7xl w-full mx-auto lg:space-y-10 space-y-4">
-        <div className="grid lg:grid-cols-12 grid-cols-1 justify-between lg:gap-6 gap-4">
-          <div className="lg:col-span-8 col-span-12 lg:flex gap-4 items-center border border-base-content/15 shadow rounded-lg lg:p-4 p-2 hover:shadow-lg">
-            <div className="">
-              <LucideIcon.CircleCheckBig
-                className="lg:w-28 lg:h-28 w-10 h-10  text-green-500 lg:text-left mx-auto"
-                size={60}
-              />
-            </div>
-            <div className="lg:space-y-3 space-y-2">
-              <h2 className="lg:text-3xl text-lg font-bold text-center text-green-600">
-                🎉 Your order has been placed!
-              </h2>
-              <p className="text-center">
-                Order ID:{" "}
-                <span className="font-semibold">{orderId || "N/A"}</span>
-              </p>
-              <p className="text-center text-xs text-gray-500">
-                A confirmation email has been sent to your registered address.
-              </p>
+        <div className="grid lg:grid-cols-12 grid-cols-1 justify-between lg:gap-8 gap-4">
+          <div className="lg:col-span-8 col-span-12 border border-base-content/15 shadow rounded-lg hover:shadow-md">
+            <div className="space-y-3">
+              <div className="bg-base-200 border-b border-base-content/15 shadow lg:p-3 p-2 rounded-t-lg lg:col-span-3 col-span-12">
+                <div className="">
+                  <h2 className="lg:text-3xl text-lg font-bold text-center text-green-600">
+                    🎉 Your order has been placed!
+                  </h2>
+                </div>
+              </div>
+
+              <div className="lg:space-y-3 space-y-2 text-center">
+                <LucideIcon.CircleCheckBig
+                  className=" text-green-500 lg:text-left mx-auto"
+                  size={30}
+                />
+
+                <p className="text-xl font-bold">
+                  🛒 Order ID:{" "}
+                  <span className="font-semibold">{orderId || "N/A"}</span>
+                </p>
+                <p className="text-center text-xs text-gray-500">
+                  A confirmation email has been sent to your registered address.
+                </p>
+              </div>
             </div>
           </div>
-          {}
 
           {/* Stripe payment */}
           {savedOrdersDataStatus.status !== "success" ? (
             savedOrdersDataStatus.content
           ) : (
-            <div className="lg:col-span-4 col-span-12 border border-base-content/15 shadow rounded-lg lg:p-4 p-2 hover:shadow-lg">
-              <div className="shadow hover:shadow-lg rounded-lg">
-                <h2 className="lg:text-3xl text-xl mt-6 mb-2 font-bold">
-                  Payment with Stripe
-                </h2>
-                <ClientStripePaymentForm
-                  orderId={latestOrder._id}
-                  amount={latestOrder.totalAmount}
-                />
+            <div className="lg:col-span-4 col-span-12 border border-base-content/15 shadow rounded-lg hover:shadow-md">
+              <div className="shadow hover:shadow-lg rounded-lg space-y-4">
+                <div className="bg-base-200 border-b border-base-content/15 shadow lg:p-3 p-2 rounded-t-lg">
+                  <h2 className="lg:text-3xl text-lg font-bold text-center text-green-600 flex items-center space-x-2">
+                    <LucideCreditCard /> <span>Payment with Stripe</span>
+                  </h2>
+                </div>
+                <div className="">
+                  <ClientStripePaymentForm
+                    orderId={latestOrder._id}
+                    amount={latestOrder.totalAmount}
+                  />
+                </div>
               </div>
             </div>
           )}

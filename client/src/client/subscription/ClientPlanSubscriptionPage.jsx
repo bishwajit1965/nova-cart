@@ -1,5 +1,6 @@
 import API_PATHS from "../../superAdmin/services/apiPaths/apiPaths";
 import ClientPlanSubscriptionCard from "./ClientPlanSubscriptionCard";
+import ConfirmPlanModal from "../../common/components/ui/ConfirmPlanModal";
 import DynamicPageTitle from "../../common/utils/pageTitle/DynamicPageTitle";
 import PageMeta from "../../common/components/ui/PageMeta";
 import toast from "react-hot-toast";
@@ -13,6 +14,8 @@ const ClientPlanSubscriptionPage = () => {
   const pageTitle = usePageTitle();
   const [selectedPlanId, setSelectedPlanId] = useState(null);
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [pendingPlan, setPendingPlan] = useState(null);
   console.log("Selected plan", selectedPlan);
   console.log("Selected plan id", selectedPlanId);
 
@@ -59,28 +62,16 @@ const ClientPlanSubscriptionPage = () => {
       console.error(error);
     },
   });
-  /*** ------>Update Plan Subscription Mutation Hook ------> */
-  const updatePlanMutation = useApiMutation({
-    method: "update",
-    path: `${API_PATHS.CLIENT_USER.CLIENT_USER_ENDPOINT}/subscribe`,
-    key: API_PATHS.CLIENT_USER.CLIENT_USER_KEY,
-    onSuccess: () => {},
-    onError: (error) => {
-      toast.error("Error saving plan!", error);
-      console.error(error);
-    },
-  });
+
+  const handleConfirmUpgrade = (plan) => {
+    const payload = { data: { planId: plan._id } };
+    planMutation.mutate(payload);
+    toast.success(`Upgraded to ${plan.name}!`);
+  };
 
   const handleSelectPlan = (plan) => {
-    try {
-      setSelectedPlan(plan);
-      toast.success(`Selected plan ${plan.name}`);
-      const payload = { data: { planId: plan._id } };
-
-      planMutation.mutate(payload);
-    } catch (error) {
-      console.error("Error in selecting plan!", error);
-    }
+    setPendingPlan(plan);
+    setIsModalOpen(true);
   };
 
   /** -----> Use Fetched Data Status Handler -----> */
@@ -120,12 +111,23 @@ const ClientPlanSubscriptionPage = () => {
                 plan={plan}
                 isCurrent={plan?.isCurrent}
                 selectedPlanId={selectedPlanId}
-                onSelect={() =>
-                  setSelectedPlanId(plan?._id) & handleSelectPlan(plan)
-                }
+                onSelect={() => {
+                  setSelectedPlanId(plan?._id);
+                  handleSelectPlan(plan);
+                }}
               />
             ))}
           </div>
+        )}
+
+        {/* Confirm Plan Upgrade Modal */}
+        {isModalOpen && (
+          <ConfirmPlanModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            plan={pendingPlan}
+            onConfirm={handleConfirmUpgrade}
+          />
         )}
       </div>
     </div>

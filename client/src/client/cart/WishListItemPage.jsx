@@ -2,6 +2,7 @@ import { CheckCircleIcon, ShoppingCartIcon } from "lucide-react";
 
 import API_PATHS from "../../superAdmin/services/apiPaths/apiPaths";
 import Button from "../../common/components/ui/Button";
+import ConfirmDeleteModal from "../../common/components/ui/ConfirmDeleteModal";
 import DynamicPageTitle from "../../common/utils/pageTitle/DynamicPageTitle";
 import { Link } from "react-router-dom";
 import { LucideIcon } from "../../common/lib/LucideIcons";
@@ -24,6 +25,26 @@ const WishListItemPage = () => {
   const [addedToCart, setAddedToCart] = useState([]);
   const CART_LIMIT = 10;
   const wishlistIds = [];
+
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+
+  const handleDeleteClick = (item) => {
+    setItemToDelete(item);
+    setDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = (productId) => {
+    try {
+      deleteWishListMutation.mutate(productId, {
+        onSuccess: () => {},
+        onError: (error) => {},
+      });
+    } catch (error) {
+      toast.error("Failed to delete wishlist product!");
+      console.error(error);
+    }
+  };
 
   // ---------- Fetch wish list items from the server ----------
   const {
@@ -53,7 +74,6 @@ const WishListItemPage = () => {
     key: API_PATHS.CLIENT_CARTS.CLIENT_KEY,
     onSuccess: (res) => {
       setCart(res.data.items); // update cart with latest
-      // toast.success("Product added to cart");
     },
     onError: (err) => {
       toast.error("Failed to add product to cart");
@@ -72,19 +92,6 @@ const WishListItemPage = () => {
       refetchOnReconnect: true,
     },
   });
-
-  const handleRemove = (productId) => {
-    try {
-      if (window.confirm("Are you sure you want to delete this category?")) {
-        deleteWishListMutation.mutate(productId, {
-          onSuccess: () => {},
-        });
-      }
-    } catch (err) {
-      console.error("Failed to remove item:", err);
-      toast.error("Failed to remove item");
-    }
-  };
 
   // ------> Will move item to cart and delete from wishlist ------>
   const handleMoveToCart = (product) => {
@@ -280,7 +287,7 @@ const WishListItemPage = () => {
                           className="text-red-500 btn btn-sm"
                           variant="danger"
                           icon={LucideIcon.Trash2}
-                          onClick={() => handleRemove(item.product._id)}
+                          onClick={() => handleDeleteClick(item.product)}
                         >
                           Remove
                         </Button>
@@ -304,6 +311,16 @@ const WishListItemPage = () => {
               </div>
             ) : (
               <NoDataFound label={"Products"} />
+            )}
+
+            {/* Delete Modal Toggler */}
+            {deleteModalOpen && (
+              <ConfirmDeleteModal
+                isOpen={deleteModalOpen}
+                onClose={() => setDeleteModalOpen(false)}
+                onConfirm={() => handleConfirmDelete(itemToDelete?._id)}
+                itemName={itemToDelete?.name}
+              />
             )}
           </div>
         </div>

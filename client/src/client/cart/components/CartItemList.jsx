@@ -9,7 +9,8 @@ const CartItemList = ({
   cart,
   handleIncreaseQuantity,
   handleDecreaseQuantity,
-  handleRemoveItem,
+  onModalToggle,
+  onSet,
 }) => {
   console.log("CART DATA VIEW IN CART ITEM LIST", cart);
 
@@ -62,8 +63,11 @@ const CartItemList = ({
             <Button
               variant="danger"
               icon={LucideIcon.Trash2}
-              size="sm"
-              onClick={() => handleRemoveItem(item.product._id)}
+              onClick={() => {
+                onModalToggle(item?.product?._id);
+                onSet(item?.product?.name);
+              }}
+              className="btn btn-sm"
             >
               Remove
             </Button>

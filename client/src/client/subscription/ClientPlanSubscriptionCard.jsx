@@ -1,4 +1,3 @@
-import Badge from "../../common/components/ui/Badge";
 import Button from "../../common/components/ui/Button";
 import { CheckCircle } from "lucide-react";
 
@@ -49,7 +48,7 @@ const ClientPlanSubscriptionCard = ({
         </div>
         {!isCurrent && (
           <div className="lg:absolute lg:bottom-4 flex gap-2 left-4 mt-2">
-            <Button variant="indigo" className=" " onClick={onSelect}>
+            <Button variant="indigo" className="" onClick={onSelect}>
               <CheckCircle size={20} />{" "}
               {isSelected ? "Selected" : "Select Plan"}
             </Button>

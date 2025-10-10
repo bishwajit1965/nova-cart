@@ -8,6 +8,7 @@ import Button from "../../../common/components/ui/Button";
 import DynamicPageTitle from "../../../common/utils/pageTitle/DynamicPageTitle";
 import { Input } from "../../../common/components/ui/Input";
 import { LucideIcon } from "../../../common/lib/LucideIcons";
+import NoDataFound from "../../../common/components/ui/NoDataFound";
 import PageMeta from "../../../common/components/ui/PageMeta";
 import { SlashSquare } from "lucide-react";
 import { motion } from "framer-motion";
@@ -47,7 +48,20 @@ const ClientProfilePage = () => {
     options: { staleTime: 0 },
   });
 
+  /***------> Fetch Plan History Info QUERY ------> */
+  const {
+    data: planHistory,
+    isLoading: isLoadingUserPlanHistory,
+    isError: isErrorUserPlanHistory,
+    error: errorUserPlanHistory,
+  } = useApiQuery({
+    url: API_PATHS.CLIENT_PAN_HISTORY.CLIENT_PLAN_HISTORY_ENDPOINT,
+    queryKey: API_PATHS.CLIENT_PAN_HISTORY.CLIENT_HISTORY_KEY,
+    options: { staleTime: 0 },
+  });
+
   console.log("Orders", orders);
+  console.log("Plan History", planHistory);
 
   /***------> Set user data when fetched ------> */
   useEffect(() => {
@@ -110,6 +124,13 @@ const ClientProfilePage = () => {
     isError: isErrorOrders,
     error: errorOrders,
     label: "orders",
+  });
+
+  const planHistoryDataStatus = useFetchedDataStatusHandler({
+    isLoading: isLoadingUserPlanHistory,
+    isError: isErrorUserPlanHistory,
+    error: errorUserPlanHistory,
+    label: "Plan history",
   });
 
   return (
@@ -317,6 +338,66 @@ const ClientProfilePage = () => {
                 <p className="font-bold text-center">No orders found.</p>
               )}
             </motion.div>
+
+            {/* Plan History */}
+            {planHistoryDataStatus.status !== "success" ? (
+              planHistoryDataStatus.content
+            ) : (
+              <motion.div
+                className="rounded-xl mt-8"
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: false }}
+                variants={containerVariants}
+              >
+                <motion.div
+                  className="lg:mb-6 mb-4 lg:px-12 px-2 py-4 bg-base-100 rounded-xl shadow"
+                  variants={containerVariants}
+                >
+                  <motion.h2
+                    className="lg:text-2xl text-xl font-extrabold"
+                    variants={itemVariants}
+                  >
+                    💳 My Plan History
+                  </motion.h2>
+                </motion.div>
+
+                <motion.div
+                  className="lg:space-y-4 space-y-2 rounded-2xl"
+                  variants={containerVariants}
+                >
+                  {planHistory?.length > 0 ? (
+                    planHistory?.map((record) => (
+                      <div
+                        key={record._id}
+                        className="bg-base-100 p-4 rounded-xl shadow hover:shadow-lg"
+                      >
+                        <p>
+                          <span className="font-bold">Plan:</span>{" "}
+                          {record.planId.name} (${record.planId.price})
+                        </p>
+                        <p>
+                          <span className="font-bold">Action:</span>{" "}
+                          {record.action}
+                        </p>
+                        <p>
+                          <span className="font-bold">Features:</span>{" "}
+                          {record.features.join(", ")}
+                        </p>
+                        <p className="font-bold">Name:{record.userId.name}</p>
+                        <p className="font-bold">Email:{record.userId.email}</p>
+                        <p>
+                          <span className="font-bold">Started At:</span>{" "}
+                          {new Date(record.startedAt).toLocaleString()}
+                        </p>
+                      </div>
+                    ))
+                  ) : (
+                    <NoDataFound />
+                  )}
+                </motion.div>
+              </motion.div>
+            )}
           </div>
         )}
       </div>

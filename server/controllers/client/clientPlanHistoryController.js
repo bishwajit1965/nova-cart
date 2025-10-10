@@ -1,4 +1,6 @@
-// server/controller/client/clientSubscriptionController.js
+// server/controllers/client/planHistoryController.js
+
+import mongoose, { isValidObjectId } from "mongoose";
 
 import Plan from "../../models/Plan.js";
 import PlanHistory from "../../models/PlanHistory.js";
@@ -11,6 +13,7 @@ export const subscribePlan = async (req, res) => {
       return res
         .status(400)
         .json({ success: false, message: "Plan Id is required" });
+
     const plan = await Plan.findById(planId).populate("features");
     if (!plan)
       return res
@@ -23,13 +26,14 @@ export const subscribePlan = async (req, res) => {
         .status(404)
         .json({ success: false, message: "User not found!" });
 
-    //Detect Upgrade / downgrade
+    // Detect upgrade or downgrade
     let action = "subscribe";
     if (user.plan) {
       const currentPlan = await Plan.findById(user.plan);
       action = plan.price > currentPlan.price ? "upgrade" : "downgrade";
     }
-    //Save plan to user
+
+    // Save plan to user
     user.plan = plan._id;
     await user.save();
 
@@ -57,45 +61,30 @@ export const subscribePlan = async (req, res) => {
   }
 };
 
-export const getUserPlan = async (req, res) => {
+export const getAllPlanHistory = async (req, res) => {
   try {
-    const userId = req.user._id;
-
-    const user = await User.findById(userId)
-      .populate({
-        path: "plan",
-        populate: { path: "features" },
-      })
-      .select("name email plan");
-
-    if (!user) {
+    const planHistory = await PlanHistory.find({ userId: req.user._id })
+      .populate("userId", "name email")
+      .populate("planId", "name price features");
+    if (!planHistory || planHistory.length === 0) {
       return res.status(404).json({
         success: false,
-        message: "User not found!",
+        message: "No plan history records found!",
       });
     }
-
-    if (!user.plan) {
-      return res.status(200).json({
-        success: true,
-        message: "User has no active plan.",
-        data: null,
-      });
-    }
-
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
-      message: "User plan fetched successfully!",
-      data: user,
+      message: "Plan history fetched successfully!",
+      data: planHistory,
     });
   } catch (error) {
-    console.error("💥 Error fetching user plan:", error);
-    return res.status(500).json({
+    console.error("Error in fetching plan history!", error);
+    res.status(500).json({
       success: false,
-      message: "Internal server error!",
+      message: "Internal server error",
       error: error.message,
     });
   }
 };
 
-export default { subscribePlan, getUserPlan };
+export default { subscribePlan, getAllPlanHistory };

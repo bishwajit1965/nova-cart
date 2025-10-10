@@ -86,7 +86,7 @@ const ClientStripePaymentForm = ({
   };
 
   return (
-    <div className="">
+    <div className="lg:p-4 p-2">
       <form onSubmit={handleStripeCardPayment} className="space-y-4">
         <div className="p-3 border rounded border-base-content/20">
           <CardElement options={{ hidePostalCode: true }} />

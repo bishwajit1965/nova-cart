@@ -11,6 +11,8 @@ import {
 } from "../../middlewares/authMiddleware.js";
 
 import express from "express";
+import { featureGuard } from "../../middlewares/featureGuard.js";
+import { requireFeature } from "../../middlewares/requireFeature.js";
 
 const router = express.Router();
 
@@ -18,16 +20,24 @@ const router = express.Router();
 router.use(authenticationMiddleware);
 
 // Get current user's cart
-router.get("/", getCart);
+router.get("/", requireFeature("cart"), featureGuard(), getCart);
 
-router.get("/all", getAllCarts);
+router.get("/all", requireFeature("cart"), featureGuard(), getAllCarts);
 
 // Add product to cart
-router.post("/", authorizeRole("super-admin", "admin", "user"), addToCart);
+router.post(
+  "/",
+  requireFeature("cart"),
+  featureGuard(),
+  authorizeRole("super-admin", "admin", "user"),
+  addToCart
+);
 
 // Update quantity of a specific product
 router.patch(
   "/:productId",
+  requireFeature("cart"),
+  featureGuard(),
   authorizeRole("super-admin", "admin", "user"),
   updateCartItem
 );
@@ -35,6 +45,8 @@ router.patch(
 // Remove a product from cart
 router.delete(
   "/:productId",
+  requireFeature("cart"),
+  featureGuard(),
   authorizeRole("super-admin", "admin", "user"),
   removeFromCart
 );
