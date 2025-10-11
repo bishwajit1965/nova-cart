@@ -33,6 +33,11 @@ export const subscribePlan = async (req, res) => {
     user.plan = plan._id;
     await user.save();
 
+    await PlanHistory.updateMany(
+      { userId: user._id, isActive: true },
+      { $set: { isActive: false, endedAt: new Date() } }
+    );
+
     // Save plan history snapshot
     await PlanHistory.create({
       userId: user._id,
@@ -40,6 +45,7 @@ export const subscribePlan = async (req, res) => {
       action,
       price: plan.price,
       features: plan.features.map((f) => f.key),
+      isActive: true,
     });
 
     res.status(200).json({

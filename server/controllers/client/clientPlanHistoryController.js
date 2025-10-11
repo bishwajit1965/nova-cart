@@ -1,7 +1,5 @@
 // server/controllers/client/planHistoryController.js
 
-import mongoose, { isValidObjectId } from "mongoose";
-
 import Plan from "../../models/Plan.js";
 import PlanHistory from "../../models/PlanHistory.js";
 import User from "../../models/User.js";

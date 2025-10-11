@@ -19,15 +19,20 @@ const useFetchedDataStatusHandler = ({ isLoading, isError, error, label }) => {
     return {
       status: "error",
       content: (
-        <div className="flex flex-col items-center gap-2 text-center lg:py-6 py-2 text-red-500 animate-fade-in">
-          <div className="lg:flex grid items-center justify-center lg:min-h-[calc(100vh-150px)]">
-            <div className="text-center">
+        <div className="flex flex-col items-center gap-2 text-center lg:p-10 p-2 text-reds-500 animate-fade-in border shadow-md border-base-content/15 rounded-md bg-base-300 hover:shadow-lg">
+          <div className="lg:flex grid items-center justify-center lg:min-h-[calc(100vh-350px)] w-full rounded-md bg-base-200 shadow">
+            <div className="bg-yellow-100 opacity-90 text-center lg:p-10 p-4 rounded-md border border-base-content/15 shadow space-y-2 text-red-600">
               <div className="flex justify-center">
-                <AlertTriangleIcon className="w-6 h-6" />
+                <AlertTriangleIcon className="w- h-" size={30} />
               </div>
-              <p className="font-semibold">
-                Error loading {label}: {error?.message}
-              </p>
+              <div className="space-y-2">
+                <h2 className="lg:text-2xl text-xl font-bold">
+                  No data found ! Please check later.
+                </h2>
+                <p className="lg:text-2xl text-sm font-bold">
+                  Error in loading {label}: {error?.message}
+                </p>
+              </div>
             </div>
           </div>
         </div>

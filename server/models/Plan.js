@@ -23,7 +23,7 @@ const planSChema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    isActive: { type: Boolean, default: true },
+    isActive: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
