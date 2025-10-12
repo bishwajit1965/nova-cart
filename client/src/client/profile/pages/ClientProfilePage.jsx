@@ -1,6 +1,17 @@
 // client/pages/ProfilePage.jsx
 
-import { Recycle, RefreshCcw, SlashSquare } from "lucide-react";
+import {
+  ArrowDownAZ,
+  ArrowDownZA,
+  ArrowDownZa,
+  ArrowUpAZ,
+  ArrowUpZA,
+  Layers,
+  ListFilterPlusIcon,
+  RefreshCcw,
+  SlashSquare,
+  X,
+} from "lucide-react";
 import { containerVariants, itemVariants } from "../../service/animations";
 import { useEffect, useState } from "react";
 
@@ -26,6 +37,61 @@ const ClientProfilePage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterAction, setFilterAction] = useState("");
   const navigate = useNavigate();
+  const stat = {
+    label: "Total Plans",
+    color: "text-red-500",
+    key: "total",
+    classProperties: "lg:p-4 p-2 text-center rounded-lg bg-sky-200",
+  };
+
+  /*** ------> Plans data fetched ------> */
+  const {
+    data: plans,
+    isLoadingPlans,
+    isErrorPlans,
+    errorPlans,
+  } = useApiQuery({
+    url: `${API_PATHS.CLIENT_USER.CLIENT_PLANS_ENDPOINT}/all-plans`,
+    queryKey: API_PATHS.CLIENT_USER.CLIENT_PLANS_KEY,
+    options: {
+      staleTime: 0,
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
+    },
+  });
+  // const {
+  //   data: plans,
+  //   isLoadingPlans,
+  //   isErrorPlans,
+  //   errorPlans,
+  // } = useApiQuery({
+  //   url: `${API_PATHS.SUP_ADMIN_PLANS.SUP_ADMIN_PLANS_ENDPOINT}/all`,
+  //   queryKey: API_PATHS.SUP_ADMIN_PLANS.SUP_ADMIN_PLANS_KEY,
+  //   options: {
+  //     staleTime: 0,
+  //     refetchOnWindowFocus: true,
+  //     refetchOnReconnect: true,
+  //   },
+  // });
+  console.log("Plans", plans);
+
+  /***------> Plan Update  mutation ------> */
+
+  /***------> Plan Downgrade  mutation ------> */
+
+  /***------> Plan Cancel  mutation ------> */
+
+  /*** ------> Plan change handler ------> */
+  const handlePlanChange = (value) => {
+    if (value === "upgrade") {
+      alert("Clicked for upgrade");
+    } else if (value === "downgrade") {
+      alert("Clicked for downgrade");
+    }
+  };
+  const handleCancelPlan = (value) => {
+    value === "cancel" && alert("Clicked to cancel");
+  };
 
   /***------> Fetch user info QUERY ------> */
   const {
@@ -131,6 +197,12 @@ const ClientProfilePage = () => {
   };
 
   /*** -----> FETCHED USERS & ORDERS DATA HANDLERS HOOKS -----> */
+  const plansDataStatus = useFetchedDataStatusHandler({
+    isLoading: isLoadingPlans,
+    isError: isErrorPlans,
+    error: errorPlans,
+    label: "Plans",
+  });
   const userDataStatus = useFetchedDataStatusHandler({
     isLoading: isLoadingUser,
     isError: isErrorUser,
@@ -165,7 +237,7 @@ const ClientProfilePage = () => {
         {userDataStatus.status !== "success" ? (
           userDataStatus.content
         ) : (
-          <div className="lg:max-w-4xl mx-auto lg:py-16 py-4 lg:space-y-6 space-y-4">
+          <div className="lg:max-w-5xl mx-auto lg:py-16 py-4 lg:space-y-6 space-y-4">
             {/* Personal Info */}
             <motion.div
               className="bg-base-100 rounded-xl shadow lg:p-12 p-2 space-y-4 hover:shadow-2xl"
@@ -359,23 +431,22 @@ const ClientProfilePage = () => {
             </motion.div>
 
             {/* Plan History section begins */}
-
             {planHistoryDataStatus.status !== "success" ? (
               planHistoryDataStatus.content
             ) : (
               <motion.div
-                className="rounded-xl mt-8"
+                className="rounded-xl lg:my-6 my-4"
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: false }}
                 variants={containerVariants}
               >
                 <motion.div
-                  className="lg:mb-6 mb-4 lg:px-12 px-2 py-4 bg-base-100 rounded-xl shadow"
+                  className="lg:mb-6 mb-4 lg:px-12 px-2 py-4 bg-base-100 rounded-xl shadow lg:pb-8 pb-4"
                   variants={containerVariants}
                 >
                   <motion.h2
-                    className="lg:text-2xl text-xl font-extrabold"
+                    className="lg:text-2xl text-xl font-extrabold mt-4"
                     variants={itemVariants}
                   >
                     💳 My Plan History
@@ -386,18 +457,19 @@ const ClientProfilePage = () => {
                     className="grid lg:grid-cols-12 grid-cols-1 lg:gap-8 gap-4 justify-between lg:my-10 my-4 "
                     variants={containerVariants}
                   >
-                    <div className="lg:col-span-6 col-span-12">
+                    <div className="lg:col-span-6 col-span-12 bg-base-200 rounded-xl shadow hover:shadow-xl">
                       {/* Active Plan Section */}
                       {planHistory?.length > 0 && (
                         <motion.div
-                          className="rounded-xl mb-8"
+                          className="rounded-xl p-6"
                           initial="hidden"
                           whileInView="visible"
                           viewport={{ once: false }}
                           variants={containerVariants}
                         >
+                          {/* ============================== */}
                           <motion.div
-                            className="lg:mb-6 mb-4 lg:px-12 px-2 py-4 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl shadow"
+                            className="lg:mb-6 mb-4 lg:px-12 px-2 py-4 bg-base-200 rounded-lg shadow border border-base-content/15"
                             variants={containerVariants}
                           >
                             <motion.h2
@@ -428,45 +500,111 @@ const ClientProfilePage = () => {
                                   {activePlan.planId?.description ||
                                     "Active subscription"}
                                 </p>
+                                <p className="text-gray-600 text-sm mt-1">
+                                  Duration:
+                                  <span className="capitalize text-sm py-0.5 px-2 ml-1 rounded-md text-base-content/70 border border-base-content/15 bg-base-200">
+                                    {activePlan.duration || "N/A"}
+                                  </span>
+                                </p>
                                 <div className="mt-3 flex justify-between text-sm text-gray-500">
                                   <span>💰 Price: ${activePlan.price}</span>
                                   <span>
                                     📅 Started:{" "}
                                     {new Date(
-                                      activePlan.startedAt
+                                      activePlan?.startedAt
                                     ).toLocaleDateString("en-US")}
                                   </span>
                                 </div>
-                                {activePlan.expiresAt && (
-                                  <p className="text-sm text-gray-500 mt-1">
-                                    ⏳ Expires:{" "}
-                                    {new Date(
-                                      activePlan.expiresAt
-                                    ).toLocaleDateString("en-US")}
-                                  </p>
+                                <div className="">
+                                  {activePlan.endedAt ? (
+                                    <p className="text-sm text-gray-500 mt-1">
+                                      ⏳ Expires:{" "}
+                                      {new Date(
+                                        activePlan.endedAt
+                                      ).toLocaleDateString("en-US")}
+                                    </p>
+                                  ) : activePlan.duration === "lifetime" ? (
+                                    <p className="text-sm text-gray-500 mt-1">
+                                      ⏳ Expires: ♾️ Lifetime Access
+                                    </p>
+                                  ) : (
+                                    <p className="text-sm text-gray-500 mt-1">
+                                      ⏳ Expires: —
+                                    </p>
+                                  )}
+                                </div>
+
+                                {/* ✅ PLACE ACTION BUTTONS HERE */}
+                                {/* ============= WORKING SPACE ========== */}
+                                {plansDataStatus.status !== "success" ? (
+                                  plansDataStatus.content
+                                ) : (
+                                  <div className="flex gap-2 mt-4">
+                                    {/* Upgrade */}
+
+                                    {plans.some(
+                                      (p) => p.price > Number(activePlan.price)
+                                    ) && (
+                                      <Button
+                                        onClick={() =>
+                                          handlePlanChange("upgrade")
+                                        }
+                                        variant="success"
+                                        className="btn btn-sm transition"
+                                      >
+                                        <ArrowUpZA /> Upgrade
+                                      </Button>
+                                    )}
+                                    {/* Downgrade */}
+                                    {plans.some(
+                                      (p) => p.price < Number(activePlan.price)
+                                    ) && (
+                                      <Button
+                                        onClick={() =>
+                                          handlePlanChange("downgrade")
+                                        }
+                                        variant="warning"
+                                        className="btn btn-sm transition"
+                                      >
+                                        <ArrowDownZA /> Downgrade
+                                      </Button>
+                                    )}
+                                    {/* Cancel */}
+                                    {activePlan.name !== "Basic" && (
+                                      <Button
+                                        onClick={() =>
+                                          handleCancelPlan("cancel")
+                                        }
+                                        variant="danger"
+                                        className="btn btn-sm transition"
+                                      >
+                                        <X /> Cancel
+                                      </Button>
+                                    )}
+                                  </div>
                                 )}
+                                {/* ============= WORKING SPACE ========== */}
                               </div>
                             );
                           })()}
                         </motion.div>
                       )}
                     </div>
-                    {/* Plan History Filter */}
-                    <div className="lg:col-span-6 col-span-12">
-                      <div className="flex flex-wrap gap-3 mb-6 items-center">
+                    {/* Plan History Filter ====================== */}
+                    <div className="lg:col-span-6 col-span-12 bg-base-200 p-6 rounded-xl shadow hover:shadow-xl">
+                      <div className="flex flex-wrap gap-2 mb-6 items-center border border-base-content/15 p-3 rounded-lg bg-base-200 shadow">
                         <input
                           type="text"
                           placeholder="Search plan..."
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
-                          className="input input-bordered w-full sm:w-40"
+                          className="input input-bordered w-full sm:w-36"
                         />
                         <select
                           value={filterAction}
                           onChange={(e) => setFilterAction(e.target.value)}
-                          className="select select-bordered w-full sm:w-32"
+                          className="select select-bordered w-full sm:w-36"
                         >
-                          <option value="">Select Actions</option>
                           <option value="">All Actions</option>
                           <option value="upgrade">Upgrade</option>
                           <option value="downgrade">Downgrade</option>
@@ -478,74 +616,115 @@ const ClientProfilePage = () => {
                           onClick={resetFilterHistory}
                           className="btn btn-md w-16"
                         >
-                          <RefreshCcw />
+                          <RefreshCcw size={25} />
                         </Button>
                       </div>
-                      <div className="">
-                        {displayHistory && displayHistory.length > 0 ? (
-                          displayHistory.map((fh) => (
-                            <div key={fh._id} className="">
-                              <p>
-                                {fh.planId.name} ➡️ ${" "}
-                                {fh.planId.price.toFixed(2)}
+                      {/* Keep everything else same, just adjust rendering logic */}
+                      <div className="bg-base-100 p-6 rounded-xl shadow  hover:shadow-xl">
+                        <div className="">
+                          {searchTerm || filterAction ? (
+                            displayHistory && displayHistory.length > 0 ? (
+                              displayHistory.map((fh) => (
+                                <div key={fh._id}>
+                                  <p>
+                                    {fh.planId.name} ➡️ $
+                                    {fh.planId.price.toFixed(2)}
+                                  </p>
+                                  <p>Action: {fh.action}</p>
+                                </div>
+                              ))
+                            ) : (
+                              <p className="text-center text-gray-500 font-medium">
+                                No matching history found.
                               </p>
-                            </div>
-                          ))
-                        ) : (
-                          <p className="text-center text-gray-500 font-medium">
-                            No matching history found.
-                          </p>
-                        )}
+                            )
+                          ) : (
+                            <p className="text-center text-gray-500 italic">
+                              🔍 Type a search or select an action to filter
+                              history
+                            </p>
+                          )}
+                        </div>
+                        <div className="lg:my-6 my-3">
+                          <Button
+                            onClick={() =>
+                              navigate("/client-plan-subscription")
+                            }
+                            variant="primary"
+                          >
+                            <Layers size={20} /> Manage Plan
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </motion.div>
 
                   {/* Plan summary status section */}
                   <div className="">
-                    <div className="lg:col-span-4 col-span-12">
-                      {planHistory?.length > 0 && (
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-                          {[
-                            {
-                              label: "Upgrades",
-                              color: "bg-green-100 text-green-700",
-                              key: "upgrade",
-                            },
-                            {
-                              label: "Downgrades",
-                              color: "bg-yellow-100 text-yellow-700",
-                              key: "downgrade",
-                            },
-                            {
-                              label: "Cancellations",
-                              color: "bg-red-100 text-red-700",
-                              key: "cancel",
-                            },
-                          ].map((stat) => (
-                            <div
-                              key={stat.key}
-                              className={`p-4 rounded-xl text-center shadow-sm ${stat.color}`}
-                            >
-                              <p className="text-lg font-semibold">
-                                {
-                                  planHistory.filter(
-                                    (h) => h.action.toLowerCase() === stat.key
-                                  ).length
-                                }
-                              </p>
-                              <p className="text-sm font-medium">
-                                {stat.label}
-                              </p>
-                            </div>
-                          ))}
+                    <h2 className="lg:text-2xl text-xl font-bold text-base-content/70 lg:mb-3 mb-2 flex items-center space-x-2">
+                      <ListFilterPlusIcon className="text-blue-500" />
+                      <span>Plan summary details</span>
+                    </h2>
+
+                    <div className="grid lg:grid-cols-12 grid-cols-1 justify-between lg:gap-6 gap-4">
+                      <div className="lg:col-span-9 col-span-12">
+                        {planHistory?.length > 0 && (
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            {[
+                              {
+                                label: "Upgrades",
+                                color: "bg-green-100 text-green-700",
+                                key: "upgrade",
+                              },
+                              {
+                                label: "Downgrades",
+                                color: "bg-yellow-100 text-yellow-700",
+                                key: "downgrade",
+                              },
+                              {
+                                label: "Cancellations",
+                                color: "bg-red-100 text-red-700",
+                                key: "cancel",
+                              },
+                            ].map((stat) => (
+                              <div
+                                key={stat.key}
+                                className={`p-4 rounded-xl text-center shadow-sm ${stat.color}`}
+                              >
+                                <p className="text-lg font-semibold">
+                                  {
+                                    planHistory.filter(
+                                      (h) => h.action.toLowerCase() === stat.key
+                                    ).length
+                                  }
+                                </p>
+                                <p className="text-sm font-medium">
+                                  {stat.label}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="lg:col-span-3 col-span-12">
+                        <div className={`${stat.classProperties} rounded-xl`}>
+                          <p className="text-red-500 font-bold">
+                            {stat.key === "total"
+                              ? planHistory.length
+                              : planHistory.filter(
+                                  (h) => h.action.toLowerCase() === stat.key
+                                ).length}
+                          </p>
+                          <p className={`${stat.color}`}>{stat.label}</p>
                         </div>
-                      )}
+                      </div>
                     </div>
                   </div>
                 </motion.div>
 
                 <motion.div
-                  className="lg:space-y-4 space-y-2 rounded-2xl"
+                  className="lg:space-y-4 space-y-2 rounded-xl"
                   variants={containerVariants}
                 >
                   {!planHistory || planHistory.length === 0 ? (
@@ -588,7 +767,7 @@ const ClientProfilePage = () => {
                         {planHistory.map((history) => (
                           <div
                             key={history._id}
-                            className="relative p-5 bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 transition-all hover:shadow-md"
+                            className="relative p-5 bg-base-100 rounded-xl shadow-sm border border-base-content/15 transition-all hover:shadow-md"
                           >
                             <div className="flex justify-between items-center mb-2">
                               <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">

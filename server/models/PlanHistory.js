@@ -22,9 +22,12 @@ const planHistorySchema = new mongoose.Schema(
     price: { type: Number, required: true },
     features: [{ type: String }],
     startedAt: { type: Date, default: Date.now },
-    endedAt: { type: Date },
+    endedAt: { type: Date, default: null },
     stripeSessionId: { type: String },
     isActive: { type: Boolean, default: false },
+    duration: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
