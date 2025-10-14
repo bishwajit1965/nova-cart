@@ -1,10 +1,7 @@
 // client/pages/ProfilePage.jsx
 
 import {
-  ArrowDownAZ,
   ArrowDownZA,
-  ArrowDownZa,
-  ArrowUpAZ,
   ArrowUpZA,
   Layers,
   ListFilterPlusIcon,
@@ -28,6 +25,7 @@ import { useApiQuery } from "../../../superAdmin/services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../../common/utils/hooks/useFetchedDataStatusHandler";
 import { useNavigate } from "react-router-dom";
 import usePageTitle from "../../../superAdmin/services/hooks/usePageTitle";
+import { useQueryClient } from "@tanstack/react-query";
 
 const ClientProfilePage = () => {
   const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
@@ -43,7 +41,7 @@ const ClientProfilePage = () => {
     key: "total",
     classProperties: "lg:p-4 p-2 text-center rounded-lg bg-sky-200",
   };
-
+  const queryClient = useQueryClient();
   /*** ------> Plans data fetched ------> */
   const {
     data: plans,
@@ -59,39 +57,95 @@ const ClientProfilePage = () => {
       refetchOnReconnect: true,
     },
   });
-  // const {
-  //   data: plans,
-  //   isLoadingPlans,
-  //   isErrorPlans,
-  //   errorPlans,
-  // } = useApiQuery({
-  //   url: `${API_PATHS.SUP_ADMIN_PLANS.SUP_ADMIN_PLANS_ENDPOINT}/all`,
-  //   queryKey: API_PATHS.SUP_ADMIN_PLANS.SUP_ADMIN_PLANS_KEY,
-  //   options: {
-  //     staleTime: 0,
-  //     refetchOnWindowFocus: true,
-  //     refetchOnReconnect: true,
-  //   },
-  // });
+
+  /***------> Plan Upgrade  mutation ------> */
+  const planUpgradeMutation = useApiMutation({
+    method: "update",
+    path: (payload) =>
+      `${API_PATHS.CLIENT_USER.CLIENT_PLANS_ENDPOINT}/${payload.userId}/upgrade/${payload.newPlanId}`,
+    key: API_PATHS.CLIENT_USER.CLIENT_PLANS_KEY,
+    onSuccess: () => {
+      queryClient.invalidateQueries(
+        API_PATHS.CLIENT_PAN_HISTORY.CLIENT_HISTORY_KEY
+      );
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message || "Failed to update plan");
+    },
+  });
+
   console.log("Plans", plans);
 
-  /***------> Plan Update  mutation ------> */
-
   /***------> Plan Downgrade  mutation ------> */
+  const planDowngradeMutation = useApiMutation({
+    method: "update",
+    path: (payload) =>
+      `${API_PATHS.CLIENT_USER.CLIENT_PLANS_ENDPOINT}/${payload.userId}/downgrade/${payload.newPlanId}`,
+    key: API_PATHS.CLIENT_USER.CLIENT_PLANS_KEY,
+    onSuccess: () => {
+      queryClient.invalidateQueries(
+        API_PATHS.CLIENT_PAN_HISTORY.CLIENT_HISTORY_KEY
+      );
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message || "Failed to update plan");
+    },
+  });
 
   /***------> Plan Cancel  mutation ------> */
+  const cancelPlanMutation = useApiMutation({
+    method: "update",
+    path: (payload) =>
+      `${API_PATHS.CLIENT_USER.CLIENT_USER_ENDPOINT}/cancel/${payload.userId}`,
+    key: API_PATHS.CLIENT_USER.CLIENT_USER_KEY,
+    onSuccess: () => {
+      queryClient.invalidateQueries(
+        API_PATHS.CLIENT_PAN_HISTORY.CLIENT_HISTORY_KEY
+      );
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.message || "Failed to cancel plan");
+    },
+  });
 
-  /*** ------> Plan change handler ------> */
-  const handlePlanChange = (value) => {
-    if (value === "upgrade") {
-      alert("Clicked for upgrade");
-    } else if (value === "downgrade") {
-      alert("Clicked for downgrade");
+  /*** ------> Plan change handler (upgrade) ------> */
+  const handlePlanChange = async (action, userId, newPlanId) => {
+    try {
+      if (action === "upgrade") {
+        const payload = { userId: userId, newPlanId: newPlanId };
+        await planUpgradeMutation.mutateAsync(payload);
+      } else if (action === "downgrade") {
+        const payload = { userId: userId, newPlanId: newPlanId };
+        await planDowngradeMutation.mutateAsync(payload);
+      } else if (action === "cancel") {
+        const payload = { userId: userId };
+        await cancelPlanMutation.mutateAsync(payload);
+      } else {
+        toast.error("Invalid plan action");
+      }
+    } catch (err) {
+      console.error("Plan action failed:", err);
+      toast.error("Something went wrong. Please try again.");
     }
   };
-  const handleCancelPlan = (value) => {
-    value === "cancel" && alert("Clicked to cancel");
-  };
+
+  /***------> Fetch user's current plan QUERY ------> */
+  const {
+    data: userPlan,
+    isLoading: isLoadingUserPlan,
+    isError: isErrorUserPlan,
+    error: errorUserPlan,
+  } = useApiQuery({
+    url: `${API_PATHS.CLIENT_USER.CLIENT_USER_ENDPOINT}/my-plan`,
+    queryKey: API_PATHS.CLIENT_USER.CLIENT_USER_KEY,
+    options: {
+      staleTime: 0,
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
+    },
+  });
+
+  console.log("User plan", userPlan);
 
   /***------> Fetch user info QUERY ------> */
   const {
@@ -102,7 +156,11 @@ const ClientProfilePage = () => {
   } = useApiQuery({
     url: API_PATHS.CLIENT_PROFILE_ME.CLIENT_PROFILE_ME_ENDPOINT,
     queryKey: API_PATHS.CLIENT_PROFILE_ME.CLIENT_PROFILE_KEY,
-    options: { staleTime: 0 },
+    options: {
+      staleTime: 0,
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
+    },
   });
 
   /***------> Fetch orders info QUERY ------> */
@@ -114,10 +172,14 @@ const ClientProfilePage = () => {
   } = useApiQuery({
     url: API_PATHS.CLIENT_ORDERS.CLIENT_ORDERS_ENDPOINT,
     queryKey: API_PATHS.CLIENT_ORDERS.CLIENT_KEY,
-    options: { staleTime: 0 },
+    options: {
+      staleTime: 0,
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
+    },
   });
 
-  /***------> Fetch Plan History Info QUERY ------> */
+  /***------> Fetch user's Plan History Info QUERY ------> */
   const {
     data: planHistory,
     isLoading: isLoadingUserPlanHistory,
@@ -126,11 +188,12 @@ const ClientProfilePage = () => {
   } = useApiQuery({
     url: API_PATHS.CLIENT_PAN_HISTORY.CLIENT_PLAN_HISTORY_ENDPOINT,
     queryKey: API_PATHS.CLIENT_PAN_HISTORY.CLIENT_HISTORY_KEY,
-    options: { staleTime: 0 },
+    options: {
+      staleTime: 0,
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
+    },
   });
-
-  console.log("Orders", orders);
-  console.log("Plan History", planHistory);
 
   const filteredHistory = planHistory
     ?.filter((h) =>
@@ -192,7 +255,6 @@ const ClientProfilePage = () => {
   /*** -----> Cancel order handler -----> */
   const handleCancelOrder = (orderId) => {
     if (!window.confirm("Are you sure you want to cancel this order?")) return;
-    // const payload = { data: status };
     updateOrderMutation.mutate({ orderId });
   };
 
@@ -203,6 +265,13 @@ const ClientProfilePage = () => {
     error: errorPlans,
     label: "Plans",
   });
+  const userCurrentPlansDataStatus = useFetchedDataStatusHandler({
+    isLoading: isLoadingUserPlan,
+    isError: isErrorUserPlan,
+    error: errorUserPlan,
+    label: "Plans",
+  });
+
   const userDataStatus = useFetchedDataStatusHandler({
     isLoading: isLoadingUser,
     isError: isErrorUser,
@@ -233,11 +302,11 @@ const ClientProfilePage = () => {
       <DynamicPageTitle pageTitle={pageTitle} />
 
       <div className="max-w-7xl mx-auto bg-base-200 rounded-xl shadow">
-        {/*** ---------> USER INFO SECTION ---------> */}
+        {/*** ======>> USER INFO SECTION ======>> */}
         {userDataStatus.status !== "success" ? (
           userDataStatus.content
         ) : (
-          <div className="lg:max-w-5xl mx-auto lg:py-16 py-4 lg:space-y-6 space-y-4">
+          <div className="lg:max-w-6xl mx-auto lg:py-16 py-4 lg:space-y-6 space-y-4">
             {/* Personal Info */}
             <motion.div
               className="bg-base-100 rounded-xl shadow lg:p-12 p-2 space-y-4 hover:shadow-2xl"
@@ -324,7 +393,7 @@ const ClientProfilePage = () => {
               </motion.div>
             </motion.div>
 
-            {/*** --------> ORDERS INFO SECTION --------> */}
+            {/*** ======>> ORDERS INFO SECTION ======>> */}
             <motion.div
               className="rounded-xl"
               initial="hidden"
@@ -430,7 +499,7 @@ const ClientProfilePage = () => {
               )}
             </motion.div>
 
-            {/* Plan History section begins */}
+            {/* =======>> PLAN HISTORY SECTION BEGINS =======>> */}
             {planHistoryDataStatus.status !== "success" ? (
               planHistoryDataStatus.content
             ) : (
@@ -461,7 +530,7 @@ const ClientProfilePage = () => {
                       {/* Active Plan Section */}
                       {planHistory?.length > 0 && (
                         <motion.div
-                          className="rounded-xl p-6"
+                          className="rounded-xl lg:p-6 p-2"
                           initial="hidden"
                           whileInView="visible"
                           viewport={{ once: false }}
@@ -492,7 +561,7 @@ const ClientProfilePage = () => {
                               );
 
                             return (
-                              <div className="p-6 bg-base-100 rounded-xl shadow hover:shadow-lg transition-all">
+                              <div className="lg:p-6 p-2 bg-base-100 rounded-xl shadow hover:shadow-lg transition-all">
                                 <h3 className="text-xl font-semibold text-gray-800">
                                   {activePlan.planId?.name}
                                 </h3>
@@ -534,76 +603,168 @@ const ClientProfilePage = () => {
                                   )}
                                 </div>
 
-                                {/* ✅ PLACE ACTION BUTTONS HERE */}
-                                {/* ============= WORKING SPACE ========== */}
+                                {/* ✅ ACTION BUTTONS HERE */}
                                 {plansDataStatus.status !== "success" ? (
                                   plansDataStatus.content
                                 ) : (
-                                  <div className="flex gap-2 mt-4">
-                                    {/* Upgrade */}
+                                  <div className="space-y-4 mt-6">
+                                    {plans?.map((p) => (
+                                      <div
+                                        key={p._id}
+                                        className={`${
+                                          p.price === activePlan.price
+                                            ? "lg:p-3 p-2 border border-indigo-600 rounded-lg mb-3 shadow-md bg-sky-100"
+                                            : "lg:p-3 p-2 border border-base-content/15 rounded-lg mb-3 shadow-sm"
+                                        }`}
+                                      >
+                                        <div className="flex items-center justify-between mb-2">
+                                          <h3
+                                            className={`${
+                                              p.price === activePlan.price
+                                                ? "text-indigo-500 font-extrabold italic"
+                                                : "text-gray-800"
+                                            }`}
+                                          >
+                                            {p.name}
+                                          </h3>
+                                          <p className="text-gray-600">
+                                            ${p.price}
+                                          </p>
+                                        </div>
 
-                                    {plans.some(
-                                      (p) => p.price > Number(activePlan.price)
-                                    ) && (
-                                      <Button
-                                        onClick={() =>
-                                          handlePlanChange("upgrade")
-                                        }
-                                        variant="success"
-                                        className="btn btn-sm transition"
-                                      >
-                                        <ArrowUpZA /> Upgrade
-                                      </Button>
-                                    )}
-                                    {/* Downgrade */}
-                                    {plans.some(
-                                      (p) => p.price < Number(activePlan.price)
-                                    ) && (
-                                      <Button
-                                        onClick={() =>
-                                          handlePlanChange("downgrade")
-                                        }
-                                        variant="warning"
-                                        className="btn btn-sm transition"
-                                      >
-                                        <ArrowDownZA /> Downgrade
-                                      </Button>
-                                    )}
-                                    {/* Cancel */}
-                                    {activePlan.name !== "Basic" && (
-                                      <Button
-                                        onClick={() =>
-                                          handleCancelPlan("cancel")
-                                        }
-                                        variant="danger"
-                                        className="btn btn-sm transition"
-                                      >
-                                        <X /> Cancel
-                                      </Button>
-                                    )}
+                                        <div className="lg:flex grid gap-2">
+                                          {/* Upgrade */}
+                                          {p.price >
+                                            Number(activePlan.price) && (
+                                            <div className="">
+                                              <Button
+                                                onClick={() =>
+                                                  handlePlanChange(
+                                                    "upgrade",
+                                                    userData?._id,
+                                                    p?._id
+                                                  )
+                                                }
+                                                variant="success"
+                                                className="btn btn-sm flex-inline text-sm"
+                                              >
+                                                <ArrowUpZA
+                                                  className="mr-1"
+                                                  size={16}
+                                                />
+                                                Upgrade to {p.name}
+                                              </Button>
+                                            </div>
+                                          )}
+
+                                          {/* Downgrade */}
+                                          {p.price <
+                                            Number(activePlan.price) && (
+                                            <div className="">
+                                              <Button
+                                                onClick={() =>
+                                                  handlePlanChange(
+                                                    "downgrade",
+                                                    userData?._id,
+                                                    p?._id
+                                                  )
+                                                }
+                                                variant="warning"
+                                                className="btn btn-sm flex text-sm"
+                                              >
+                                                <ArrowDownZA
+                                                  className="mr-1"
+                                                  size={16}
+                                                />{" "}
+                                                Downgrade to {p.name}
+                                              </Button>
+                                            </div>
+                                          )}
+
+                                          {/* Cancel */}
+                                          {p.price === activePlan.price &&
+                                            p.name !== "Basic" && (
+                                              <div className="mt-">
+                                                <Button
+                                                  onClick={() => {
+                                                    toast(
+                                                      (t) => (
+                                                        <div className="flex flex-col items-start gap-2">
+                                                          <span className="font-semibold text-sm">
+                                                            Are you sure to
+                                                            cancel your current
+                                                            plan?
+                                                          </span>
+                                                          <div className="flex gap-2 mt-1">
+                                                            <Button
+                                                              variant="danger"
+                                                              onClick={() => {
+                                                                handlePlanChange(
+                                                                  "cancel",
+                                                                  userData?._id,
+                                                                  p._id
+                                                                );
+                                                                toast.dismiss(
+                                                                  t.id
+                                                                );
+                                                              }}
+                                                              className="btn btn-sm text-sm"
+                                                            >
+                                                              Yes, Cancel
+                                                            </Button>
+                                                            <Button
+                                                              variant="secondary"
+                                                              onClick={() =>
+                                                                toast.dismiss(
+                                                                  t.id
+                                                                )
+                                                              }
+                                                              className="btn btn-sm text-sm"
+                                                            >
+                                                              No
+                                                            </Button>
+                                                          </div>
+                                                        </div>
+                                                      ),
+                                                      { duration: 5000 }
+                                                    );
+                                                  }}
+                                                  variant="danger"
+                                                  className="btn btn-sm text-sm"
+                                                >
+                                                  <X
+                                                    className="mr-1"
+                                                    size={16}
+                                                  />
+                                                  Cancel Current Plan
+                                                </Button>
+                                              </div>
+                                            )}
+                                        </div>
+                                      </div>
+                                    ))}
                                   </div>
                                 )}
-                                {/* ============= WORKING SPACE ========== */}
                               </div>
                             );
                           })()}
                         </motion.div>
                       )}
                     </div>
-                    {/* Plan History Filter ====================== */}
-                    <div className="lg:col-span-6 col-span-12 bg-base-200 p-6 rounded-xl shadow hover:shadow-xl">
-                      <div className="flex flex-wrap gap-2 mb-6 items-center border border-base-content/15 p-3 rounded-lg bg-base-200 shadow">
+                    {/* Plan History Filter */}
+                    <div className="lg:col-span-6 col-span-12 bg-base-200 lg:p-6 p-2 rounded-xl shadow hover:shadow-xl">
+                      <div className="flex flex-wrap gap-2 mb-6 items-center border border-base-content/15 lg:p-3 p-2 rounded-lg bg-base-200 shadow">
                         <input
                           type="text"
                           placeholder="Search plan..."
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
-                          className="input input-bordered w-full sm:w-36"
+                          className="input input-bordered w-full sm:w-44"
                         />
                         <select
                           value={filterAction}
                           onChange={(e) => setFilterAction(e.target.value)}
-                          className="select select-bordered w-full sm:w-36"
+                          className="select select-bordered w-full sm:w-44"
                         >
                           <option value="">All Actions</option>
                           <option value="upgrade">Upgrade</option>
@@ -620,7 +781,7 @@ const ClientProfilePage = () => {
                         </Button>
                       </div>
                       {/* Keep everything else same, just adjust rendering logic */}
-                      <div className="bg-base-100 p-6 rounded-xl shadow  hover:shadow-xl">
+                      <div className="bg-base-100 lg:p-6 p-2 rounded-xl shadow hover:shadow-xl">
                         <div className="">
                           {searchTerm || filterAction ? (
                             displayHistory && displayHistory.length > 0 ? (
@@ -639,7 +800,7 @@ const ClientProfilePage = () => {
                               </p>
                             )
                           ) : (
-                            <p className="text-center text-gray-500 italic">
+                            <p className=" text-gray-500 italic">
                               🔍 Type a search or select an action to filter
                               history
                             </p>
@@ -654,6 +815,76 @@ const ClientProfilePage = () => {
                           >
                             <Layers size={20} /> Manage Plan
                           </Button>
+                        </div>
+
+                        {/* ------> Plan summary status section ------> */}
+                        <div className="lg:mt-12 mt-4">
+                          <h2 className="lg:text-2xl text-xl font-semibold text-base-content/70 lg:mb-3 mb-2 flex items-center space-x-2">
+                            <ListFilterPlusIcon className="text-blue-500" />
+                            <span>Plan summary details</span>
+                          </h2>
+
+                          <div className="grid lg:grid-cols-12 grid-cols-1 justify-between lg:gap-6 gap-4">
+                            <div className="lg:col-span-12 col-span-12">
+                              {planHistory?.length > 0 && (
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                  {[
+                                    {
+                                      label: "Upgrades",
+                                      color: "bg-green-100 text-green-700",
+                                      key: "upgrade",
+                                    },
+                                    {
+                                      label: "Downgrades",
+                                      color: "bg-yellow-100 text-yellow-700",
+                                      key: "downgrade",
+                                    },
+                                    {
+                                      label: "Cancellations",
+                                      color: "bg-red-100 text-red-700",
+                                      key: "cancel",
+                                    },
+                                  ].map((stat) => (
+                                    <div
+                                      key={stat.key}
+                                      className={`p-4 rounded-xl text-center shadow-sm ${stat.color}`}
+                                    >
+                                      <p className="text-lg font-semibold">
+                                        {
+                                          planHistory.filter(
+                                            (h) =>
+                                              h.action.toLowerCase() ===
+                                              stat.key
+                                          ).length
+                                        }
+                                      </p>
+                                      <p className="text-sm font-medium">
+                                        {stat.label}
+                                      </p>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+
+                            <div className="lg:col-span-12 col-span-12">
+                              <div
+                                className={`${stat.classProperties} rounded-xl`}
+                              >
+                                <p className="text-indigo-600 font-extrabold">
+                                  {stat.key === "total"
+                                    ? planHistory.length
+                                    : planHistory.filter(
+                                        (h) =>
+                                          h.action.toLowerCase() === stat.key
+                                      ).length}
+                                </p>
+                                <p className=" text-indigo-600 font-extrabold">
+                                  {stat.label}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -727,7 +958,7 @@ const ClientProfilePage = () => {
                   className="lg:space-y-4 space-y-2 rounded-xl"
                   variants={containerVariants}
                 >
-                  {!planHistory || planHistory.length === 0 ? (
+                  {!planHistory || planHistory?.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-64 rounded-2xl border border-dashed border-gray-300 bg-gradient-to-br from-gray-100 to-gray-200 text-center p-6">
                       <div className="mb-4">
                         <svg
@@ -762,19 +993,19 @@ const ClientProfilePage = () => {
                     </div>
                   ) : (
                     planHistory &&
-                    planHistory.length > 0 && (
+                    planHistory?.length > 0 && (
                       <div className="space-y-4 mt-6">
-                        {planHistory.map((history) => (
+                        {planHistory?.map((history) => (
                           <div
                             key={history._id}
-                            className="relative p-5 bg-base-100 rounded-xl shadow-sm border border-base-content/15 transition-all hover:shadow-md"
+                            className="relative lg:p-5 p-2 bg-base-100 rounded-xl shadow-sm border border-base-content/15 transition-all hover:shadow-md"
                           >
                             <div className="flex justify-between items-center mb-2">
                               <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
                                 {history.planId?.name || "Unknown Plan"}
                               </h3>
                               <span
-                                className={`text-sm font-medium px-3 py-1 rounded-full ${
+                                className={`text-sm font-medium lg:px-3 py-1 rounded-full ${
                                   history.action === "upgrade"
                                     ? "bg-green-100 text-green-700"
                                     : history.action === "downgrade"

@@ -121,7 +121,12 @@ export const getUserPlan = async (req, res) => {
 
 export const getAllPlans = async (req, res) => {
   try {
-    const plans = await Plan.find({});
+    // const plans = await Plan.find({});
+    const plans = await Plan.find({}).populate(
+      "features",
+      "key title description"
+    );
+
     if (!plans)
       return res
         .status(400)
@@ -144,8 +149,13 @@ export const getAllPlans = async (req, res) => {
 export const upgradePlan = async (req, res) => {
   console.log("🎯Plan upgrade method is hit!");
   try {
-    const { userId, newPlanId } = req.body;
+    const { userId, newPlanId } = req.params;
+    // const { newPlanId } = req.body;
+    console.log("Params", req.params);
+    console.log("USER ID, newPlanId", userId);
     const user = await User.findById(userId).populate("plan");
+    const plan = await Plan.findById(newPlanId).populate("features");
+    console.log("User found", user);
     if (!user)
       return res
         .status(404)
@@ -154,19 +164,40 @@ export const upgradePlan = async (req, res) => {
     if (!newPlan)
       return res
         .status(404)
-        .json({ success: false, message: "new plan not found!" });
+        .json({ success: false, message: "New plan not found!" });
     // Prevent downgrading accidentally
     if (newPlan.price <= user.plan.price) {
       return res.status(400).json({ message: "This is not an upgrade " });
     }
+
+    // 1️⃣ Deactivate all previous active histories
+    await PlanHistory.updateMany(
+      { userId: user._id, isActive: true },
+      { $set: { isActive: false, endedAt: new Date() } }
+    );
+    // Compute endedAt based on plan duration
+    let endedAt = null;
+    const now = new Date();
+
+    if (plan.duration === "monthly") {
+      endedAt = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
+    } else if (plan.duration === "yearly") {
+      endedAt = new Date(now.getFullYear() + 1, now.getMonth(), now.getDate());
+    } else if (plan.duration === "lifetime") {
+      endedAt = null;
+    }
+
     // Deactivate old plan history entry
     const newHistory = await PlanHistory.create({
-      user: user._id,
-      plan: newPlan._id,
-      priceAtPurchase: newPlan.price,
+      userId: user._id,
+      planId: newPlan._id,
+      price: newPlan.price,
+      action: "upgrade",
       duration: newPlan.duration,
       isActive: true,
       startedAt: new Date(),
+      endedAt,
+      features: plan.features.map((f) => f.key),
       expiresAt:
         newPlan.duration === "lifetime"
           ? null
@@ -200,9 +231,10 @@ export const upgradePlan = async (req, res) => {
 export const downgradePlan = async (req, res) => {
   console.log("✅Plan downgrade method is hit!");
   try {
-    const { userId, newPlanId } = req.body;
+    const { userId, newPlanId } = req.params;
     const user = await User.findById(userId).populate("plan");
-    const newPlan = await Plan.findById(newPlanId);
+    const plan = await Plan.findById(newPlanId).populate("features");
+    const newPlan = await Plan.findById(newPlanId).populate("features");
 
     if (!user || !newPlan)
       return res.status(404).json({ message: "User or plan not found" });
@@ -211,15 +243,33 @@ export const downgradePlan = async (req, res) => {
       return res.status(400).json({ message: "This is not a downgrade." });
     }
 
-    await PlanHistory.updateMany({ user: user._id }, { isActive: false });
+    await PlanHistory.updateMany(
+      { userId: user._id, isActive: true },
+      { $set: { isActive: false, endedAt: new Date() } }
+    );
+
+    // Compute endedAt based on plan duration
+    let endedAt = null;
+    const now = new Date();
+
+    if (plan.duration === "monthly") {
+      endedAt = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
+    } else if (plan.duration === "yearly") {
+      endedAt = new Date(now.getFullYear() + 1, now.getMonth(), now.getDate());
+    } else if (plan.duration === "lifetime") {
+      end;
+    }
 
     const newHistory = await PlanHistory.create({
-      user: user._id,
-      plan: newPlan._id,
-      priceAtPurchase: newPlan.price,
+      userId: user._id,
+      planId: newPlan._id,
+      price: newPlan.price,
       duration: newPlan.duration,
       isActive: true,
+      action: "downgrade",
       startedAt: new Date(),
+      endedAt,
+      features: plan.features.map((f) => f.key),
       expiresAt:
         newPlan.duration === "lifetime"
           ? null
@@ -247,41 +297,90 @@ export const downgradePlan = async (req, res) => {
 };
 
 // ❌ Cancel Plan (revert to Basic)
+
 export const cancelPlan = async (req, res) => {
-  console.log("🔵Plan cancel method is hit!");
   try {
-    const { userId } = req.body;
-    const user = await User.findById(userId).populate("plan");
+    const { userId } = req.params;
 
-    const basicPlan = await Plan.findOne({ price: 0 });
-    if (!basicPlan)
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+
+    // const user = await User.findById( userId ).populate( "plan" );
+    const user = await User.findById(userId)
+      .populate({
+        path: "plan",
+        populate: { path: "features" },
+      })
+      .select("name email plan");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (!user.plan) {
       return res
-        .status(404)
-        .json({ message: "Basic plan not found. Please seed it first." });
+        .status(400)
+        .json({ message: "User does not have an active plan" });
+    }
 
-    await PlanHistory.updateMany({ user: user._id }, { isActive: false });
+    // 1️⃣ Deactivate current plan history
+    await PlanHistory.updateMany(
+      { userId: user._id, isActive: true },
+      { $set: { isActive: false, endedAt: new Date() } }
+    );
+    // Compute endedAt based on plan duration
+    let endedAt = null;
+    const now = new Date();
 
-    const cancelHistory = await PlanHistory.create({
-      user: user._id,
-      plan: basicPlan._id,
-      priceAtPurchase: 0,
-      duration: basicPlan.duration,
-      isActive: true,
-      startedAt: new Date(),
-      expiresAt: null,
-    });
+    // 2️⃣ Assign the Basic plan as default
+    const basicPlan = await Plan.findOne({ name: "Basic" });
+    if (!basicPlan) {
+      return res.status(404).json({ message: "Basic plan not found" });
+    }
+
+    if (basicPlan.duration === "monthly") {
+      endedAt = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
+    } else if (basicPlan.duration === "yearly") {
+      endedAt = new Date(now.getFullYear() + 1, now.getMonth(), now.getDate());
+    } else if (basicPlan.duration === "lifetime") {
+      end;
+    }
 
     user.plan = basicPlan._id;
     await user.save();
 
+    // 3️⃣ Create a new PlanHistory record
+    await PlanHistory.create({
+      userId: user._id,
+      planId: basicPlan._id,
+      action: "cancel",
+      price: basicPlan.price || 0,
+      duration: basicPlan.duration || "lifetime",
+      features: basicPlan.features.map((f) => f.key) || [],
+      startedAt: new Date(),
+      isActive: true,
+      endedAt,
+      expiresAt:
+        basicPlan.duration === "lifetime"
+          ? null
+          : new Date(
+              new Date().setFullYear(
+                new Date().getFullYear() +
+                  (basicPlan.duration === "yearly" ? 1 : 0)
+              ) +
+                (basicPlan.duration === "monthly"
+                  ? 30 * 24 * 60 * 60 * 1000
+                  : 0)
+            ),
+    });
+
     res.status(200).json({
-      message: "Plan canceled successfully. Reverted to Basic.",
-      planHistory: cancelHistory,
+      message: `Plan canceled successfully. User reverted to Basic plan.`,
       plan: basicPlan,
     });
   } catch (error) {
-    console.error("Cancel error:", error);
-    res.status(500).json({ message: "Server error", error });
+    console.error("Error canceling plan:", error);
+    res.status(500).json({ message: "Failed to cancel plan", error });
   }
 };
 

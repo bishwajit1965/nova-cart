@@ -35,20 +35,20 @@ router.post(
   subscribePlan
 );
 
-router.post(
-  "/upgrade",
+router.patch(
+  "/:userId/upgrade/:newPlanId",
   authorizeRole("user", "admin", "editor", "super-admin"),
   upgradePlan
 );
 
-router.post(
-  "/downgrade",
+router.patch(
+  "/:userId/downgrade/:newPlanId",
   authorizeRole("user", "admin", "editor", "super-admin"),
   downgradePlan
 );
 
-router.post(
-  "/cancel",
+router.patch(
+  "/cancel/:userId",
   authorizeRole("user", "admin", "editor", "super-admin"),
   cancelPlan
 );
