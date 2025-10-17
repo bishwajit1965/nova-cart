@@ -6,7 +6,6 @@ import {
   ChevronRight,
   CircleGaugeIcon,
   CogIcon,
-  Home,
   Menu,
   NotebookTabs,
   Package,
@@ -62,9 +61,9 @@ const SideNavBar = ({ role }) => {
         icon: <UserCog2Icon size={size} />,
       },
       {
-        path: "/super-admin/product-oversight-management",
-        label: "Product Management",
-        icon: <PackageCheckIcon size={size} />,
+        path: "/super-admin/plan-history-management",
+        label: "Plan History",
+        icon: <UserCog2Icon size={size} />,
       },
       {
         path: "/super-admin/reports-analytics-management",
@@ -119,6 +118,11 @@ const SideNavBar = ({ role }) => {
       {
         path: "/super-admin/product-management",
         label: "Product Management",
+        icon: <Package size={size} />,
+      },
+      {
+        path: "/super-admin/project-progress-tracker",
+        label: "Product Progress",
         icon: <Package size={size} />,
       },
 

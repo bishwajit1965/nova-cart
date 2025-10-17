@@ -1,6 +1,10 @@
 import API_PATHS from "../services/apiPaths/apiPaths";
 import Card from "../../common/components/ui/Card";
 import DownLoadPanel from "../../common/components/ui/DownLoadPanel";
+import SuperAdminBillingSummaryCard from "../components/SuperAdminBillingSummaryCard";
+import SuperAdminMonthlyRevenueChart from "../components/SuperAdminMonthlyRevenueChart";
+import SuperAdminRevenueAnalyticsOverTimeChart from "../components/SuperAdminRevenueAnalyticsOverTimeChart";
+import SuperAdminRevenueTabs from "../components/SuperAdminRevenueTabs";
 import SuperAdminSalesOverviewChart from "../components/SuperAdminSalesOverviewChart";
 import SuperAdminSummaryCard from "../components/SuperAdminSummaryCard";
 import SuperAdminUsersGrowthChart from "../components/SuperAdminUsersGrowthChart";
@@ -115,6 +119,21 @@ const SuperAdminDashboard = () => {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Billing */}
+      <div className="">
+        <div className="">
+          <SuperAdminBillingSummaryCard />
+        </div>
+        <div className="">
+          {/* <SuperAdminRevenueAnalyticsOverTimeChart /> */}
+        </div>
+      </div>
+
+      {/* Monthly & weekly revenue analytics combined */}
+      <div className="bg-base-100 rounded-xl">
+        <SuperAdminRevenueTabs />
       </div>
     </div>
   );

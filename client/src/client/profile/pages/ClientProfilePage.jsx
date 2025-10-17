@@ -129,24 +129,6 @@ const ClientProfilePage = () => {
     }
   };
 
-  /***------> Fetch user's current plan QUERY ------> */
-  const {
-    data: userPlan,
-    isLoading: isLoadingUserPlan,
-    isError: isErrorUserPlan,
-    error: errorUserPlan,
-  } = useApiQuery({
-    url: `${API_PATHS.CLIENT_USER.CLIENT_USER_ENDPOINT}/my-plan`,
-    queryKey: API_PATHS.CLIENT_USER.CLIENT_USER_KEY,
-    options: {
-      staleTime: 0,
-      refetchOnWindowFocus: true,
-      refetchOnReconnect: true,
-    },
-  });
-
-  console.log("User plan", userPlan);
-
   /***------> Fetch user info QUERY ------> */
   const {
     data: user,
@@ -263,12 +245,6 @@ const ClientProfilePage = () => {
     isLoading: isLoadingPlans,
     isError: isErrorPlans,
     error: errorPlans,
-    label: "Plans",
-  });
-  const userCurrentPlansDataStatus = useFetchedDataStatusHandler({
-    isLoading: isLoadingUserPlan,
-    isError: isErrorUserPlan,
-    error: errorUserPlan,
     label: "Plans",
   });
 
@@ -889,69 +865,6 @@ const ClientProfilePage = () => {
                       </div>
                     </div>
                   </motion.div>
-
-                  {/* Plan summary status section */}
-                  <div className="">
-                    <h2 className="lg:text-2xl text-xl font-bold text-base-content/70 lg:mb-3 mb-2 flex items-center space-x-2">
-                      <ListFilterPlusIcon className="text-blue-500" />
-                      <span>Plan summary details</span>
-                    </h2>
-
-                    <div className="grid lg:grid-cols-12 grid-cols-1 justify-between lg:gap-6 gap-4">
-                      <div className="lg:col-span-9 col-span-12">
-                        {planHistory?.length > 0 && (
-                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            {[
-                              {
-                                label: "Upgrades",
-                                color: "bg-green-100 text-green-700",
-                                key: "upgrade",
-                              },
-                              {
-                                label: "Downgrades",
-                                color: "bg-yellow-100 text-yellow-700",
-                                key: "downgrade",
-                              },
-                              {
-                                label: "Cancellations",
-                                color: "bg-red-100 text-red-700",
-                                key: "cancel",
-                              },
-                            ].map((stat) => (
-                              <div
-                                key={stat.key}
-                                className={`p-4 rounded-xl text-center shadow-sm ${stat.color}`}
-                              >
-                                <p className="text-lg font-semibold">
-                                  {
-                                    planHistory.filter(
-                                      (h) => h.action.toLowerCase() === stat.key
-                                    ).length
-                                  }
-                                </p>
-                                <p className="text-sm font-medium">
-                                  {stat.label}
-                                </p>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="lg:col-span-3 col-span-12">
-                        <div className={`${stat.classProperties} rounded-xl`}>
-                          <p className="text-red-500 font-bold">
-                            {stat.key === "total"
-                              ? planHistory.length
-                              : planHistory.filter(
-                                  (h) => h.action.toLowerCase() === stat.key
-                                ).length}
-                          </p>
-                          <p className={`${stat.color}`}>{stat.label}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </motion.div>
 
                 <motion.div

@@ -37,12 +37,21 @@ import supAdmAnalyticsRoutes from "./routes/superAdmin/supAdmAnalyticsRoutes.js"
 import supAdmProductRoutes from "./routes/supAdmProductRoutes.js";
 import supAdmSummaryRoutes from "./routes/superAdmin/supAdmSummaryRoutes.js";
 import supAdminAuditLogRoutes from "./routes/superAdmin/supAdmAuditLogRoutes.js";
+import supAdminBillingRoutes from "./routes/superAdmin/supAdminBillingRoutes.js";
 import supAdminFeatureRoutes from "./routes/superAdmin/supAdminFeatureRoutes.js";
+import supAdminMonthlyRevenueRoutes from "./routes/superAdmin/supAdminMonthlyRevenueRoutes.js";
+import supAdminPlanHistoryRoutes from "./routes/superAdmin/supAdminPlanHistoryRoutes.js";
 import supAdminPlanRoutes from "./routes/superAdmin/supAdminPlanRoutes.js";
 import supAdminReportsRoutes from "./routes/superAdmin/supAdmReportsRoutes.js";
+import supAdminRevenueAnalyticsRoutes from "./routes/superAdmin/supAdminRevenueAnalyticsRoutes.js";
+import supAdminSystemSettingsRoutes from "./routes/superAdmin/supAdminSystemSettingsRoutes.js";
 import supAdminUsersRoutes from "./routes/superAdmin/supAdminUsersRoutes.js";
+import supAdminVendorsRoutes from "./routes/superAdmin/supAdminVendorsRoutes.js";
 import superAdminOrderRoutes from "./routes/superAdmin/superAdminOrderRoutes.js";
 
+/**==========================================
+ * Essential configurations section
+ *===========================================*/
 dotenv.config(); // ✅ load .env first
 
 // Connect to the database
@@ -67,9 +76,12 @@ app.use(
     credentials: true,
   })
 );
+
 app.use(express.urlencoded({ extended: true }));
 
-// Auth & super-admin Mounting Routes
+/**==========================================
+ * Auth & super-admin related Mounting Routes
+ *===========================================*/
 app.use("/api/auth", authRoutes);
 app.use("/api/superAdmin/carts", cartRoutes);
 app.use("/api/superAdmin/users", adminUserRoutes);
@@ -86,14 +98,30 @@ app.use("/api/superAdmin/analytics", supAdmAnalyticsRoutes);
 app.use("/api/superAdmin/users-moderation", supAdminUsersRoutes);
 app.use("/api/superAdmin/features", supAdminFeatureRoutes);
 app.use("/api/superAdmin/plans", supAdminPlanRoutes);
+app.use("/api/superAdmin/billing", supAdminBillingRoutes);
+app.use(
+  "/api/superAdmin/revenue-analytics/weekly",
+  supAdminRevenueAnalyticsRoutes
+);
+app.use(
+  "/api/superAdmin/revenue-analytics/monthly",
+  supAdminMonthlyRevenueRoutes
+);
+app.use("/api/superAdmin/plan-histories", supAdminPlanHistoryRoutes);
+app.use("/api/superAdmin/vendors", supAdminVendorsRoutes);
+app.use("/api/superAdmin/system-settings", supAdminSystemSettingsRoutes);
 
-// Admin related mounting routes
+/**==========================================
+ * Admin related mounting routes
+ *===========================================*/
 app.use("/api/admin/orders", adminOrderRoutes);
 app.use("/api/admin/users", adminUsersRoutes);
 app.use("/api/admin/analytics", adminAnalyticsRoutes);
 app.use("/api/admin/products-report", adminReportsRoutes);
 
-// Client related mounting routes
+/**==========================================
+ * Client related mounting routes
+ *===========================================*/
 app.use("/api/client/products", clientProductRoutes);
 app.use("/api/client/carts", clientCartRoutes);
 app.use("/api/client/categories", clientCategoryRoutes);
@@ -111,10 +139,16 @@ app.use("/api/client/stripe", clientStripeRoutes);
 app.use("/api/client/plan-subscription", clientPlanSubscriptionRoutes);
 app.use("/api/client/plan-history", clientPlanHistoryRoutes);
 
+/**=========================================
+ * Server active status message display
+ *==========================================*/
 app.get("/", (req, res) => {
   res.send("Listening from Nova-cart!");
 });
 
+/**=========================================
+ * Server active port status message display
+ *==========================================*/
 app.listen(port, () => {
   console.log(`Nova-cart Server is running on port ${port}`);
 });

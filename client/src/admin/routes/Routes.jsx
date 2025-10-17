@@ -14,7 +14,6 @@ import ClientOrderDetailsPage from "../../client/cart/ClientOrderDetailsPage";
 import ClientOrdersPage from "../../client/cart/ClientOrdersPage";
 import ClientPlanSubscriptionPage from "../../client/subscription/ClientPlanSubscriptionPage";
 import ClientProfilePage from "../../client/profile/pages/ClientProfilePage";
-import ComingSoonPage from "../../common/pages/ComingSoonPage";
 import ContactPage from "../../common/pages/ContactPage";
 import ContentManagement from "../../superAdmin/pages/ContentManagement";
 import FaqPage from "../../common/pages/FAQPage";
@@ -28,8 +27,8 @@ import PermissionManagement from "../../superAdmin/pages/PermissionManagement";
 import Portfolio from "../../client/portfolio/Portfolio";
 import PrivacyPolicyPage from "../../common/pages/PrivacyPolicyPage";
 import ProductDetails from "../../client/products/ProductDetails";
-import ProductOversight from "../../superAdmin/pages/ProductOversight";
 import Profile from "../../users/pages/Profile";
+import ProjectProgressTracker from "../../superAdmin/pages/ProjectProgressTracker";
 import ProtectedRoute from "./ProtectedRoute";
 import Register from "../../common/pages/Register";
 import ReportsAnalyticsManagement from "../../superAdmin/pages/ReportsAnalyticsManagement";
@@ -43,17 +42,18 @@ import SuperAdminFeatureManagementPage from "../../superAdmin/pages/SuperAdminFe
 import SuperAdminLayout from "../../common/layouts/SuperAdminLayout";
 import SuperAdminOrderDetailsPage from "../../superAdmin/pages/SuperAdminOrderDetailsPage";
 import SuperAdminOrdersOverviewManagement from "../../superAdmin/pages/SuperAdminOrdersOverviewManagement";
+import SuperAdminPlanHistoryManagement from "../../superAdmin/pages/SuperAdminPlanHistoryManagement";
 import SuperAdminPlanManagementPage from "../../superAdmin/pages/SuperAdminPlanManagementPage";
 import SuperAdminProductManagementPage from "../../superAdmin/pages/SuperAdminProductManagementPage";
+import SuperAdminSettingsManagementPage from "../../superAdmin/pages/SuperAdminSystemSettingsManagementPage";
 import SuperAdminSubcategoryManagement from "../../superAdmin/pages/SuperAdminSubcategoryManagement";
 import SuperAdminUsersManagementPage from "../../superAdmin/pages/SuperAdminUsersManagementPage";
-import SystemSettingsManagement from "../../superAdmin/pages/SystemSettingsManagement";
+import SuperAdminVendorManagementPage from "../../superAdmin/pages/SuperAdminVendorManagementPage";
 import Terms from "../../common/pages/Terms";
 import TermsConditionsPage from "../../common/pages/TermsConditionsPage";
 import Unauthorized from "../../common/pages/UnauthorizedPage";
 import UserDashboard from "../../users/pages/UserDashboard";
 import UserLayout from "../../common/layouts/UserLayout";
-import VendorManagement from "../../superAdmin/pages/VendorManagement";
 import WishListItemPage from "../../client/cart/WishListItemPage";
 import api from "../../common/lib/api";
 import { createBrowserRouter } from "react-router-dom";
@@ -241,11 +241,11 @@ const router = createBrowserRouter([
       },
       {
         path: "vendor-management",
-        element: <VendorManagement />,
-      },
-      {
-        path: "product-oversight-management",
-        element: <ProductOversight />,
+        element: (
+          <ProtectedRoute allowedRoles={["super-admin", "admin"]}>
+            <SuperAdminVendorManagementPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "orders-overview-management",
@@ -282,7 +282,11 @@ const router = createBrowserRouter([
       },
       {
         path: "system-settings-management",
-        element: <SystemSettingsManagement />,
+        element: (
+          <ProtectedRoute allowedRoles={["super-admin", "admin"]}>
+            <SuperAdminSettingsManagementPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "security-audit-log-management",
@@ -335,6 +339,18 @@ const router = createBrowserRouter([
             <SuperAdminPlanManagementPage />
           </ProtectedRoute>
         ),
+      },
+      {
+        path: "plan-history-management",
+        element: (
+          <ProtectedRoute allowedRoles={["super-admin", "admin"]}>
+            <SuperAdminPlanHistoryManagement />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "project-progress-tracker",
+        element: <ProjectProgressTracker />,
       },
     ],
   },

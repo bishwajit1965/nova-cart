@@ -12,7 +12,6 @@ import { useApiMutation } from "../services/hooks/useApiMutation";
 import { useApiQuery } from "../services/hooks/useApiQuery";
 import { useEffect } from "react";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
-import usePageTitle from "../services/hooks/usePageTitle";
 import { useState } from "react";
 import useValidator from "../../common/hooks/useValidator";
 
@@ -163,6 +162,7 @@ const SuperAdminFeatureManagementPage = () => {
     error: errorFeatures,
     label: "Features",
   });
+
   return (
     <>
       <PageMeta

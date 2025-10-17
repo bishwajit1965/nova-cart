@@ -4,6 +4,10 @@ const API_PATHS = {
     ENDPOINT: "superAdmin/audit-logs",
     KEY: ["audit-logs"],
   },
+  SUP_ADMIN_BILLING: {
+    SUP_ADMIN_BILLING_ENDPOINT: "superAdmin/billing",
+    SUP_ADMIN_BILLING_KEY: ["billing"],
+  },
   CATEGORIES: {
     ENDPOINT: "superAdmin/categories",
     KEY: ["categories"],
@@ -46,14 +50,45 @@ const API_PATHS = {
     KEY: ["roles"],
   },
 
+  /** SUPER ADMIN VENDOR MANAGEMENT API PATHS */
+  SUP_ADMIN_VENDOR: {
+    SUP_ADMIN_VENDOR_ENDPOINT: "superAdmin/vendors",
+    SUP_ADMIN_VENDOR_KEY: ["vendor-management"],
+  },
+
+  /** SUPER ADMIN PLAN HISTORY ANALYTICS API PATHS */
+  SUP_ADMIN_PLAN_HISTORY: {
+    SUP_ADMIN_PLAN_HISTORY_ENDPOINT: "superAdmin/plan-histories",
+    SUP_ADMIN_PLAN_HISTORY_KEY: ["plan-history"],
+  },
+
+  /** SUPER ADMIN WEEKLY BILLING ANALYTICS API PATHS */
+  SUP_ADMIN_WEEKLY_BILLING: {
+    SUP_ADMIN_BILLING_ENDPOINT: "superAdmin/revenue-analytics/weekly",
+    SUP_ADMIN_BILLING_KEY: ["revenue-analytics-weekly"],
+  },
+
+  /** SUPER ADMIN MONTHLY REVENUE ANALYTICS API PATHS */
+  SUP_ADMIN_MONTHLY_BILLING: {
+    SUP_ADMIN_BILLING_ENDPOINT: "superAdmin/revenue-analytics/monthly",
+    SUP_ADMIN_BILLING_KEY: ["revenue-analytics-monthly"],
+  },
+
+  /** SUPER ADMIN SYSTEM SETTINGS API PATHS */
+  SUP_ADMIN_SYSTEM_SETTINGS: {
+    SUP_ADMIN_SYSTEM_SETTINGS_PROFILE_ENDPOINT:
+      "superAdmin/system-settings/profile",
+    SUP_ADMIN_SYSTEM_SETTINGS_PROFILE_KEY: ["system-settings-profile"],
+  },
+
   /*** -----> SUPER ADMIN PLAN & FEATURE RELATED API PATHS -----> */
   SUP_ADMIN_PLANS: {
     SUP_ADMIN_PLANS_ENDPOINT: "superAdmin/plans",
-    SUP_ADMIN_PLANS_KEY: "plans",
+    SUP_ADMIN_PLANS_KEY: ["plans"],
   },
   SUP_ADMIN_FEATURE: {
     SUP_ADMIN_FEATURE_ENDPOINT: "superAdmin/features",
-    SUP_ADMIN_FEATURE_KEY: "features",
+    SUP_ADMIN_FEATURE_KEY: ["features"],
   },
 
   /** ----> SUPER ADMIN DASH-BOARD ANALYTICS API PATHS ----> */
