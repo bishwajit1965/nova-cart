@@ -1,10 +1,10 @@
-import AppConfig from "../../models/AppConfig.js";
+import SystemSettings from "../../models/SystemPreferenceSettings.js";
 import User from "../../models/User.js";
-import bcrypt from "bcryptjs";
+import fs from "fs";
+import path from "path";
 
 export const getProfile = async (req, res) => {
   try {
-    console.log("🎯 Get profile method is hit");
     const userId = req.user._id;
     const user = await User.findById(userId).select("-password");
     if (!user)
@@ -29,11 +29,8 @@ export const getProfile = async (req, res) => {
 
 export const updateProfileInfo = async (req, res) => {
   try {
-    console.log("🎯Update profile info method is hit");
     const { name, email, avatar } = req.body;
     const { id } = req.params;
-    console.log("Id", id);
-    console.log("REQ>BODY", req.body);
 
     const updateDocs = {};
     if (name) updateDocs.name = name;
@@ -64,97 +61,156 @@ export const updateProfileInfo = async (req, res) => {
   }
 };
 
-export const changePassword = async (req, res) => {
+export const updatePassword = async (req, res) => {
   try {
-    const { oldPassword, newPassword } = req.body;
-    const userId = req.user.id;
-    const user = await User.findById(userId);
+    const { id } = req.params;
+    const { currentPassword, newPassword } = req.body;
+    const user = await User.findById(id);
+
     if (!user)
       return res
         .status(404)
         .json({ success: false, message: "User not found!" });
-    const isMatched = await bcrypt.compare(oldPassword, user.password);
-    if (!isMatched)
+
+    // Check current password
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch)
       return res
         .status(400)
-        .json({ success: false, message: "Old password is incorrect" });
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-    user.password = hashedPassword;
+        .json({ success: false, message: "Current password is incorrect" });
+
+    // Update password
+    user.password = newPassword;
     await user.save();
+
     res
       .status(200)
-      .json({ success: true, message: "Password changed successfully!" });
+      .json({ success: true, message: "Password updated successfully!" });
   } catch (error) {
-    console.error("Error in updating profile", error);
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: error.message,
-    });
+    console.error("Error updating password:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
-export const updatePreferences = async (req, res) => {
+export const getSystemPreferences = async (req, res) => {
   try {
-    const { theme, notifications, language } = req.body;
-    const userId = req.user.id;
-    const updatedDocs = { theme, notifications, language };
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { preferences: updatedDocs },
-      { new: true }
-    ).select("-password");
-    res.status(200).json({
-      success: true,
-      message: "Preferences updated successfully!",
-      data: updatedUser,
-    });
-  } catch (error) {
-    console.error("Error in updating profile", error);
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: error.message,
-    });
-  }
-};
-
-export const updatePlatformConfig = async (req, res) => {
-  try {
-    const { appName, logo, contactEmail, currency } = req.body;
-    let config = await AppConfig.findOne();
-    if (!config) {
-      config = await AppConfig.create({
-        appName,
-        logo,
-        contactEmail,
-        currency,
-      });
-    } else {
-      config.appName = appName;
-      config.logo = logo;
-      config.contactEmail = contactEmail;
-      config.currency = currency;
-      await config.save();
+    let settings = await SystemSettings.findOne({});
+    if (!settings) {
+      settings = await SystemSettings.create({});
     }
+
     res.status(200).json({
       success: true,
-      message: "Platform configuration updated successfully",
-      config,
+      message: "Settings created successfully!",
+      data: settings,
     });
   } catch (error) {
-    console.error("Error in updating profile", error);
+    console.error("Error in fetching system preferences!", error);
     res.status(500).json({
       success: false,
-      message: "Internal server error",
+      message: "Internal server error!",
       error: error.message,
     });
+  }
+};
+
+export const updateSystemPreferences = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const parsedData =
+      typeof req.body.data === "string" ? JSON.parse(req.body.data) : req.body;
+
+    const files = {};
+    if (req.files?.logo) files.logo = req.files.logo[0].filename;
+    if (req.files?.favicon) files.favicon = req.files.favicon[0].filename;
+
+    const updateData = { ...parsedData, ...files };
+
+    // Handle JSON-encoded nested objects
+    if (typeof updateData.paymentGateways === "string") {
+      try {
+        updateData.paymentGateways = JSON.parse(updateData.paymentGateways);
+      } catch {
+        console.warn("⚠️ Could not parse paymentGateways JSON");
+      }
+    }
+
+    if (typeof updateData.socialLinks === "string") {
+      try {
+        updateData.socialLinks = JSON.parse(updateData.socialLinks);
+      } catch {
+        console.warn("⚠️ Could not parse socialLinks JSON");
+      }
+    }
+
+    // Find existing settings
+    let settings = await SystemSettings.findById(id);
+
+    if (!settings) {
+      settings = await SystemSettings.create(updateData);
+    } else {
+      // 🧹 Delete old files if new ones are uploaded
+      const uploadDir = path.join("uploads"); // adjust if needed
+
+      if (files.logo && settings.logo) {
+        const oldLogoPath = path.join(uploadDir, settings.logo);
+        if (fs.existsSync(oldLogoPath)) fs.unlinkSync(oldLogoPath);
+      }
+
+      if (files.favicon && settings.favicon) {
+        const oldFaviconPath = path.join(uploadDir, settings.favicon);
+        if (fs.existsSync(oldFaviconPath)) fs.unlinkSync(oldFaviconPath);
+      }
+
+      // Update with new data
+      settings = await SystemSettings.findByIdAndUpdate(id, updateData, {
+        new: true,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "System preferences updated successfully",
+      data: settings,
+    });
+  } catch (error) {
+    console.error("Error in updating system preferences!", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error!",
+      error: error.message,
+    });
+  }
+};
+
+export const toggleMaintenanceMode = async (req, res) => {
+  try {
+    const { maintenanceMode } = req.body; // true / false
+    const settings = await Settings.findOneAndUpdate(
+      {},
+      { maintenanceMode },
+      { new: true, upsert: true }
+    );
+
+    res.json({
+      success: true,
+      message: maintenanceMode
+        ? "🛠️ Maintenance mode enabled"
+        : "✅ Maintenance mode disabled",
+      data: settings,
+    });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: err.message });
   }
 };
 
 export default {
   updateProfileInfo,
-  changePassword,
-  updatePreferences,
-  updatePlatformConfig,
+  updatePassword,
+  getSystemPreferences,
+  updateSystemPreferences,
+  toggleMaintenanceMode,
 };

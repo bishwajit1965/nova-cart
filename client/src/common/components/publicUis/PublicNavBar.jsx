@@ -4,13 +4,17 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 
 import Avatar from "../../../assets/Avatar.png";
 import Image from "../../../assets/bishwajit-1.jpg";
-import Logo from "../ui/Logo";
 import api from "../../lib/api";
 import { useAuth } from "../../hooks/useAuth";
 import { useState } from "react";
+import useSystemSettings from "../../hooks/useSystemSettings";
 import { useTheme } from "../../hooks/useTheme";
 
+const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+// import Logo from "../ui/Logo";
+
 const PublicNavBar = () => {
+  const { systemSettings } = useSystemSettings();
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, logout, isAuthenticated } = useAuth();
   const { theme, toggleTheme } = useTheme();
@@ -26,7 +30,7 @@ const PublicNavBar = () => {
     { path: "/my-profile", label: "Portfolio" },
     { path: "/client-plan-subscription", label: "Plan" },
   ];
-
+  console.log("System settings in Public navbar", systemSettings);
   const handleLogout = async () => {
     try {
       await api.post("/auth/logout", {}, { withCredentials: true });
@@ -40,9 +44,13 @@ const PublicNavBar = () => {
   return (
     <header className="bg-base-200 shadow-md">
       <div className="max-w-7xl mx-auto px-2 lg:py-0 py-2 flex items-center justify-between">
-        {/* Logo */}
+        {/* Site Logo */}
         <Link to="/" className="lg:text-xl font-bold text-primary">
-          <Logo />
+          <img
+            src={`${apiURL}/uploads/${systemSettings?.logo}`}
+            alt={systemSettings?.appName || "Nova Cart"}
+            className="w-36 object-contain"
+          />
         </Link>
 
         {/* Desktop nav */}

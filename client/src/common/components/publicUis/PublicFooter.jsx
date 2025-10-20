@@ -3,8 +3,12 @@ import { quickLinks, supportLinks } from "../../../utils/footerLinks";
 import { Mail } from "lucide-react";
 import SocialMediaLinks from "../../utils/socialMediaLinks/SocialMediaLinks";
 import toast from "react-hot-toast";
+import useSystemSettings from "../../hooks/useSystemSettings";
 
 const PublicFooter = () => {
+  const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+  const { systemSettings } = useSystemSettings();
+
   const handleSubscribe = (e) => {
     e.preventDefault();
     const email = e.target.email.value.trim();
@@ -19,13 +23,24 @@ const PublicFooter = () => {
 
   return (
     <footer className="bg-base-200 text-base-content/70 pt-12 pb-6 border-t border-base-content/20">
-      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8 gap-6">
         {/* Brand info */}
-        <div>
-          <h3 className="text-2xl font-bold mb-2">Nova-Cart</h3>
+        <div className="">
+          <div className="mb-4">
+            <img
+              src={`${apiURL}/uploads/${systemSettings?.logo}`}
+              alt={systemSettings?.appName}
+              className="w-36 object-contain"
+            />
+          </div>
+          <div className="">
+            <h3 className="text-2xl font-bold mb-2">
+              {systemSettings?.appName}
+            </h3>
+          </div>
           <p className="text-sm">
-            Your one-stop shop for quality products at the best prices. Trusted
-            by thousands of happy customers.
+            {systemSettings?.tagline || "Your Trusted E-commerce Platform"}
+            Trusted by thousands of happy customers.
           </p>
         </div>
 
@@ -89,7 +104,10 @@ const PublicFooter = () => {
 
       {/* Bottom bar */}
       <div className="mt-10 border-t border-base-content/20 pt-6 px-4 text-sm flex flex-col sm:flex-row items-center justify-between max-w-7xl mx-auto">
-        <p>© {new Date().getFullYear()} Nova-Cart. All rights reserved.</p>
+        <p>
+          © {new Date().getFullYear()}{" "}
+          {systemSettings?.footerText || "Nova Cart"}.
+        </p>
         <div className="flex gap-4 mt-4 sm:mt-0">
           <SocialMediaLinks />
         </div>

@@ -6,6 +6,7 @@ import { AuthProvider } from "./common/providers/AuthProvider.jsx";
 import { Elements } from "@stripe/react-stripe-js";
 import { RouterProvider } from "react-router-dom";
 import { StrictMode } from "react";
+import SystemSettingsProvider from "./common/providers/SystemSettingsProvider.jsx";
 import { Toaster } from "react-hot-toast";
 import { createRoot } from "react-dom/client";
 import { loadStripe } from "@stripe/stripe-js";
@@ -20,20 +21,22 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthProvider>
       <QueryClientProvider client={queryClient}>
-        <Elements stripe={stripePromise}>
-          <RouterProvider router={router} />
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 3000,
-              style: {
-                background: "#6a5acd",
-                color: "#fff",
-              },
-            }}
-            reverseOrder={false}
-          />
-        </Elements>
+        <SystemSettingsProvider>
+          <Elements stripe={stripePromise}>
+            <RouterProvider router={router} />
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 3000,
+                style: {
+                  background: "#6a5acd",
+                  color: "#fff",
+                },
+              }}
+              reverseOrder={false}
+            />
+          </Elements>
+        </SystemSettingsProvider>
       </QueryClientProvider>
     </AuthProvider>
   </StrictMode>

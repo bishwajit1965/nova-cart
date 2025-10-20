@@ -50,6 +50,18 @@ const API_PATHS = {
     KEY: ["roles"],
   },
 
+  /** SUPER ADMIN ANNOUNCEMENT API PATHS */
+  SUP_ADMIN_ANNOUNCEMENT: {
+    SUP_ADMIN_ANNOUNCEMENT_ENDPOINT: "superAdmin/announcements",
+    SUP_ADMIN_ANNOUNCEMENT_KEY: ["announcements"],
+  },
+
+  /** SUPER ADMIN HERO SLIDES BANNER API PATHS */
+  SUP_ADMIN_HERO_SLIDES_BANNER: {
+    SUP_ADMIN_HERO_SLIDES_BANNER_ENDPOINT: "superAdmin/slides-banner",
+    SUP_ADMIN_HERO_SLIDES_BANNER_KEY: ["slides-banner"],
+  },
+
   /** SUPER ADMIN VENDOR MANAGEMENT API PATHS */
   SUP_ADMIN_VENDOR: {
     SUP_ADMIN_VENDOR_ENDPOINT: "superAdmin/vendors",
@@ -79,6 +91,14 @@ const API_PATHS = {
     SUP_ADMIN_SYSTEM_SETTINGS_PROFILE_ENDPOINT:
       "superAdmin/system-settings/profile",
     SUP_ADMIN_SYSTEM_SETTINGS_PROFILE_KEY: ["system-settings-profile"],
+
+    SUP_ADMIN_SYSTEM_SETTINGS_PASSWORD_ENDPOINT:
+      "superAdmin/system-settings/password",
+    SUP_ADMIN_SYSTEM_SETTINGS_PASSWORD_KEY: ["system-settings-password"],
+
+    SUP_ADMIN_SYSTEM_SETTINGS_PREFERENCES_ENDPOINT:
+      "superAdmin/system-settings/preference",
+    SUP_ADMIN_SYSTEM_SETTINGS_PREFERENCES_KEY: ["system-settings-preferences"],
   },
 
   /*** -----> SUPER ADMIN PLAN & FEATURE RELATED API PATHS -----> */

@@ -20,6 +20,7 @@ import FaqPage from "../../common/pages/FAQPage";
 import ForgotPassword from "../../common/pages/ForgotPassword";
 import LandingPage from "../../common/pages/LandingPage";
 import Login from "../../common/pages/Login";
+import MaintenanceWrapper from "../../common/pages/MaintenanceModeWrapper";
 import MyOrders from "../../users/pages/MyOrders";
 import NotFound from "../../common/pages/NotFound";
 import OrderConfirmationPage from "../../client/cart/OrderConfirmationPage";
@@ -37,8 +38,10 @@ import RoleManagement from "../../superAdmin/pages/RoleManagement";
 import RootLayout from "../../common/layouts/RootLayout";
 import SecurityAuditLogManagement from "../../superAdmin/pages/SecurityAuditLogManagement";
 import ShippingReturnsPage from "../../common/pages/ShippingReturnsPage";
+import SuperAdminAnnouncementManagementPage from "../../superAdmin/pages/SuperAdminAnnouncementManagementPage";
 import SuperAdminDashboard from "../../superAdmin/pages/SuperAdminDashboard";
 import SuperAdminFeatureManagementPage from "../../superAdmin/pages/SuperAdminFeatureManagementPage";
+import SuperAdminHeroSlidePage from "../../superAdmin/pages/SuperAdminHeroSlidePage";
 import SuperAdminLayout from "../../common/layouts/SuperAdminLayout";
 import SuperAdminOrderDetailsPage from "../../superAdmin/pages/SuperAdminOrderDetailsPage";
 import SuperAdminOrdersOverviewManagement from "../../superAdmin/pages/SuperAdminOrdersOverviewManagement";
@@ -62,7 +65,12 @@ const router = createBrowserRouter([
   // Root Layout
   {
     path: "/",
-    element: <RootLayout />,
+    element: (
+      <MaintenanceWrapper>
+        <RootLayout />
+      </MaintenanceWrapper>
+    ),
+
     children: [
       { index: true, element: <LandingPage /> },
       {
@@ -351,6 +359,14 @@ const router = createBrowserRouter([
       {
         path: "project-progress-tracker",
         element: <ProjectProgressTracker />,
+      },
+      {
+        path: "hero-banner-management",
+        element: <SuperAdminHeroSlidePage />,
+      },
+      {
+        path: "announcement-management",
+        element: <SuperAdminAnnouncementManagementPage />,
       },
     ],
   },

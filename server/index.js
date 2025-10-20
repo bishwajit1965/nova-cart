@@ -7,6 +7,7 @@ import adminUsersRoutes from "./routes/admin/adminUsersRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
+import { checkMaintenanceMode } from "./middlewares/maintenanceMode.js";
 import clientAddressRoutes from "./routes/client/clientAddressRoutes.js";
 import clientCartRoutes from "./routes/client/clientCartRoutes.js";
 import clientCategoryRoutes from "./routes/client/clientCategoryRoutes.js";
@@ -36,9 +37,11 @@ import subCategoryRoutes from "./routes/superAdmin/subCategoryRoutes.js";
 import supAdmAnalyticsRoutes from "./routes/superAdmin/supAdmAnalyticsRoutes.js";
 import supAdmProductRoutes from "./routes/supAdmProductRoutes.js";
 import supAdmSummaryRoutes from "./routes/superAdmin/supAdmSummaryRoutes.js";
+import supAdminAnnouncementRoutes from "./routes/superAdmin/supAdminAnnouncementRoutes.js";
 import supAdminAuditLogRoutes from "./routes/superAdmin/supAdmAuditLogRoutes.js";
 import supAdminBillingRoutes from "./routes/superAdmin/supAdminBillingRoutes.js";
 import supAdminFeatureRoutes from "./routes/superAdmin/supAdminFeatureRoutes.js";
+import supAdminHeroSlideBannerRoutes from "./routes/superAdmin/supAdminHeroSlideRoutes.js";
 import supAdminMonthlyRevenueRoutes from "./routes/superAdmin/supAdminMonthlyRevenueRoutes.js";
 import supAdminPlanHistoryRoutes from "./routes/superAdmin/supAdminPlanHistoryRoutes.js";
 import supAdminPlanRoutes from "./routes/superAdmin/supAdminPlanRoutes.js";
@@ -110,6 +113,8 @@ app.use(
 app.use("/api/superAdmin/plan-histories", supAdminPlanHistoryRoutes);
 app.use("/api/superAdmin/vendors", supAdminVendorsRoutes);
 app.use("/api/superAdmin/system-settings", supAdminSystemSettingsRoutes);
+app.use("/api/superAdmin/slides-banner", supAdminHeroSlideBannerRoutes);
+app.use("/api/superAdmin/announcements", supAdminAnnouncementRoutes);
 
 /**==========================================
  * Admin related mounting routes
@@ -118,6 +123,11 @@ app.use("/api/admin/orders", adminOrderRoutes);
 app.use("/api/admin/users", adminUsersRoutes);
 app.use("/api/admin/analytics", adminAnalyticsRoutes);
 app.use("/api/admin/products-report", adminReportsRoutes);
+
+/***=========================================
+ * SITE MAINTENANCE MIDDLEWARE CHECK ✅
+ * ========================================== */
+app.use(checkMaintenanceMode);
 
 /**==========================================
  * Client related mounting routes

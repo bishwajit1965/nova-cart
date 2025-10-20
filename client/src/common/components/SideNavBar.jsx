@@ -125,6 +125,16 @@ const SideNavBar = ({ role }) => {
         label: "Product Progress",
         icon: <Package size={size} />,
       },
+      {
+        path: "/super-admin/hero-banner-management",
+        label: "Hero & Banner",
+        icon: <Package size={size} />,
+      },
+      {
+        path: "/super-admin/announcement-management",
+        label: "Announcement",
+        icon: <Package size={size} />,
+      },
 
       // ...more
     ],

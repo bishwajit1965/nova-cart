@@ -3,19 +3,22 @@ import {
   authorizeRole,
 } from "../../middlewares/authMiddleware.js";
 import {
-  changePassword,
   getProfile,
-  updatePlatformConfig,
-  updatePreferences,
+  getSystemPreferences,
+  toggleMaintenanceMode,
+  updatePassword,
   updateProfileInfo,
+  updateSystemPreferences,
 } from "../../controllers/superAdmin/supAdminSystemSettingsController.js";
 
 import express from "express";
+import { upload } from "../../middlewares/upload.js";
 
 const router = express.Router();
 
 router.use(authenticationMiddleware);
 
+// Profile get and update related routes
 router.get("/profile/get-profile", authorizeRole("super-admin"), getProfile);
 
 router.patch(
@@ -24,18 +27,34 @@ router.patch(
   updateProfileInfo
 );
 
-router.patch("/update-password", authorizeRole("super-admin"), changePassword);
-
+// Password update related route
 router.patch(
-  "/update-preferences",
+  "/password/:id/update-password",
   authorizeRole("super-admin"),
-  updatePreferences
+  updatePassword
+);
+
+// Get system preference & update
+router.get(
+  "/preference/get-create",
+  authorizeRole("super-admin"),
+  getSystemPreferences
 );
 
 router.patch(
-  "/update-platform",
+  "/preference/:id/update-preference",
   authorizeRole("super-admin"),
-  updatePlatformConfig
+  upload.fields([
+    { name: "logo", maxCount: 1 },
+    { name: "favicon", maxCount: 1 },
+  ]),
+  updateSystemPreferences
+);
+
+router.patch(
+  "/maintenance",
+  authorizeRole("super-admin"),
+  toggleMaintenanceMode
 );
 
 export default router;

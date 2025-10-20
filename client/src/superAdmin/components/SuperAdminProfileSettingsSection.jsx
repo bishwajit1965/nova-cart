@@ -1,12 +1,4 @@
-import {
-  Loader,
-  LucideUserCheck,
-  Save,
-  UserCheck,
-  UserCheck2Icon,
-  UserCircle2Icon,
-  UserCircleIcon,
-} from "lucide-react";
+import { Loader, LucideUserCheck, Save } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import API_PATHS from "../services/apiPaths/apiPaths";
@@ -48,10 +40,8 @@ const SuperAdminProfileSettingsSection = () => {
     method: "update",
     path: (payload) =>
       `${API_PATHS.SUP_ADMIN_SYSTEM_SETTINGS.SUP_ADMIN_SYSTEM_SETTINGS_PROFILE_ENDPOINT}/${payload.id}/update-profile`,
-
     key: API_PATHS.SUP_ADMIN_SYSTEM_SETTINGS
       .SUP_ADMIN_SYSTEM_SETTINGS_PROFILE_KEY, // used by useQuery
-
     onSuccess: () => {},
     onError: (error) => {
       toast.error("Error in saving feature!", error);
@@ -104,7 +94,7 @@ const SuperAdminProfileSettingsSection = () => {
     label: "Profile",
   });
   return (
-    <div>
+    <div className="mx-auto">
       {profileDataStatus.status !== "success" ? (
         profileDataStatus.content
       ) : (
