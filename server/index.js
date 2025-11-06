@@ -37,20 +37,26 @@ import subCategoryRoutes from "./routes/superAdmin/subCategoryRoutes.js";
 import supAdmAnalyticsRoutes from "./routes/superAdmin/supAdmAnalyticsRoutes.js";
 import supAdmProductRoutes from "./routes/supAdmProductRoutes.js";
 import supAdmSummaryRoutes from "./routes/superAdmin/supAdmSummaryRoutes.js";
+import supAdminAboutContentRoutes from "./routes/superAdmin/supAdminAboutContentRoutes.js";
 import supAdminAnnouncementRoutes from "./routes/superAdmin/supAdminAnnouncementRoutes.js";
 import supAdminAuditLogRoutes from "./routes/superAdmin/supAdmAuditLogRoutes.js";
 import supAdminBillingRoutes from "./routes/superAdmin/supAdminBillingRoutes.js";
+import supAdminFaqRoutes from "./routes/superAdmin/supAdminFaqRoutes.js";
 import supAdminFeatureRoutes from "./routes/superAdmin/supAdminFeatureRoutes.js";
 import supAdminHeroSlideBannerRoutes from "./routes/superAdmin/supAdminHeroSlideRoutes.js";
 import supAdminMonthlyRevenueRoutes from "./routes/superAdmin/supAdminMonthlyRevenueRoutes.js";
 import supAdminPlanHistoryRoutes from "./routes/superAdmin/supAdminPlanHistoryRoutes.js";
 import supAdminPlanRoutes from "./routes/superAdmin/supAdminPlanRoutes.js";
+import supAdminPortfolioRoutes from "./routes/superAdmin/supAdminPortfolioRoutes.js";
 import supAdminReportsRoutes from "./routes/superAdmin/supAdmReportsRoutes.js";
 import supAdminRevenueAnalyticsRoutes from "./routes/superAdmin/supAdminRevenueAnalyticsRoutes.js";
 import supAdminSystemSettingsRoutes from "./routes/superAdmin/supAdminSystemSettingsRoutes.js";
 import supAdminUsersRoutes from "./routes/superAdmin/supAdminUsersRoutes.js";
 import supAdminVendorsRoutes from "./routes/superAdmin/supAdminVendorsRoutes.js";
 import superAdminOrderRoutes from "./routes/superAdmin/superAdminOrderRoutes.js";
+import clientSupAdmPortfolioViewRoutes from "./routes/client/clientSupAdminPortfolioViewRoutes.js";
+import supAdminProjectRoutes from "./routes/superAdmin/supAdminProjectRoutes.js";
+import clientSupAdminProjectRoutes from "./routes/client/clientSupAdminProjectRoutes.js";
 
 /**==========================================
  * Essential configurations section
@@ -115,6 +121,10 @@ app.use("/api/superAdmin/vendors", supAdminVendorsRoutes);
 app.use("/api/superAdmin/system-settings", supAdminSystemSettingsRoutes);
 app.use("/api/superAdmin/slides-banner", supAdminHeroSlideBannerRoutes);
 app.use("/api/superAdmin/announcements", supAdminAnnouncementRoutes);
+app.use("/api/superAdmin/faqs", supAdminFaqRoutes);
+app.use("/api/superAdmin/about-content", supAdminAboutContentRoutes);
+app.use("/api/superAdmin/portfolio", supAdminPortfolioRoutes);
+app.use("/api/superAdmin/project", supAdminProjectRoutes);
 
 /**==========================================
  * Admin related mounting routes
@@ -148,6 +158,8 @@ app.use("/api/client/checkout", clientCheckoutRoutes);
 app.use("/api/client/stripe", clientStripeRoutes);
 app.use("/api/client/plan-subscription", clientPlanSubscriptionRoutes);
 app.use("/api/client/plan-history", clientPlanHistoryRoutes);
+app.use("/api/client/portfolio", clientSupAdmPortfolioViewRoutes);
+app.use("/api/client/project", clientSupAdminProjectRoutes);
 
 /**=========================================
  * Server active status message display

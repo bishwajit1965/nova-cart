@@ -1,3 +1,5 @@
+import AnnouncementBar from "../components/publicUis/AnnouncementBar";
+import BannerSection from "../components/publicUis/BannerSection";
 import BestSellersSection from "../components/publicUis/BestSellersSection";
 import Button from "../components/ui/Button";
 import FAQSection from "../components/publicUis/FAQSection";
@@ -14,6 +16,7 @@ import ScrollTopButton from "../components/scrollTopButton/ScrollTopButton";
 import ShopByCategoriesSection from "../components/publicUis/ShopByCategoriesSection";
 import TestimonialFormSection from "../components/publicUis/TestimonialFormSection";
 import TestimonialsSection from "../components/publicUis/TestimonialsSection";
+import WelcomeSubscriptionModal from "../../client/welcomeModal/WelcomeSubscriptionModal";
 import WhyChooseUsSection from "../components/publicUis/WhyChooseUsSection";
 import { containerVariants } from "../../client/service/animations";
 import { motion } from "framer-motion";
@@ -33,8 +36,15 @@ const LandingPage = () => {
         title="Home Page || Nova-Cart"
         description="Have a look on all in details."
       />
+
+      {/* Announcement Bar */}
+      <AnnouncementBar />
+
       {/*Hero section*/}
       <HeroSection />
+
+      {/* banner Section */}
+      <BannerSection />
 
       {/* 🔥 Random Products Section (New) */}
       <RandomProductsSection />
@@ -85,6 +95,9 @@ const LandingPage = () => {
           {!isFormOpen ? "Share Your Experience" : "Close Form"}
         </Button>
       </motion.div>
+
+      {/* Welcome subscription modal */}
+      {<WelcomeSubscriptionModal />}
 
       {/* Scroll to top button */}
       <ScrollTopButton />

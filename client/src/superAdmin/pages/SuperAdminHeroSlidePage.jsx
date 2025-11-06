@@ -19,7 +19,7 @@ const SuperAdminHeroSlidePage = () => {
 
   const toggleForm = () => {
     setIsFormOpen(!isFormOpen);
-    setEditingSlideBanner(null);
+    if (editingSlideBanner) setEditingSlideBanner(null);
   };
 
   const {
@@ -32,7 +32,6 @@ const SuperAdminHeroSlidePage = () => {
       .SUP_ADMIN_HERO_SLIDES_BANNER_ENDPOINT,
     queryKey:
       API_PATHS.SUP_ADMIN_HERO_SLIDES_BANNER.SUP_ADMIN_HERO_SLIDES_BANNER_KEY,
-    // select: (res) => res.data, //NOT NEEDED HERE AS HOOK DOES IT
     options: {
       staleTime: 0,
       refetchOnWindowFocus: true,
@@ -42,6 +41,7 @@ const SuperAdminHeroSlidePage = () => {
 
   useEffect(() => {
     if (slidesBannerData) setSlidesBanner(slidesBannerData);
+    if (editingSlideBanner && !isFormOpen) setEditingSlideBanner(null);
   }, [slidesBannerData]);
 
   const slidesBannerMutation = useApiMutation({
@@ -129,7 +129,12 @@ const SuperAdminHeroSlidePage = () => {
                   Secondary Link: {slide.secondaryLink}
                 </p>
               )}
-
+              {slide.type && (
+                <p className="text-xs">
+                  Type:{" "}
+                  {slide.type.charAt(0).toUpperCase() + slide.type.slice(1)}
+                </p>
+              )}
               <div className="flex justify-between mt-2">
                 <Button
                   variant="indigo"

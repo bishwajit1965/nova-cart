@@ -50,6 +50,30 @@ const API_PATHS = {
     KEY: ["roles"],
   },
 
+  /** SUPER ADMIN PORTFOLIO MANAGEMENT API PATHS */
+  SUP_ADMIN_PORTFOLIO: {
+    SUP_ADMIN_PORTFOLIO_ENDPOINT: "superAdmin/portfolio",
+    SUP_ADMIN_PORTFOLIO_KEY: ["portfolio"],
+  },
+
+  /** SUPER ADMIN PROJECT MANAGEMENT API PATHS */
+  SUP_ADMIN_PROJECT: {
+    SUP_ADMIN_PROJECT_ENDPOINT: "superAdmin/project",
+    SUP_ADMIN_PROJECT_KEY: ["project"],
+  },
+
+  /** SUPER ADMIN ABOUT CONTENT MANAGEMENT API PATHS */
+  SUP_ADMIN_ABOUT_CONTENT: {
+    SUP_ADMIN_ABOUT_CONTENT_ENDPOINT: "superAdmin/about-content",
+    SUP_ADMIN_ABOUT_CONTENT_KEY: ["about-content"],
+  },
+
+  /** SUPER ADMIN CONTENT MANAGEMENT API PATHS */
+  SUP_ADMIN_FAQ: {
+    SUP_ADMIN_FAQ_ENDPOINT: "superAdmin/faqs",
+    SUP_ADMIN_FAQ_KEY: ["faqs"],
+  },
+
   /** SUPER ADMIN ANNOUNCEMENT API PATHS */
   SUP_ADMIN_ANNOUNCEMENT: {
     SUP_ADMIN_ANNOUNCEMENT_ENDPOINT: "superAdmin/announcements",
@@ -250,6 +274,18 @@ const API_PATHS = {
   CLIENT_PAN_HISTORY: {
     CLIENT_PLAN_HISTORY_ENDPOINT: "client/plan-history",
     CLIENT_HISTORY_KEY: "plan-history",
+  },
+
+  /** CLIENT SUPER ADMIN PORTFOLIO VIEW + DOWNLOAD(PDF) API PATHS */
+  CLIENT_SUP_ADM_PORTFOLIO: {
+    CLIENT_SUP_ADM_PORTFOLIO_ENDPOINT: "client/portfolio",
+    CLIENT_SUP_ADM_PORTFOLIO_KEY: ["portfolio"],
+  },
+
+  /** CLIENT SUPER ADMIN PROJECT VIEW API PATHS */
+  CLIENT_SUP_ADM_PROJECT: {
+    CLIENT_SUP_ADM_PROJECT_ENDPOINT: "client/project",
+    CLIENT_SUP_ADM_PROJECT_KEY: ["project"],
   },
 
   // Extend this for other features.....

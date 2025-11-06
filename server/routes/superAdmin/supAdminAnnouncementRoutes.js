@@ -15,7 +15,7 @@ const router = express.Router();
 
 router.use(authenticationMiddleware);
 
-// router.use(authorizeRole("super-admin"));
+router.use(authorizeRole("super-admin"));
 
 // Create Announcement
 router.post("/announcement-create", createAnnouncement);

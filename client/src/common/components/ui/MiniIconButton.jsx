@@ -2,6 +2,7 @@ import {
   Edit,
   Edit2,
   Eye,
+  FileSliders,
   Loader2,
   LucideDownload,
   Pencil,
@@ -14,10 +15,11 @@ import Button from "./Button";
 import { cn } from "../../lib/utils";
 
 const icons = {
-  edit: Pencil,
+  edit: Edit,
   edit2: Edit2,
-  defaultEdit: Edit,
+  defaultEdit: Pencil,
   delete: Trash2,
+  file: FileSliders,
   view: Eye,
   loading: Loader2,
   add: PlusCircleIcon,
@@ -29,6 +31,7 @@ const iconLabels = {
   edit: "Edit",
   edit2: "Edit2",
   delete: "Delete",
+  file: "PDF",
   view: "View",
   add: "Add",
   close: "Close",

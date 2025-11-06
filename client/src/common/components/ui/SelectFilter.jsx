@@ -13,11 +13,11 @@ const SelectFilter = ({ label, value = [], onChange, options, isMulti }) => {
           );
           onChange(isMulti ? selectedValues : e.target.value);
         }}
-        className="border border-base-content/25 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        className="border border-base-content/25 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none flex items-center"
       >
         {!isMulti && <option value="">All</option>}
         {options.map((opt) => (
-          <option key={opt.value} value={opt.value}>
+          <option key={opt.value} value={opt.value} className=" ">
             {opt.label}
           </option>
         ))}
@@ -26,29 +26,6 @@ const SelectFilter = ({ label, value = [], onChange, options, isMulti }) => {
   );
 };
 export default SelectFilter;
-// const SelectFilter = ({ label, value, onChange, options }) => {
-//   return (
-//     <div className="flex flex-col gap-1 w-full">
-//       {label && <label className="text-sm font-medium">{label}</label>}
-//       <select
-//         value={value}
-//         onChange={(e) => onChange(e.target.value)}
-//         className="border border-base-content/25 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-//       >
-//         <option value="" className="text-sm font-medium text-base-content/15">
-//           All
-//         </option>
-//         {options.map((opt) => (
-//           <option key={opt.value} value={opt.value}>
-//             {opt.label}
-//           </option>
-//         ))}
-//       </select>
-//     </div>
-//   );
-// };
-
-// export default SelectFilter;
 
 // Usage example
 

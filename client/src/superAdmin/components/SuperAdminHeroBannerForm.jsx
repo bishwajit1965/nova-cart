@@ -19,6 +19,9 @@ const SuperAdminHeroBannerForm = ({
     subtitle: "",
     image: null,
     ctaLink: "",
+    ctaLabel: "",
+    secondaryLink: "",
+    hoverText: "",
     type: "hero", // hero or banner
   });
   const [dbPreview, setDbPreview] = useState(null);
@@ -32,7 +35,9 @@ const SuperAdminHeroBannerForm = ({
         subtitle: initialData.subtitle || "",
         image: null,
         ctaLink: initialData.ctaLink || "",
+        ctaLabel: initialData.ctaLabel || "",
         secondaryLink: initialData.secondaryLink || "",
+        hoverText: initialData.hoverText || "",
         type: initialData.type || "hero",
       });
       setDbPreview(initialData.image || null);
@@ -41,7 +46,6 @@ const SuperAdminHeroBannerForm = ({
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
-
     if (type === "file" && files[0]) {
       const file = files[0];
       setFormData({ ...formData, [name]: file });
@@ -53,18 +57,18 @@ const SuperAdminHeroBannerForm = ({
 
   const handleSave = async () => {
     setIsSaving(true);
-
     try {
       const fd = new FormData();
       fd.append("title", formData.title);
       fd.append("subtitle", formData.subtitle);
       fd.append("ctaLink", formData.ctaLink);
+      fd.append("ctaLabel", formData.ctaLabel);
       fd.append("secondaryLink", formData.secondaryLink);
+      fd.append("hoverText", formData.hoverText);
       fd.append("type", formData.type);
       if (formData.image instanceof File) {
         fd.append("image", formData.image);
       }
-
       const payload = editingSlideBanner
         ? { id: editingSlideBanner._id, data: fd }
         : { data: fd };
@@ -98,11 +102,9 @@ const SuperAdminHeroBannerForm = ({
         >
           <X size={20} />
         </button>
-
         <h2 className="text-xl font-bold mb-4">
           {initialData ? "Edit Slide" : "Add New Slide"}
         </h2>
-
         <div className="space-y-3">
           <Input
             name="title"
@@ -116,18 +118,42 @@ const SuperAdminHeroBannerForm = ({
             onChange={handleChange}
             placeholder="Subtitle"
           />
-          <Input
-            name="ctaLink"
-            value={formData.ctaLink}
-            onChange={handleChange}
-            placeholder="CTA Link (optional)"
-          />
-          <Input
-            name="secondaryLink"
-            value={formData.secondaryLink}
-            onChange={handleChange}
-            placeholder="CTA Link (optional)"
-          />
+          <div className="grid lg:grid-cols-12 grid-cols-1 justify-between gap-4">
+            <div className="lg:col-span-6 col-span-12">
+              <Input
+                name="ctaLabel"
+                value={formData.ctaLabel}
+                onChange={handleChange}
+                placeholder="CTA Label (optional)"
+              />
+            </div>
+            <div className="lg:col-span-6 col-span-12">
+              <Input
+                name="ctaLink"
+                value={formData.ctaLink}
+                onChange={handleChange}
+                placeholder="CTA Link (optional)"
+              />
+            </div>
+          </div>
+          <div className="grid lg:grid-cols-12 grid-cols-1 justify-between gap-4">
+            <div className="lg:col-span-6 col-span-12">
+              <Input
+                name="secondaryLink"
+                value={formData.secondaryLink}
+                onChange={handleChange}
+                placeholder="CTA Link (optional)"
+              />
+            </div>
+            <div className="lg:col-span-6 col-span-12">
+              <Input
+                name="hoverText"
+                value={formData.hoverText}
+                onChange={handleChange}
+                placeholder="Hover text..."
+              />
+            </div>
+          </div>
           <select
             name="type"
             value={formData.type}
@@ -179,12 +205,7 @@ const SuperAdminHeroBannerForm = ({
         </div>
 
         <div className="mt-4 flex justify-end gap-2">
-          <Button
-            variant="warning"
-            onClick={onClose}
-            disabled={isSaving}
-            className="btn btn-sm"
-          >
+          <Button variant="warning" onClick={onClose} className="btn btn-sm">
             <X /> Cancel
           </Button>
           <Button

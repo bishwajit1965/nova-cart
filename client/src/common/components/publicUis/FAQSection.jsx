@@ -3,44 +3,72 @@ import {
   itemVariants,
 } from "../../../client/service/animations";
 
+import API_PATHS from "../../../superAdmin/services/apiPaths/apiPaths";
 import { LucideIcon } from "../../lib/LucideIcons";
 import { motion } from "framer-motion";
+import { useApiQuery } from "../../../superAdmin/services/hooks/useApiQuery";
+import useFetchedDataStatusHandler from "../../utils/hooks/useFetchedDataStatusHandler";
 import { useState } from "react";
 
-const faqs = [
-  {
-    question: "What is Nova-Cart?",
-    answer:
-      "Nova-Cart is a fully-featured e-commerce platform designed to provide seamless online shopping experiences.",
-  },
-  {
-    question: "How do I track my orders?",
-    answer:
-      "Once you place an order, you can track it in your account dashboard under 'My Orders'. You will also receive email updates.",
-  },
-  {
-    question: "What payment methods are accepted?",
-    answer:
-      "We accept Bkash, Rocket, credit/debit cards, and all popular online payment methods supported in Bangladesh.",
-  },
-  {
-    question: "Can I return or exchange products?",
-    answer:
-      "Yes! Products can be returned or exchanged within 7 days of delivery. Please check our Return Policy for more details.",
-  },
-  {
-    question: "How can I contact customer support?",
-    answer:
-      "You can reach our support team via email at support@nova-cart.com or through the live chat on the website.",
-  },
-];
+// const faqs = [
+//   {
+//     question: "What is Nova-Cart?",
+//     answer:
+//       "Nova-Cart is a fully-featured e-commerce platform designed to provide seamless online shopping experiences.",
+//   },
+//   {
+//     question: "How do I track my orders?",
+//     answer:
+//       "Once you place an order, you can track it in your account dashboard under 'My Orders'. You will also receive email updates.",
+//   },
+//   {
+//     question: "What payment methods are accepted?",
+//     answer:
+//       "We accept Bkash, Rocket, credit/debit cards, and all popular online payment methods supported in Bangladesh.",
+//   },
+//   {
+//     question: "Can I return or exchange products?",
+//     answer:
+//       "Yes! Products can be returned or exchanged within 7 days of delivery. Please check our Return Policy for more details.",
+//   },
+//   {
+//     question: "How can I contact customer support?",
+//     answer:
+//       "You can reach our support team via email at support@nova-cart.com or through the live chat on the website.",
+//   },
+// ];
 
 const FAQSection = () => {
+  /*** ------> Faq data fetched ------> */
+  const {
+    data: faqs,
+    isLoading: isLoadingFaqs,
+    isError: isErrorFaqs,
+    error: errorFaqs,
+  } = useApiQuery({
+    url: `${API_PATHS.SUP_ADMIN_FAQ.SUP_ADMIN_FAQ_ENDPOINT}/all-faqs`,
+    queryKey: API_PATHS.SUP_ADMIN_FAQ.SUP_ADMIN_FAQ_KEY,
+    options: {
+      staleTime: 0,
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
+    },
+  });
+
+  /*** Use data fetch status Handler */
+  const faqDataStatus = useFetchedDataStatusHandler({
+    isLoading: isLoadingFaqs,
+    isError: isErrorFaqs,
+    error: errorFaqs,
+    label: "Faq",
+  });
   const [activeIndex, setActiveIndex] = useState(null);
 
   const toggleFAQ = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
   };
+
+  if (faqDataStatus.status !== "success") return faqDataStatus.content;
 
   return (
     <motion.section

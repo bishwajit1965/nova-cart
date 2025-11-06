@@ -20,7 +20,7 @@ const useFetchedDataStatusHandler = ({ isLoading, isError, error, label }) => {
       status: "error",
       content: (
         <div className="flex flex-col items-center gap-2 text-center lg:p-10 p-2 text-reds-500 animate-fade-in border shadow-md border-base-content/15 rounded-md bg-base-300 hover:shadow-lg">
-          <div className="lg:flex grid items-center justify-center lg:min-h-[calc(100vh-350px)] w-full rounded-md bg-base-200 shadow">
+          <div className="lg:flex grid items-center justify-center lg:min-h-[calc(100vh-350px)] w-full rounded-md bg-base-200 shadow lg:p-10 p-4">
             <div className="bg-yellow-100 opacity-90 text-center lg:p-10 p-4 rounded-md border border-base-content/15 shadow space-y-2 text-red-600">
               <div className="flex justify-center">
                 <AlertTriangleIcon className="w- h-" size={30} />

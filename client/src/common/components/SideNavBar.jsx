@@ -76,11 +76,6 @@ const SideNavBar = ({ role }) => {
         icon: <Settings size={size} />,
       },
       {
-        path: "/super-admin/content-management",
-        label: "Content Management",
-        icon: <NotebookTabs size={size} />,
-      },
-      {
         path: "/super-admin/security-audit-log-management",
         label: "Sec Aud Log Management",
         icon: <AppWindowIcon size={size} />,
@@ -133,6 +128,31 @@ const SideNavBar = ({ role }) => {
       {
         path: "/super-admin/announcement-management",
         label: "Announcement",
+        icon: <Package size={size} />,
+      },
+      {
+        path: "/super-admin/developer-journey-tracker",
+        label: "Dev Journey Tracker",
+        icon: <Package size={size} />,
+      },
+      {
+        path: "/super-admin/faq-management",
+        label: "Faq Management",
+        icon: <Package size={size} />,
+      },
+      {
+        path: "/super-admin/about-content-management",
+        label: "About Management",
+        icon: <Package size={size} />,
+      },
+      {
+        path: "/super-admin/developer-portfolio-management",
+        label: "Portfolio Management",
+        icon: <Package size={size} />,
+      },
+      {
+        path: "/super-admin/project-management",
+        label: "Project Management",
         icon: <Package size={size} />,
       },
 

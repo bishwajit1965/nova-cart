@@ -1,16 +1,16 @@
-import {
-  containerVariants,
-  itemVariants,
-} from "../../client/service/animations.js";
-
+import API_PATHS from "../../superAdmin/services/apiPaths/apiPaths.js";
 import CallToAction from "../../client/cart/components/CallToAction.jsx";
 import DynamicPageTitle from "../utils/pageTitle/DynamicPageTitle";
 import FounderNote from "../../client/cart/components/FounderNote.jsx";
 import FunFacts from "../../client/cart/components/FunFacts.jsx";
 import PageMeta from "../components/ui/PageMeta.jsx";
+import { containerVariants } from "../../client/service/animations.js";
 import { motion } from "framer-motion";
+import { useApiQuery } from "../../superAdmin/services/hooks/useApiQuery.js";
+import useFetchedDataStatusHandler from "../utils/hooks/useFetchedDataStatusHandler.jsx";
 import usePageTitle from "../../superAdmin/services/hooks/usePageTitle";
 
+const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 const skills = [
   { name: "JavaScript (ES6+)", level: 90 },
   { name: "React & Tailwind CSS", level: 70 },
@@ -30,6 +30,57 @@ const skills = [
 const AboutUs = () => {
   const pageTitle = usePageTitle();
 
+  /*** ------> About Content data fetched ------> */
+  const {
+    data: aboutContents,
+    isLoading: isLoadingAboutContent,
+    isError: isErrorAboutContent,
+    error: errorAboutContent,
+  } = useApiQuery({
+    url: `${API_PATHS.SUP_ADMIN_ABOUT_CONTENT.SUP_ADMIN_ABOUT_CONTENT_ENDPOINT}/about-content`,
+    queryKey: API_PATHS.SUP_ADMIN_ABOUT_CONTENT.SUP_ADMIN_ABOUT_CONTENT_KEY,
+    options: {
+      staleTime: 0,
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
+    },
+  });
+
+  /*** Filter About Contents by sectionKey dynamically ***/
+  const sections = [
+    "about Nova-Cart",
+    "founder-data",
+    "developer-data",
+    "developer-experience",
+    "our-mission",
+  ];
+
+  const filteredAboutSections = sections.reduce((acc, key) => {
+    acc[key] = aboutContents?.filter((item) => item.sectionKey === key) || [];
+    return acc;
+  }, {});
+
+  /*** Filter about contents section wise */
+  const aboutNovaCart = filteredAboutSections["about Nova-Cart"];
+  const aboutFounder = filteredAboutSections["founder-data"];
+  const aboutDeveloper = filteredAboutSections["developer-data"];
+  const developerExperience = filteredAboutSections["developer-experience"];
+  const developerMission = filteredAboutSections["our-mission"];
+
+  console.log("About contents", aboutContents);
+  console.log("About Nova cart", aboutNovaCart);
+  // console.log("About Nova founder", aboutFounder);
+
+  /*** Use data fetch status Handler */
+  const aboutContentDataStatus = useFetchedDataStatusHandler({
+    isLoading: isLoadingAboutContent,
+    isError: isErrorAboutContent,
+    error: errorAboutContent,
+    label: "About Content",
+  });
+  if (aboutContentDataStatus.status !== "success")
+    return aboutContentDataStatus.content;
+
   return (
     <>
       <PageMeta
@@ -48,19 +99,21 @@ const AboutUs = () => {
             variants={containerVariants}
             className="text-center space-y-4 bg-base-100 shadow lg:p-12 p-4 rounded-2xl hover:shadow-xl"
           >
-            <h1 className="lg:text-4xl text-xl font-extrabold text-base-content/70">
-              About <span className="text-indigo-600">Nova-Cart</span>
-            </h1>
-            <p className="text-lg text-base-content/50 max-w-2xl mx-auto">
-              Nova-Cart is more than just an e-commerce project — it’s a dream
-              of building a fast, elegant, and developer-friendly platform from
-              scratch.
-            </p>
+            {aboutNovaCart.map((item) => (
+              <div className="lg:space-y-4 space-y-2">
+                <h1 className="lg:text-4xl text-xl font-extrabold text-base-content/70">
+                  <span className="text-indigo-600">{item.title}</span>
+                </h1>
+                <p className="text-lg text-base-content/50 max-w-2xl mx-auto">
+                  {item.content}
+                </p>
+              </div>
+            ))}
           </motion.div>
 
           {/* Founder note */}
           <div className="text-center space-y-4 bg-base-100 shadow lg:p-12 p-4 rounded-2xl hover:shadow-xl">
-            <FounderNote />
+            <FounderNote aboutFounder={aboutFounder} />
           </div>
 
           {/* Fun facts */}
@@ -88,15 +141,14 @@ const AboutUs = () => {
               />
             </div>
             <div className="space-y-4">
-              <h2 className="text-2xl font-bold text-base-content/70">
-                🚀 Our Mission
-              </h2>
-              <p className="text-base-content/50">
-                To create a shopping experience that’s lightning fast,
-                intuitive, and future-proof. Nova-Cart is built with modern
-                tools like React, Tailwind, Node.js, and MongoDB — so it’s
-                designed to scale.
-              </p>
+              {developerMission.map((mission) => (
+                <div className="">
+                  <h2 className="text-2xl font-bold text-base-content/70">
+                    🚀{mission.title}
+                  </h2>
+                  <p className="text-base-content/50">{mission.content}</p>
+                </div>
+              ))}
             </div>
           </motion.div>
 
@@ -108,34 +160,33 @@ const AboutUs = () => {
             variants={containerVariants}
             className="bg-base-100 shadow rounded-2xl lg:p-12 p-4 hover:shadow-xl"
           >
-            <h2 className="lg:text-2xl text-xl font-bold text-base-content/70 mb-6 text-center">
-              💼 Experience
-            </h2>
-            <div className="space-y-4">
-              <div>
-                <h3 className="font-semibold text-base-content/50">
-                  Full-Stack Developer (Independent)
-                </h3>
-                <p className="text-base-content/50 text-sm">2023 – Present</p>
-                <p className="text-base-content/50">
-                  Building nova-cart, a full-featured e-commerce platform with
-                  authentication, cart/wishlist, admin dashboards, and more.
-                  Hands-on with backend APIs, frontend UI, and database
-                  modeling.
-                </p>
+            {developerExperience?.map((experience) => (
+              <div className="lg:space-y-4 space-y-2">
+                <h2 className="lg:text-2xl text-xl font-bold text-base-content/70 mb-6 text-center">
+                  💼 Experience
+                </h2>
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="font-semibold text-base-content/50">
+                      {experience.title}
+                    </h3>
+                    <p className="text-base-content/50 text-sm">
+                      2023 – Present
+                    </p>
+                    <p className="text-base-content/50">{experience.content}</p>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-base-content/50">
+                      Learning & Practice Projects
+                    </h3>
+                    <p className="text-base-content/50 text-sm">2022 – 2023</p>
+                    <p className="text-base-content/50">
+                      {experience.extraData}
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div>
-                <h3 className="font-semibold text-base-content/50">
-                  Learning & Practice Projects
-                </h3>
-                <p className="text-base-content/50 text-sm">2022 – 2023</p>
-                <p className="text-base-content/50">
-                  Completed multiple projects in Node.js, React, and MongoDB
-                  while strengthening fundamentals of JavaScript, REST APIs, and
-                  authentication.
-                </p>
-              </div>
-            </div>
+            ))}
           </motion.div>
 
           {/* Skills Section */}
@@ -185,20 +236,21 @@ const AboutUs = () => {
             variants={containerVariants}
             className="bg-base-100 shadow rounded-2xl lg:p-12 p-4 text-center space-y-4 hover:shadow-xl"
           >
-            <img
-              src="bishwajit-1.jpg"
-              alt="Founder"
-              className="w-28 h-28 rounded-full mx-auto border-4 border-base-300 shadow-md"
-            />
-            <h3 className="lg:text-2xl text-xl font-semibold text-base-content/70">
-              👨‍💻 The Developer
-            </h3>
-            <p className="text-base-content/50 max-w-2xl mx-auto">
-              Nova-Cart is being crafted line by line with dedication and love
-              for clean code. This project represents persistence, growth, and
-              the vision of becoming a professional developer who can stand tall
-              in the industry.
-            </p>
+            {aboutDeveloper?.map((developer) => (
+              <div className="lg:space-y-4 space-y-2">
+                <img
+                  src={`${apiURL}/uploads/${developer.image}`}
+                  alt="Founder"
+                  className="w-28 h-28 rounded-full mx-auto border-4 border-base-300 shadow-md"
+                />
+                <h3 className="lg:text-2xl text-xl font-semibold text-base-content/70">
+                  👨‍💻 {developer.title}
+                </h3>
+                <p className="text-base-content/50 max-w-2xl mx-auto">
+                  {developer.content}
+                </p>
+              </div>
+            ))}
           </motion.div>
 
           {/* Call to action */}

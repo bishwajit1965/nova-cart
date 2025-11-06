@@ -3,7 +3,6 @@ import fs from "fs";
 import path from "path";
 
 export const getAllHeroSlides = async (req, res) => {
-  console.log("🎯 Get hero slide controller method is hit");
   try {
     const slides = await HeroSlide.find().sort({ createdAt: -1 });
     res.status(200).json({ success: true, data: slides });
@@ -12,32 +11,8 @@ export const getAllHeroSlides = async (req, res) => {
   }
 };
 
-// export const createHeroSlide = async (req, res) => {
-//   try {
-//     const { title, subtitle, ctaLink, type } = req.body;
-//     const image = req.file ? req.file.filename : null;
-
-//     if (!title || !image)
-//       return res.status(400).json({ message: "Title and image required" });
-
-//     const newSlide = await HeroSlide.create({
-//       title,
-//       subtitle,
-//       ctaLink,
-//       type,
-//       image,
-//     });
-
-//     res.status(201).json(newSlide);
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ message: "Error creating hero slide" });
-//   }
-// };
-
 export const createHeroSlide = async (req, res) => {
   try {
-    console.log("🎯 Create hero slide controller method is hit");
     const { type, title, subtitle, ctaLink, secondaryLink } = req.body;
     const image = req.file ? req.file.filename : null;
 
@@ -47,12 +22,14 @@ export const createHeroSlide = async (req, res) => {
         .json({ success: false, message: "Image is required" });
 
     const slide = await HeroSlide.create({
-      type,
       title,
       subtitle,
-      ctaLink,
-      secondaryLink,
       image,
+      ctaLink,
+      ctaLabel,
+      secondaryLink,
+      hoverText,
+      type,
     });
     res.status(201).json({ success: true, data: slide });
   } catch (error) {
@@ -68,7 +45,15 @@ export const updateHeroSlide = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Slide not found" });
 
-    const { type, title, subtitle, ctaLink, secondaryLink } = req.body;
+    const {
+      type,
+      title,
+      subtitle,
+      ctaLink,
+      ctaLabel,
+      secondaryLink,
+      hoverText,
+    } = req.body;
 
     // Delete old image if a new one is uploaded
     if (req.file && slide.image) {
@@ -77,14 +62,21 @@ export const updateHeroSlide = async (req, res) => {
       slide.image = req.file.filename;
     }
 
-    slide.type = type || slide.type;
     slide.title = title || slide.title;
     slide.subtitle = subtitle || slide.subtitle;
     slide.ctaLink = ctaLink || slide.ctaLink;
+    slide.ctaLabel = ctaLabel || slide.ctaLabel;
     slide.secondaryLink = secondaryLink || slide.secondaryLink;
+    slide.hoverText = hoverText || slide.hoverText;
+    slide.type = type || slide.type;
 
     await slide.save();
-    res.status(200).json({ success: true, data: slide });
+
+    res.status(200).json({
+      success: true,
+      message: "Hero slider data updated successfully!",
+      data: slide,
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

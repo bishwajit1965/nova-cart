@@ -15,7 +15,7 @@ import ClientOrdersPage from "../../client/cart/ClientOrdersPage";
 import ClientPlanSubscriptionPage from "../../client/subscription/ClientPlanSubscriptionPage";
 import ClientProfilePage from "../../client/profile/pages/ClientProfilePage";
 import ContactPage from "../../common/pages/ContactPage";
-import ContentManagement from "../../superAdmin/pages/ContentManagement";
+
 import FaqPage from "../../common/pages/FAQPage";
 import ForgotPassword from "../../common/pages/ForgotPassword";
 import LandingPage from "../../common/pages/LandingPage";
@@ -38,8 +38,11 @@ import RoleManagement from "../../superAdmin/pages/RoleManagement";
 import RootLayout from "../../common/layouts/RootLayout";
 import SecurityAuditLogManagement from "../../superAdmin/pages/SecurityAuditLogManagement";
 import ShippingReturnsPage from "../../common/pages/ShippingReturnsPage";
+import SuperAdminAboutContentManagementPage from "../../superAdmin/pages/SuperAdminAboutContentManagementPage";
 import SuperAdminAnnouncementManagementPage from "../../superAdmin/pages/SuperAdminAnnouncementManagementPage";
 import SuperAdminDashboard from "../../superAdmin/pages/SuperAdminDashboard";
+import SuperAdminDeveloperJourneyTracker from "../../superAdmin/pages/SuperAdminDeveloperJourneyTracker";
+import SuperAdminFaqManagement from "../../superAdmin/pages/SuperAdminFaqManagement";
 import SuperAdminFeatureManagementPage from "../../superAdmin/pages/SuperAdminFeatureManagementPage";
 import SuperAdminHeroSlidePage from "../../superAdmin/pages/SuperAdminHeroSlidePage";
 import SuperAdminLayout from "../../common/layouts/SuperAdminLayout";
@@ -47,6 +50,7 @@ import SuperAdminOrderDetailsPage from "../../superAdmin/pages/SuperAdminOrderDe
 import SuperAdminOrdersOverviewManagement from "../../superAdmin/pages/SuperAdminOrdersOverviewManagement";
 import SuperAdminPlanHistoryManagement from "../../superAdmin/pages/SuperAdminPlanHistoryManagement";
 import SuperAdminPlanManagementPage from "../../superAdmin/pages/SuperAdminPlanManagementPage";
+import SuperAdminPortfolioManagementPage from "../../superAdmin/pages/SuperAdminPortfolioManagementPage";
 import SuperAdminProductManagementPage from "../../superAdmin/pages/SuperAdminProductManagementPage";
 import SuperAdminSettingsManagementPage from "../../superAdmin/pages/SuperAdminSystemSettingsManagementPage";
 import SuperAdminSubcategoryManagement from "../../superAdmin/pages/SuperAdminSubcategoryManagement";
@@ -60,6 +64,8 @@ import UserLayout from "../../common/layouts/UserLayout";
 import WishListItemPage from "../../client/cart/WishListItemPage";
 import api from "../../common/lib/api";
 import { createBrowserRouter } from "react-router-dom";
+import SuperAdminPublicPortfolioViewPage from "../../client/supAdmPortfolio/SuperAdminPublicPortfolioViewPage";
+import SuperAdminProjectManagementPage from "../../superAdmin/pages/SuperAdminProjectManagementPage";
 
 const router = createBrowserRouter([
   // Root Layout
@@ -176,6 +182,10 @@ const router = createBrowserRouter([
         element: <TermsConditionsPage />,
       },
       {
+        path: "/super-admin-portfolio",
+        element: <SuperAdminPublicPortfolioViewPage />,
+      },
+      {
         path: "/client-plan-subscription",
         element: (
           <ProtectedRoute
@@ -285,10 +295,6 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "content-management",
-        element: <ContentManagement />,
-      },
-      {
         path: "system-settings-management",
         element: (
           <ProtectedRoute allowedRoles={["super-admin", "admin"]}>
@@ -367,6 +373,26 @@ const router = createBrowserRouter([
       {
         path: "announcement-management",
         element: <SuperAdminAnnouncementManagementPage />,
+      },
+      {
+        path: "developer-journey-tracker",
+        element: <SuperAdminDeveloperJourneyTracker />,
+      },
+      {
+        path: "faq-management",
+        element: <SuperAdminFaqManagement />,
+      },
+      {
+        path: "about-content-management",
+        element: <SuperAdminAboutContentManagementPage />,
+      },
+      {
+        path: "developer-portfolio-management",
+        element: <SuperAdminPortfolioManagementPage />,
+      },
+      {
+        path: "project-management",
+        element: <SuperAdminProjectManagementPage />,
       },
     ],
   },

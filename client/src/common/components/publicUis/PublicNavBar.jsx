@@ -29,6 +29,7 @@ const PublicNavBar = () => {
     { path: "/about-us", label: "About" },
     { path: "/my-profile", label: "Portfolio" },
     { path: "/client-plan-subscription", label: "Plan" },
+    { path: "/super-admin-portfolio", label: "DevProfile" },
   ];
   console.log("System settings in Public navbar", systemSettings);
   const handleLogout = async () => {
