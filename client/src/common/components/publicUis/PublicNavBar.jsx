@@ -11,7 +11,6 @@ import useSystemSettings from "../../hooks/useSystemSettings";
 import { useTheme } from "../../hooks/useTheme";
 
 const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-// import Logo from "../ui/Logo";
 
 const PublicNavBar = () => {
   const { systemSettings } = useSystemSettings();
@@ -27,11 +26,11 @@ const PublicNavBar = () => {
     { path: "/product-categories", label: "Categories" },
     { path: "/contact-us", label: "Contact" },
     { path: "/about-us", label: "About" },
-    { path: "/my-profile", label: "Portfolio" },
+    ...(user ? [{ path: "/my-profile", label: "Portfolio" }] : []),
     { path: "/client-plan-subscription", label: "Plan" },
     { path: "/super-admin-portfolio", label: "DevProfile" },
   ];
-  console.log("System settings in Public navbar", systemSettings);
+  console.log("System settings in Public navbar=>", systemSettings);
   const handleLogout = async () => {
     try {
       await api.post("/auth/logout", {}, { withCredentials: true });
@@ -47,11 +46,13 @@ const PublicNavBar = () => {
       <div className="max-w-7xl mx-auto px-2 lg:py-0 py-2 flex items-center justify-between">
         {/* Site Logo */}
         <Link to="/" className="lg:text-xl font-bold text-primary">
-          <img
-            src={`${apiURL}/uploads/${systemSettings?.logo}`}
-            alt={systemSettings?.appName || "Nova Cart"}
-            className="w-36 object-contain"
-          />
+          {systemSettings && (
+            <img
+              src={`${apiURL}/uploads/${systemSettings?.logo}`}
+              alt={systemSettings?.appName || "Nova Cart"}
+              className="w-12 h-12 object-contain flex items-center"
+            />
+          )}
         </Link>
 
         {/* Desktop nav */}
@@ -99,7 +100,7 @@ const PublicNavBar = () => {
               </div>
               <ul
                 tabIndex={0}
-                className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-40 p-2 shadow text-base-content"
+                className="menu menu-sm dropdown-content bg-base-300 rounded-box z-1 mt-3 max-w-44 p- shadow text-base-content"
               >
                 {isAuthenticated && user ? (
                   <li className="text-base-content text-xl">
@@ -115,22 +116,23 @@ const PublicNavBar = () => {
                   </li>
                 )}
                 <li className="text-base-content text-xl">
-                  <a href="/my-portfolio" className="text-[16px]">
+                  <a href="/my-profile" className="text-[16px]">
                     <FaPortrait />
                     Portfolio
                   </a>
                 </li>
                 <li className="text-base-content text-sm">
-                  <a href="/my-portfolio">{user?.name}</a>
+                  <a href="/my-profile">{user?.name}</a>
                 </li>
-                <li className="text-base-content text-sm">
-                  <a href="/my-portfolio">{user?.email}</a>
+                <li className="text-base-content text-[10px] px-0">
+                  <a href="/my-profile" className="text-[10px]">
+                    {user?.email}
+                  </a>
                 </li>
               </ul>
             </div>
           </div>
         </nav>
-
         {/* Mobile menu toggle */}
         <button
           className="md:hidden text-base-content"
@@ -177,13 +179,12 @@ const PublicNavBar = () => {
                 role="button"
                 className="btn btn-ghost btn-circle"
               >
-                <ArrowDown />
-
+                <ArrowDown /> ||
                 <img src={Image} alt="" className="w-10 h-10 rounded-full" />
               </div>
               <ul
                 tabIndex={0}
-                className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-56 p-2 ml-0 shadow text-xl"
+                className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 max-w-44 p-2 ml-0 shadow text-xl overflow-x-hidden"
               >
                 {isAuthenticated && user ? (
                   <li className="text-base-content text-xl">
@@ -199,13 +200,15 @@ const PublicNavBar = () => {
                   </li>
                 )}
                 <li className="text-base-content text-xl">
-                  <a href="/my-portfolio" className="text-[16px]">
+                  <a href="/my-profile" className="text-[16px]">
                     <FaPortrait />
                     Portfolio
                   </a>
                 </li>
                 <li>
-                  <a href="/portfolio">{user.email}</a>
+                  <a href="/my-profile" className="text-[10px]">
+                    {user.email}
+                  </a>
                 </li>
               </ul>
             </div>

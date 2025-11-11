@@ -72,22 +72,22 @@ const NewsLetterSection = () => {
       viewport={{ once: false }}
       variants={containerVariants}
     >
-      <motion.div
+      <div
         className="max-w-3xl mx-auto px-6 text-center"
         variants={itemVariants}
       >
-        <motion.h2 className="text-3xl font-bold mb-4" variants={itemVariants}>
+        <h2 className="text-3xl font-bold mb-4" variants={itemVariants}>
           📬 Subscribe to Our Newsletter
-        </motion.h2>
-        <motion.p className="mb-6 text-lg" variants={itemVariants}>
+        </h2>
+        <p className="mb-6 text-lg" variants={itemVariants}>
           Be the first to hear about new products, exclusive deals, and more.
-        </motion.p>
-        <motion.form
+        </p>
+        <form
           onSubmit={handleSubmit}
           className="lg:flex flex-col lg:max-w-4xl w-full sm:flex-row items-center justify-center lg:gap-4 gap-2 mx-auto lg:space-y-0 space-y-4"
           variants={itemVariants}
         >
-          <motion.div className="" variants={itemVariants}>
+          <div className="" variants={itemVariants}>
             <Input
               type="text"
               name="email"
@@ -97,9 +97,9 @@ const NewsLetterSection = () => {
               className="rounded-full text-base-content/70 bg-base-100 placeholder:text-base-content/50 focus:outline-base-100"
               icon={LucideIcon.MailPlus}
             />
-          </motion.div>
+          </div>
 
-          <motion.div className="" variants={itemVariants}>
+          <div className="" variants={itemVariants}>
             <Button
               type="submit"
               disabled={loading}
@@ -114,17 +114,17 @@ const NewsLetterSection = () => {
 
               {loading ? "Subscribing..." : "Subscribe"}
             </Button>
-          </motion.div>
-        </motion.form>
+          </div>
+        </form>
         {errors.email && (
-          <motion.div
+          <div
             className="lg:max-w-sm mx-auto bg-base-100 text-base-content/70 rounded-full p-2 mt-4 text-xs"
             variants={itemVariants}
           >
             <p className="text-red-600 text-xs mt-1">{errors.email}</p>
-          </motion.div>
+          </div>
         )}
-      </motion.div>
+      </div>
     </motion.section>
   );
 };

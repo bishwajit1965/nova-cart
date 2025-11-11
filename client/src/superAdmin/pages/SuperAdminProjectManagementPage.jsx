@@ -187,6 +187,7 @@ const SuperAdminProjectManagementPage = () => {
   const handleCloseFormModal = () => {
     toggleModal();
     setEditProject(null);
+    setTechStack(null);
     setFormData({
       owner: "",
       title: "",
@@ -310,7 +311,7 @@ const SuperAdminProjectManagementPage = () => {
   return (
     <div className="lg:space-y-6 space-y-4">
       <Button onClick={toggleModal} variant="indigo">
-        <PlusCircle size={20} /> Add Portfolio
+        <PlusCircle size={20} /> Add Project
       </Button>
 
       {/* Projects table */}

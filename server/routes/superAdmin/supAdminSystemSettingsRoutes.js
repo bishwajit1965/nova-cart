@@ -19,7 +19,11 @@ const router = express.Router();
 router.use(authenticationMiddleware);
 
 // Profile get and update related routes
-router.get("/profile/get-profile", authorizeRole("super-admin"), getProfile);
+router.get(
+  "/profile/get-profile",
+  authorizeRole("super-admin", "user"),
+  getProfile
+);
 
 router.patch(
   "/profile/:id/update-profile",

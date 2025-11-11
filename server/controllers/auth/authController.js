@@ -1,34 +1,12 @@
-// import {
-//   COOKIE_NAME,
-//   GOOGLE,
-//   NODE_ENV,
-//   REFRESH_TOKEN_SECRET,
-// } from "../../utils/constants.js";
-
-import { CLIENT, GOOGLE, JWT, SERVER } from "../../utils/constants.js";
+import { CLIENT, JWT, SERVER } from "../../utils/constants.js";
 
 import Role from "../../models/Role.js";
 import User from "../../models/User.js";
-import axios from "axios";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import generateTokens from "../../utils/generateTokens.js";
 import jwt from "jsonwebtoken";
-import qs from "qs";
 import sendEmail from "../../utils/sendEmail.js";
-
-// import { OAuth2Client } from "google-auth-library";
-
-// const client = new OAuth2Client(GOOGLE.CLIENT_ID, GOOGLE.CLIENT_SECRET);
-
-export const googleLogin = async (req, res) => {
-  try {
-    // use GOOGLE.CLIENT_ID & GOOGLE.CLIENT_SECRET here
-    res.json({ success: true });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
 
 export const register = async (req, res) => {
   try {
@@ -204,14 +182,18 @@ export const logout = async (req, res) => {
 };
 
 export const getMe = async (req, res) => {
+  console.log("🎯 Get me controller method is hit!");
   try {
-    const user = await User.findById(req.user._id).populate({
-      path: "roles",
-      populate: { path: "permissions" },
-    });
-
-    console.log("✅ ✅GET ME FETCHED+++>", user);
-
+    const user = await User.findById(req.user._id)
+      .populate({
+        path: "roles",
+        populate: { path: "permissions" },
+      })
+      .populate({
+        path: "plan",
+        populate: { path: "features" }, // <-- populate features here
+      });
+    console.log("User in get me", user);
     if (!user) return res.status(404).json({ message: "User not found" });
 
     res.status(200).json({
@@ -225,6 +207,16 @@ export const getMe = async (req, res) => {
         ),
       ],
       isActive: user.isActive,
+      plan: user.plan
+        ? {
+            _id: user.plan._id,
+            name: user.plan.name,
+            features: user.plan.features.map((f) => ({
+              key: f.key,
+              title: f.title,
+            })),
+          }
+        : null,
     });
   } catch (err) {
     console.error("ME endpoint error:", err);
@@ -268,8 +260,9 @@ export const refreshToken = async (req, res) => {
     // ✅ Set new refreshToken cookie
     res.cookie(JWT.COOKIE_NAME, newRefreshToken, {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
+      path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
@@ -355,358 +348,6 @@ export const resetPassword = async (req, res) => {
   res.status(200).json({ message: "Password has been reset" });
 };
 
-export const googleAuthController = async (req, res) => {
-  const { token } = req.body; // frontend sends { token }
-  if (!token) {
-    return res.status(400).json({ message: "Missing Google token" });
-  }
-
-  try {
-    // Verify token with centralized GOOGLE.CLIENT_ID
-    const ticket = await client.verifyIdToken({
-      idToken: token,
-      audience: GOOGLE.CLIENT_ID,
-    });
-
-    const payload = ticket.getPayload();
-    const { email, name, sub: googleId, picture } = payload;
-
-    let user = await User.findOne({ email })
-      .populate("roles")
-      .populate("permissions");
-
-    if (!user) {
-      const userRole = await Role.findOne({ name: "user" });
-      const defaultPermissions = await Permission.find({
-        name: { $in: ["create_products"] },
-      });
-
-      user = await User.create({
-        name,
-        email,
-        password: null,
-        googleId,
-        avatar: picture,
-        provider: "google",
-        roles: userRole ? [userRole._id] : [],
-        permissions: defaultPermissions.map((p) => p._id),
-        acceptedTerms: true,
-        acceptedAt: new Date(),
-        termsVersion: "v1.0",
-        signupIp: req.ip,
-      });
-
-      user = await User.findById(user._id)
-        .populate("roles")
-        .populate("permissions");
-    }
-
-    const accessToken = generateAccessToken(user);
-    const refreshToken = generateRefreshToken(user._id);
-
-    user.refreshToken = refreshToken;
-    await user.save();
-
-    res.cookie("jwt", refreshToken, {
-      httpOnly: true,
-      secure: SERVER.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
-    res.status(200).json({
-      message: "Google login successful",
-      accessToken,
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        avatar: user.avatar,
-        roles: user.roles.map((r) => r.name),
-        permissions: user.permissions.map((p) => p.name),
-      },
-    });
-  } catch (error) {
-    console.error("❌ Google login error:", error);
-    res.status(401).json({ message: "Google login failed" });
-  }
-};
-
-export const googleSignUpController = async (req, res) => {
-  console.log("Sign up with Google called");
-  const { code } = req.body;
-  console.log("👉 Received code:", code);
-
-  if (!code) {
-    return res.status(400).json({ message: "Missing authorization code" });
-  }
-
-  try {
-    // ✅ Exchange code for tokens
-    const tokenResponse = await axios.post(
-      "https://oauth2.googleapis.com/token",
-      qs.stringify({
-        code,
-        client_id: GOOGLE.CLIENT_ID,
-        client_secret: GOOGLE.CLIENT_SECRET,
-        redirect_uri: "postmessage", // ⚠️ replace with real redirect_uri in production
-        grant_type: "authorization_code",
-      }),
-      { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
-    );
-
-    const { id_token } = tokenResponse.data;
-    if (!id_token) {
-      return res.status(401).json({ message: "ID token not received" });
-    }
-
-    // ✅ Verify ID token
-    const ticket = await client.verifyIdToken({
-      idToken: id_token,
-      audience: GOOGLE.CLIENT_ID,
-    });
-
-    const payload = ticket.getPayload();
-    const { email, name, sub: googleId, picture } = payload;
-
-    if (!email) {
-      return res.status(400).json({ message: "Email not found in token" });
-    }
-
-    let user = await User.findOne({ email })
-      .populate("roles")
-      .populate("permissions");
-
-    // If user doesn’t exist, create one
-    if (!user) {
-      const userRole = await Role.findOne({ name: "user" });
-      const defaultPermissions = await Permission.find({
-        name: { $in: ["create_products"] },
-      });
-
-      user = await User.create({
-        name,
-        email,
-        password: null,
-        googleId,
-        avatar: picture,
-        provider: "google",
-        roles: userRole ? [userRole._id] : [],
-        permissions: defaultPermissions.map((p) => p._id),
-        acceptedTerms: true,
-        acceptedAt: new Date(),
-        termsVersion: "v1.0",
-        signupIp: req.ip,
-      });
-
-      user = await User.findById(user._id)
-        .populate("roles")
-        .populate("permissions");
-    }
-
-    // ✅ Generate tokens properly
-    const accessToken = generateAccessToken(user);
-    const refreshToken = generateRefreshToken(user._id);
-
-    user.refreshToken = refreshToken;
-    await user.save();
-
-    // ✅ Send refreshToken as cookie
-    res.cookie("jwt", refreshToken, {
-      httpOnly: true,
-      secure: SERVER.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    });
-
-    res.status(200).json({
-      message: "Google sign up successful",
-      accessToken,
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        avatar: user.avatar,
-        roles: user.roles.map((role) => role.name),
-        permissions: user.permissions.map((perm) => perm.name),
-      },
-    });
-  } catch (error) {
-    console.error("❌ Google Sign-up Error:", error?.response?.data || error);
-    return res.status(401).json({ message: "Google sign up failed" });
-  }
-};
-
-export const facebookAuthController = async (req, res) => {
-  const { token } = req.body;
-
-  if (!token) {
-    return res
-      .status(400)
-      .json({ message: "Facebook access token is required" });
-  }
-
-  try {
-    // Fetch Facebook user info
-    const fbRes = await axios.get(`https://graph.facebook.com/me`, {
-      params: {
-        fields: "id,name,email,picture",
-        access_token: token,
-      },
-    });
-
-    const { email, name, id: facebookId, picture } = fbRes.data;
-
-    if (!email) {
-      return res.status(400).json({ message: "Email permission is required" });
-    }
-
-    // Lookup user
-    let user = await User.findOne({ $or: [{ email }, { facebookId }] })
-      .populate("roles")
-      .populate("permissions")
-      .populate({
-        path: "plan",
-        populate: { path: "features", select: "key title description icon" },
-      });
-
-    if (!user) {
-      return res
-        .status(404)
-        .json({ message: "No user found, please sign up first" });
-    }
-
-    // Generate tokens
-    const accessToken = generateTokens(user);
-    const refreshToken = generateTokens(user._id);
-    user.refreshToken = refreshToken;
-    await user.save();
-
-    // Set cookie
-    res.cookie("jwt", refreshToken, {
-      httpOnly: true,
-      secure: SERVER.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
-    // Respond
-    res.status(200).json({
-      message: "Facebook login successful",
-      accessToken,
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        avatar: user.avatar || picture?.data?.url,
-        roles: user.roles.map((r) => r.name),
-        permissions: user.permissions.map((p) => p.name),
-        plan: serializePlan(user.plan),
-      },
-    });
-  } catch (error) {
-    console.error(
-      "Facebook Login Error:",
-      error.response?.data || error.message
-    );
-    return res.status(401).json({ message: "Facebook login failed" });
-  }
-};
-
-export const facebookSignUpController = async (req, res) => {
-  const { token } = req.body;
-  if (!token)
-    return res.status(400).json({ message: "Facebook token required" });
-
-  try {
-    // 1. Get user info from Facebook
-    const fbRes = await axios.get("https://graph.facebook.com/me", {
-      params: {
-        fields: "id,name,email,picture",
-        access_token: token,
-      },
-    });
-
-    const { email, name, id: facebookId, picture } = fbRes.data;
-    if (!email) return res.status(400).json({ message: "Email is required" });
-
-    // 2. Check if user exists
-    let user = await User.findOne({ email })
-      .populate("roles")
-      .populate("permissions")
-      .populate({
-        path: "plan",
-        select: "_id tier name features price createdAt updatedAt",
-        populate: { path: "features", select: "key title description icon" },
-      });
-
-    const userRole = await Role.findOne({ name: "user" });
-    const defaultPlan = await Plan.findOne({ tier: "free" });
-    const defaultPermissions = await Permission.find({
-      name: { $in: ["create_post"] },
-    });
-
-    if (!user) {
-      user = await User.create({
-        name,
-        email,
-        password: null,
-        facebookId,
-        avatar: picture?.data?.url || null,
-        provider: "facebook",
-        roles: userRole ? [userRole._id] : [],
-        permissions: defaultPermissions.map((p) => p._id),
-        plan: defaultPlan ? defaultPlan._id : null,
-        acceptedTerms: true,
-        acceptedAt: new Date(),
-        termsVersion: "v1.0",
-        signupIp: req.ip, // ✅ stores IP
-      });
-
-      user = await User.findById(user._id)
-        .populate("roles")
-        .populate("permissions")
-        .populate({
-          path: "plan",
-          select: "_id tier name features price createdAt updatedAt",
-          populate: { path: "features", select: "key title description icon" },
-        });
-    }
-
-    // 3. Generate tokens
-    const accessToken = generateTokens(user);
-    const refreshToken = generateTokens(user._id);
-
-    user.refreshToken = refreshToken;
-    await user.save();
-
-    res.cookie("jwt", refreshToken, {
-      httpOnly: true,
-      secure: SERVER.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
-    // 4. Send response
-    res.status(200).json({
-      message: "Facebook sign up successful",
-      accessToken,
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        avatar: user.avatar,
-        roles: user.roles.map((r) => r.name),
-        permissions: user.permissions.map((p) => p.name),
-        plan: serializePlan(user.plan),
-      },
-    });
-  } catch (error) {
-    console.error("❌ Facebook Sign-up Error:", error?.response?.data || error);
-    return res.status(500).json({ message: "Facebook sign up failed" });
-  }
-};
-
 export default {
   register,
   refreshToken,
@@ -714,9 +355,5 @@ export default {
   logout,
   forgotPassword,
   resetPassword,
-  googleAuthController,
-  facebookAuthController,
-  facebookSignUpController,
-  googleSignUpController,
   getMe,
 };

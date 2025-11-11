@@ -16,7 +16,7 @@ const router = express.Router();
 
 router.use(authenticationMiddleware);
 
-router.use(authorizeRole("super-admin"));
+router.use(authorizeRole("super-admin", "admin"));
 
 router.get("/", getAllHeroSlides);
 

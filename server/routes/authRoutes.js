@@ -1,9 +1,6 @@
 import {
-  facebookAuthController,
   forgotPassword,
   getMe,
-  googleAuthController,
-  googleSignUpController,
   login,
   logout,
   refreshToken,
@@ -22,14 +19,12 @@ router.get("/profile", authenticationMiddleware, (req, res) => {
     user: req.user, // comes from decoded token
   });
 });
+
 router.get("/me", authenticationMiddleware, getMe);
 router.get("/refresh", refreshToken);
 router.post("/register", register);
 router.post("/login", login);
 router.post("/logout", logout);
-router.post("/oauth/google", googleAuthController);
-router.post("/oauth/google-signup", googleSignUpController);
-router.post("/oauth/facebook", facebookAuthController);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password/:token", resetPassword);
 

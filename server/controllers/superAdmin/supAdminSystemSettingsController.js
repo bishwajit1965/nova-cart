@@ -187,7 +187,7 @@ export const updateSystemPreferences = async (req, res) => {
 export const toggleMaintenanceMode = async (req, res) => {
   try {
     const { maintenanceMode } = req.body; // true / false
-    const settings = await Settings.findOneAndUpdate(
+    const settings = await SystemSettings.findOneAndUpdate(
       {},
       { maintenanceMode },
       { new: true, upsert: true }

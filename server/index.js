@@ -57,6 +57,13 @@ import superAdminOrderRoutes from "./routes/superAdmin/superAdminOrderRoutes.js"
 import clientSupAdmPortfolioViewRoutes from "./routes/client/clientSupAdminPortfolioViewRoutes.js";
 import supAdminProjectRoutes from "./routes/superAdmin/supAdminProjectRoutes.js";
 import clientSupAdminProjectRoutes from "./routes/client/clientSupAdminProjectRoutes.js";
+import clientHeroSlidesRoutes from "./routes/client/clientHeroSlidesRoutes.js";
+import clientFeaturedPromotionBannerRoutes from "./routes/client/clientFeaturedPromotionBannerRoutes.js";
+import clientFaqRoutes from "./routes/client/clientFaqRoutes.js";
+import googleAuthRoutes from "./routes/googleAuth/googleAuthRoutes.js";
+import facebookAuthRoutes from "./routes/facebookAuth/facebookAuthRoutes.js";
+import clientAnnouncementRoutes from "./routes/client/clientAnnouncementRoutes.js";
+import clientSystemSettingsRoutes from "./routes/client/clientSystemSettingsRoutes.js";
 
 /**==========================================
  * Essential configurations section
@@ -76,15 +83,42 @@ const __dirname = path.dirname(__filename);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(express.static(path.join(__dirname, "public")));
 
+const allowedOrigins = [
+  "http://localhost:5173", // Vite Frontend
+  "http://localhost:3000", // If frontend sometimes runs through proxy
+  process.env.CLIENT_ORIGIN,
+].filter(Boolean);
+
 // Middlewares
 app.use(cookieParser());
 app.use(express.json());
+// app.use(
+//   cors({
+//     origin: process.env.CLIENT_ORIGIN || "http://localhost:5173",
+//     credentials: true,
+//   })
+// );
+
 app.use(
   cors({
-    origin: process.env.CLIENT_ORIGIN || "http://localhost:5173",
+    origin: function (origin, callback) {
+      // Allow requests with no origin (mobile apps, curl)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS: " + origin));
+      }
+    },
     credentials: true,
   })
 );
+app.use((req, res, next) => {
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+  res.setHeader("Cross-Origin-Embedder-Policy", "unsafe-none");
+  next();
+});
 
 app.use(express.urlencoded({ extended: true }));
 
@@ -92,6 +126,8 @@ app.use(express.urlencoded({ extended: true }));
  * Auth & super-admin related Mounting Routes
  *===========================================*/
 app.use("/api/auth", authRoutes);
+app.use("/api/auth/google", googleAuthRoutes);
+app.use("/api/auth/facebook", facebookAuthRoutes);
 app.use("/api/superAdmin/carts", cartRoutes);
 app.use("/api/superAdmin/users", adminUserRoutes);
 app.use("/api/superAdmin/categories", categoryRoutes);
@@ -160,6 +196,17 @@ app.use("/api/client/plan-subscription", clientPlanSubscriptionRoutes);
 app.use("/api/client/plan-history", clientPlanHistoryRoutes);
 app.use("/api/client/portfolio", clientSupAdmPortfolioViewRoutes);
 app.use("/api/client/project", clientSupAdminProjectRoutes);
+app.use("/api/client/client-slides-banner", clientHeroSlidesRoutes);
+app.use(
+  "/api/client/client-featured-promotion-banner",
+  clientFeaturedPromotionBannerRoutes
+);
+app.use("/api/client/faqs", clientFaqRoutes);
+app.use("/api/client/client-announcements", clientAnnouncementRoutes);
+app.use(
+  "/api/client/client-system-settings/preference",
+  clientSystemSettingsRoutes
+);
 
 /**=========================================
  * Server active status message display

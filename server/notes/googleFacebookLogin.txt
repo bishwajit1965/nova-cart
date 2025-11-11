@@ -1,0 +1,10 @@
+ Date: 07/11/2025
+ =============================
+ GOOGLE FACEBOOK LOGIN PROCESS
+ =============================
+
+1. Create separate controllers
+    oauthController.js
+
+2. Create separate routes
+    authRoutes.js

@@ -11,13 +11,27 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
     },
+    // password is optional now so OAuth users can be created (newly changed)
     password: {
       type: String,
-      required: [true, "Password is required"],
+      required: false,
       minlength: 6,
+      // required: [true, "Password is required"],
     },
+
     phone: { type: String }, // <-- add this line
     avatar: { type: String },
+
+    // provider fields (newly added)
+    provider: {
+      type: String,
+      enum: ["local", "google", "facebook"],
+      default: "local",
+    },
+
+    googleId: { type: String, index: true, sparse: true },
+    facebookId: { type: String, index: true, sparse: true },
+
     passwordResetToken: {
       type: String,
     },
@@ -29,6 +43,7 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    permissions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Permission" }], // ✅ add this
     acceptedTerms: {
       type: Boolean,
       default: true,

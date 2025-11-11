@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 
 import AuthContext from "../context/authContext";
 import api from "../lib/api";
-import { initializeGoogleSDK } from "../lib/googleSdk";
 import toast from "react-hot-toast";
+// import { initializeGoogleSDK } from "../lib/googleSdk.js";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -15,17 +15,34 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
+        // 1. Refresh session
         const res = await api.get("/auth/refresh", {
           withCredentials: true, // ✅ must include cookies
         });
         const newAccessToken = res.data.accessToken;
+
+        // after you get accessToken from refresh or localStorage
+        if (newAccessToken) {
+          api.defaults.headers.common[
+            "Authorization"
+          ] = `Bearer ${newAccessToken}`;
+          localStorage.setItem("accessToken", newAccessToken);
+        }
+
+        // 2) ✅ Fetch full user with plan + features
+        const me = await api.get("/auth/me", { withCredentials: true });
+
+        setUser(me.data);
+        setIsAuthenticated(true);
+
+        console.log("✅ Full user loaded:", me.data);
 
         // ⬇️ Attach token to Axios instance
         api.defaults.headers.common[
           "Authorization"
         ] = `Bearer ${newAccessToken}`;
 
-        setUser(res.data.user);
+        // setUser(res.data.user);
         console.log("✅ Session refreshed:", res.data.user);
         setIsAuthenticated(true);
         toast.success("🔒 Session restored"); // ✅ Toast on success
@@ -100,9 +117,6 @@ export const AuthProvider = ({ children }) => {
       toast.error("Logout failed. Try again.");
     }
   };
-  useEffect(() => {
-    initializeGoogleSDK();
-  }, []);
 
   const authInfo = {
     user,

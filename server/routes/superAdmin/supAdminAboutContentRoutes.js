@@ -17,7 +17,7 @@ const router = express.Router();
 
 router.use(authenticationMiddleware);
 
-router.use(authorizeRole("super-admin"));
+router.use(authorizeRole("super-admin", "user"));
 
 router.get("/about-content", getAllAboutSections);
 

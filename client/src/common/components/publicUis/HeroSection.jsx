@@ -39,9 +39,8 @@ const HeroSection = () => {
     isError: isErrorBannerData,
     error: errorBannerData,
   } = useApiQuery({
-    url: `${API_PATHS.SUP_ADMIN_HERO_SLIDES_BANNER.SUP_ADMIN_HERO_SLIDES_BANNER_ENDPOINT}`,
-    queryKey:
-      API_PATHS.SUP_ADMIN_HERO_SLIDES_BANNER.SUP_ADMIN_HERO_SLIDES_BANNER_KEY,
+    url: `${API_PATHS.CLIENT_HERO_SLIDES_BANNER.CLIENT_HERO_SLIDES_BANNER_ENDPOINT}`,
+    queryKey: API_PATHS.CLIENT_HERO_SLIDES_BANNER.CLIENT_HERO_SLIDES_BANNER_KEY,
   });
 
   useEffect(() => {

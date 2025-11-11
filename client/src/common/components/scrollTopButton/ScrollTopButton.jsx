@@ -1,4 +1,4 @@
-import { ArrowBigUp, ArrowUp } from "lucide-react";
+import { ArrowUp } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { FaArrowAltCircleUp } from "react-icons/fa";
@@ -35,7 +35,7 @@ const ScrollTopButton = () => {
     <div>
       {showButton && (
         <button
-          className="btn btn-circle lg:bg-base-200 bg-base-300 shadow-md border fixed lg:bottom-60 bottom-20 right-34 border-gray-400 lg:opacity-50 opacity-100 hover:bg-base-300"
+          className="btn btn-circle lg:bg-base-200 bg-base-300 shadow-md border fixed lg:bottom-72 bottom-24 right-34 border-gray-400 lg:opacity-50 opacity-100 hover:bg-base-300"
           onClick={scrollToTop}
           // style={{
           //   position: "fixed",

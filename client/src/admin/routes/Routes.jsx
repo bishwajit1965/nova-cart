@@ -119,7 +119,11 @@ const router = createBrowserRouter([
       {
         path: "/client-specific-orders",
         element: (
-          <ProtectedRoute allowedRoles={["super-admin", "admin", "user"]}>
+          <ProtectedRoute
+            allowedRoles={["super-admin", "admin", "user"]}
+            requiredFeatures={["order"]}
+            deniedMessage="Your current plan does not allow client orders. Upgrade to continue."
+          >
             <ClientOrdersPage />
           </ProtectedRoute>
         ),
@@ -147,7 +151,13 @@ const router = createBrowserRouter([
       },
       {
         path: "/client-address-book",
-        element: <ClientAddressBookPage />,
+        element: (
+          <ProtectedRoute
+            allowedRoles={["user", "super-admin", "admin", "user"]}
+          >
+            <ClientAddressBookPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/product-categories",
@@ -163,7 +173,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/my-portfolio",
-        element: <Portfolio />,
+        element: (
+          <ProtectedRoute allowedRoles={["user", "super-admin", "admin"]}>
+            <Portfolio />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/frequently-asked-questions",
@@ -255,7 +269,11 @@ const router = createBrowserRouter([
       },
       {
         path: "user-management",
-        element: <SuperAdminUsersManagementPage />,
+        element: (
+          <ProtectedRoute allowedRoles={["super-admin"]}>
+            <SuperAdminUsersManagementPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "vendor-management",
@@ -304,11 +322,19 @@ const router = createBrowserRouter([
       },
       {
         path: "security-audit-log-management",
-        element: <SecurityAuditLogManagement />,
+        element: (
+          <ProtectedRoute allowedRoles={["super-admin"]}>
+            <SecurityAuditLogManagement />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "category-management",
-        element: <CategoryManagement />,
+        element: (
+          <ProtectedRoute allowedRoles={["super-admin", "admin"]}>
+            <CategoryManagement />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "sub-category-management",
@@ -409,7 +435,10 @@ const router = createBrowserRouter([
       {
         path: "admin-orders-management",
         element: (
-          <ProtectedRoute allowedRoles={["super-admin", "admin"]}>
+          <ProtectedRoute
+            allowedRoles={["super-admin", "admin"]}
+            requiredFeatures={["order"]}
+          >
             <AdminOrderManagementPage />
           </ProtectedRoute>
         ),

@@ -22,6 +22,7 @@ import { containerVariants } from "../../client/service/animations";
 import { motion } from "framer-motion";
 import { useAuth } from "../hooks/useAuth";
 import { useState } from "react";
+import GoogleSignInButton from "../components/googleAuthButton/GoogleSignInButton";
 
 const LandingPage = () => {
   const { user, isAuthenticated } = useAuth();

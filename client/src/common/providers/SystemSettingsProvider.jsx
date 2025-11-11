@@ -16,13 +16,10 @@ const SystemSettingsProvider = ({ children }) => {
     isErrorSystemPreferences,
     errorSystemPreferences,
   } = useApiQuery({
-    url: `${API_PATHS.SUP_ADMIN_SYSTEM_SETTINGS.SUP_ADMIN_SYSTEM_SETTINGS_PREFERENCES_ENDPOINT}/get-create`,
+    url: `${API_PATHS.CLIENT_SYSTEM_SETTINGS.CLIENT_SYSTEM_SETTINGS_PREFERENCES_ENDPOINT}/preference/get-create`,
     queryKey:
-      API_PATHS.SUP_ADMIN_SYSTEM_SETTINGS
-        .SUP_ADMIN_SYSTEM_SETTINGS_PREFERENCES_KEY,
+      API_PATHS.CLIENT_SYSTEM_SETTINGS.CLIENT_SYSTEM_SETTINGS_PREFERENCES_KEY,
   });
-
-  console.log("System Data----->", systemData);
 
   const systemSettingsDataStatus = useFetchedDataStatusHandler({
     isLoading: isLoadingSystemPreferences,

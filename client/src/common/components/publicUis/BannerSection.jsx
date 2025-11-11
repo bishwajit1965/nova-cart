@@ -17,9 +17,10 @@ const BannerSection = () => {
     isError: isErrorBannerData,
     error: errorBannerData,
   } = useApiQuery({
-    url: `${API_PATHS.SUP_ADMIN_HERO_SLIDES_BANNER.SUP_ADMIN_HERO_SLIDES_BANNER_ENDPOINT}`,
+    url: `${API_PATHS.CLIENT_FEATURED_PROMOTION_BANNER.CLIENT_FEATURED_PROMOTION_BANNER_ENDPOINT}`,
     queryKey:
-      API_PATHS.SUP_ADMIN_HERO_SLIDES_BANNER.SUP_ADMIN_HERO_SLIDES_BANNER_KEY,
+      API_PATHS.CLIENT_FEATURED_PROMOTION_BANNER
+        .CLIENT_FEATURED_PROMOTION_BANNER_KEY,
   });
 
   // console.log("Banners data", bannerData);

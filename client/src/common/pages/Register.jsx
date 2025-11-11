@@ -1,15 +1,11 @@
 import { Eye, EyeOff, Loader } from "lucide-react";
-import { FaFacebook, FaGoogle } from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { getFacebookAccessToken, initFacebookSDK } from "../lib/facebookSdk";
-import { getGoogleIdToken, initializeGoogleSDK } from "../lib/googleSdk";
-import { useCallback, useEffect } from "react";
 
+import { useCallback } from "react";
 import Button from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
 import Logo from "../components/ui/Logo";
 import { LucideIcon } from "../lib/LucideIcons";
-import api from "../lib/api";
 import toast from "react-hot-toast";
 import { useAuth } from "../hooks/useAuth";
 import { useState } from "react";
@@ -36,8 +32,6 @@ const Register = () => {
     confirmPassword: "",
     acceptedTerms: false,
   });
-  console.log("Form data", form);
-  console.log("Accepted terms", form.acceptedTerms);
 
   const validationRules = {
     name: {
@@ -80,14 +74,6 @@ const Register = () => {
   const handleChange = (e) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
-  useEffect(() => {
-    initializeGoogleSDK();
-  }, []);
-
-  useEffect(() => {
-    initFacebookSDK();
-  }, []);
-
   const handleRegister = useCallback(
     async (e, method) => {
       if (method === "email") e.preventDefault();
@@ -99,6 +85,7 @@ const Register = () => {
         setLoading(false);
         setActiveMethod(null);
       };
+
       if (!form.acceptedTerms) {
         toast.error("Please accept the terms and conditions.");
         resetLoading();
@@ -119,32 +106,6 @@ const Register = () => {
             }
             await register(form);
             toast.success("Registration is successful!");
-            break;
-          }
-
-          case "google": {
-            const { user, accessToken } = await getGoogleIdToken();
-            if (!user || !accessToken) throw new Error("Google sign-up failed");
-
-            setUser(user);
-            setIsAuthenticated(true);
-            toast.success("Registered with Google");
-            break;
-          }
-
-          case "facebook": {
-            const token = await getFacebookAccessToken();
-            if (!token) throw new Error("Facebook access token not received");
-
-            const res = await api.post("/auth/oauth/facebook-signup", {
-              token,
-            });
-            const user = res?.data?.user;
-            if (!user) throw new Error("Facebook sign-up failed");
-
-            setUser(user);
-            setIsAuthenticated(true);
-            toast.success("Registered with Facebook");
             break;
           }
 
@@ -182,7 +143,7 @@ const Register = () => {
   );
 
   return (
-    <div className="lg:max-w-3xl mx-auto bg-base-100 p-6 rounded-lg shadow space-y-2">
+    <div className="lg:max-w-3xl mx-auto bg-base-100 p-6 rounded-lg shadow space-y-2 border border-base-content/15">
       <div className="flex items-center justify-center space-x-2 lg:mb-5">
         <Logo />{" "}
         <span className="lg:text-2xl text-xl lg:font-extrabold text-indigo-600">
@@ -191,7 +152,7 @@ const Register = () => {
       </div>
       <form
         onSubmit={(e) => handleRegister(e, "email")}
-        className="lg:space-y-3 space-y-2"
+        className="lg:space-y-4 space-y-2"
       >
         <div className="">
           <Input
@@ -336,29 +297,7 @@ const Register = () => {
           </div>
         </div>
       </form>
-      <div className="divider p-0 my-2">OR</div>
-      <div className="w-full lg:space-y-2 space-y-2">
-        <div className="">
-          <Button
-            onClick={() => handleRegister(null, "facebook")}
-            disabled={loading && activeMethod === "facebook"}
-            variant="primary"
-            className="w-full"
-          >
-            <FaFacebook /> Register with Facebook
-          </Button>
-        </div>
-        <div className="w-full">
-          <Button
-            onClick={() => handleRegister(null, "google")}
-            disabled={loading && activeMethod === "google"}
-            variant="danger"
-            className="w-full"
-          >
-            <FaGoogle /> Register with Google
-          </Button>
-        </div>
-      </div>
+
       <p className="text-sm text-center">
         Already have an account ?{" "}
         <Link to="/login" className="text-blue-600 underline">
@@ -369,7 +308,7 @@ const Register = () => {
       <p className="mt-2 text-center text-xs text-base-content/60">
         &copy; {new Date().getFullYear()}{" "}
         <span className="text-indigo-500 font-bold">Nova Cart</span> . All
-        rights reserved. <script></script>
+        rights reserved.
       </p>
     </div>
   );

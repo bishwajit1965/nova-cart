@@ -46,8 +46,8 @@ const FAQSection = () => {
     isError: isErrorFaqs,
     error: errorFaqs,
   } = useApiQuery({
-    url: `${API_PATHS.SUP_ADMIN_FAQ.SUP_ADMIN_FAQ_ENDPOINT}/all-faqs`,
-    queryKey: API_PATHS.SUP_ADMIN_FAQ.SUP_ADMIN_FAQ_KEY,
+    url: `${API_PATHS.CLIENT_FAQ.CLIENT_FAQ_ENDPOINT}/all-faqs`,
+    queryKey: API_PATHS.CLIENT_FAQ.CLIENT_FAQ_KEY,
     options: {
       staleTime: 0,
       refetchOnWindowFocus: true,
@@ -89,7 +89,7 @@ const FAQSection = () => {
           Frequently Asked Questions
         </motion.h2>
         <motion.div className="space-y-4" variants={itemVariants}>
-          {faqs.map((faq, idx) => (
+          {faqs?.map((faq, idx) => (
             <motion.div
               key={idx}
               className="bg-base-100 rounded-lg shadow-sm border border-base-content/15"

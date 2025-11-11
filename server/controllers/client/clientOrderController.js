@@ -257,7 +257,14 @@ export const getMyOrders = async (req, res) => {
   try {
     const { userId } = req.params;
     console.log("➡️ User id of orders", userId);
-    const user = await User.findById({ userId }).lean();
+    const user = await User.findById(userId)
+      .populate({
+        path: "plan",
+        populate: { path: "features" }, // <-- important
+      })
+      .populate("roles")
+      .populate("permissions")
+      .lean();
 
     const orders = await Order.find({ user: userId })
       .populate("user")

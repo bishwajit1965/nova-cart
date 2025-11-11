@@ -28,6 +28,7 @@ const API_PATHS = {
     ENDPOINT: "superAdmin/products",
     KEY: ["products"],
   },
+
   REPORTS: {
     ORDERS_SUMMARY: "superAdmin/reports/orders-summary",
     ORDERS_SUMMARY_KEY: ["orders-summary"],
@@ -41,10 +42,12 @@ const API_PATHS = {
     PRODUCTS_SUMMARY: "superAdmin/reports/products-summary",
     PRODUCTS_SUMMARY_KEY: ["products-summary"],
   },
+
   ORDERS: {
     ENDPOINT: "superAdmin/orders",
     KEY: ["orders"],
   },
+
   ROLES: {
     ENDPOINT: "superAdmin/roles",
     KEY: ["roles"],
@@ -286,6 +289,38 @@ const API_PATHS = {
   CLIENT_SUP_ADM_PROJECT: {
     CLIENT_SUP_ADM_PROJECT_ENDPOINT: "client/project",
     CLIENT_SUP_ADM_PROJECT_KEY: ["project"],
+  },
+
+  /** CLIENT HERO SLIDES BANNER API PATHS */
+  CLIENT_HERO_SLIDES_BANNER: {
+    CLIENT_HERO_SLIDES_BANNER_ENDPOINT: "client/client-slides-banner",
+    CLIENT_HERO_SLIDES_BANNER_KEY: ["client-slides-banner"],
+  },
+
+  /** CLIENT FEATURED PROMOTION BANNER API PATHS */
+  CLIENT_FEATURED_PROMOTION_BANNER: {
+    CLIENT_FEATURED_PROMOTION_BANNER_ENDPOINT:
+      "client/client-featured-promotion-banner",
+    CLIENT_FEATURED_PROMOTION_BANNER_KEY: ["client-featured-promotion-banner"],
+  },
+
+  /** CLIENT FAQ SECTION API PATHS */
+  CLIENT_FAQ: {
+    CLIENT_FAQ_ENDPOINT: "client/faqs",
+    CLIENT_FAQ_KEY: ["faqs"],
+  },
+
+  /** CLIENT SYSTEM SETTINGS API PATHS */
+  CLIENT_SYSTEM_SETTINGS: {
+    CLIENT_SYSTEM_SETTINGS_PREFERENCES_ENDPOINT:
+      "client/client-system-settings/preference",
+    CLIENT_SYSTEM_SETTINGS_PREFERENCES_KEY: ["system-settings-preferences"],
+  },
+
+  /** CLIENT ANNOUNCEMENT API PATHS */
+  CLIENT_ANNOUNCEMENT: {
+    CLIENT_ANNOUNCEMENT_ENDPOINT: "client/client-announcements",
+    CLIENT_ANNOUNCEMENT_KEY: ["client-announcements"],
   },
 
   // Extend this for other features.....

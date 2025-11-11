@@ -5,6 +5,7 @@
     "cellspacing",
     "Dhanmondi",
     "jspdf",
+    "jssdk",
     "Nagad",
     "papaparse",
     "squircle",
@@ -12,6 +13,7 @@
     "Textareas",
     "unparse",
     "uuidv",
-    "virtuals"
+    "virtuals",
+    "xfbml"
   ]
 }
