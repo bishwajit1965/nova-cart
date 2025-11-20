@@ -1,4 +1,4 @@
-import { Eye, FileText, LucideDownload } from "lucide-react";
+import { Eye } from "lucide-react";
 
 import API_PATHS from "../services/apiPaths/apiPaths";
 import Badge from "../../common/components/ui/Badge";
@@ -48,6 +48,8 @@ const SuperAdminOrdersOverviewManagement = () => {
   const [paginatedData, setPaginatedData] = useState(orders || []);
   // To display total permissions in pagination
   const dataLength = orders?.length;
+
+  console.log("Orders length", dataLength);
 
   /** --------> Filtering searched term --------> */
   useEffect(() => {
@@ -272,7 +274,7 @@ const SuperAdminOrdersOverviewManagement = () => {
                             <div className="flex items-center space-x-2">
                               <MiniIconButton
                                 icon="view"
-                                variant="default"
+                                variant="indigo"
                                 onClick={() => modalToggler(order)}
                               >
                                 <span className="flex items-start pl-0">
@@ -290,7 +292,7 @@ const SuperAdminOrdersOverviewManagement = () => {
                                 tooltip="Download PDF"
                                 icon="download"
                                 disabled={loadingInvoice}
-                                variant="default"
+                                variant="success"
                               ></MiniIconButton>
                             </div>
                           </span>

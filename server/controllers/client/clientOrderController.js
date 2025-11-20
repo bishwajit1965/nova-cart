@@ -6,6 +6,8 @@ import User from "../../models/User.js";
 import generateInvoice from "../../utils/invoiceGenerator.js";
 import { v4 as uuidv4 } from "uuid";
 
+import { sendOrderConfirmationEmail } from "../../utils/clientEmailService.js";
+
 const generateCoupon = () => {
   const timestamp = Date.now().toString().slice(-5);
   const randomStr = Math.random().toString(36).substring(2, 6).toUpperCase();
@@ -190,6 +192,16 @@ export const createOrder = async (req, res) => {
 
     const savedOrder = await order.save();
 
+    console.log("🚀 Sending email to user");
+
+    // Send confirmation email
+    await sendOrderConfirmationEmail({
+      userEmail: req.user.email,
+      orderId: savedOrder.orderId, // or savedOrder._id if you prefer
+      items: savedOrder.items,
+      totalPrice: savedOrder.totalAmount.toFixed(2), // <-- correct field
+    });
+
     res.status(201).json({
       success: true,
       message: "Order processed successfully!",
@@ -237,7 +249,7 @@ export const cancelOrder = async (req, res) => {
     }
     order.status = "cancelled";
     order.statusHistory.push({ status: "cancelled", date: new Date() });
-    await order.save();
+    await order.save({ validateBeforeSave: false });
     res.status(200).json({
       success: true,
       message: "Order has been cancelled successfully!",
@@ -364,6 +376,7 @@ export const getAllOrders = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 export const updateOrderStatus = async (req, res) => {
   const { orderId } = req.params;
   const { status } = req.body;
@@ -411,161 +424,6 @@ export const deleteOrder = async (req, res) => {
   }
 };
 
-export const getOrdersByStatus = async (req, res) => {
-  const { status } = req.params;
-
-  try {
-    const orders = await Order.find({ status }).populate("user items.product");
-    if (!orders || orders.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No orders found with this status." });
-    }
-    res.status(200).json({
-      success: true,
-
-      message: "Orders fetched successfully.",
-      data: orders,
-    });
-  } catch (error) {
-    console.error("Error fetching orders by status:", error);
-    res
-      .status(500)
-      .json({ message: "Internal server error", error: error.message });
-  }
-};
-
-export const getOrderCountByStatus = async (req, res) => {
-  const { status } = req.params;
-
-  try {
-    const count = await Order.countDocuments({ status });
-
-    res.status(200).json({
-      success: true,
-      message: `Count of orders with status ${status} fetched successfully.`,
-      data: { count },
-    });
-  } catch (error) {
-    console.error("Error fetching order count by status:", error);
-    res
-      .status(500)
-      .json({ message: "Internal server error", error: error.message });
-  }
-};
-
-export const getOrderCount = async (req, res) => {
-  try {
-    const count = await Order.countDocuments();
-
-    res.status(200).json({
-      success: true,
-      message: "Total order count fetched successfully.",
-      data: { count },
-    });
-  } catch (error) {
-    console.error("Error fetching total order count:", error);
-    res
-      .status(500)
-      .json({ message: "Internal server error", error: error.message });
-  }
-};
-
-export const getOrdersByUserAndStatus = async (req, res) => {
-  const { userId, status } = req.params;
-
-  try {
-    const orders = await Order.find({ user: userId, status }).populate(
-      "items.product"
-    );
-
-    if (!orders || orders.length === 0) {
-      return res.status(404).json({
-        message: "No orders found for this user with the specified status.",
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "Orders fetched successfully.",
-      data: orders,
-    });
-  } catch (error) {
-    console.error("Error fetching orders by user and status:", error);
-    res
-      .status(500)
-      .json({ message: "Internal server error", error: error.message });
-  }
-};
-
-export const getOrderCountByUser = async (req, res) => {
-  const { userId } = req.params;
-
-  try {
-    const count = await Order.countDocuments({ user: userId });
-    res.status(200).json({
-      success: true,
-      message: "Order count for user fetched successfully.",
-      data: { count },
-    });
-  } catch (error) {
-    console.error("Error fetching order count by user:", error);
-    res.status(500).json({
-      message: "Internal server error",
-      error: error.message,
-    });
-  }
-};
-
-export const getOrderCountByUserAndStatus = async (req, res) => {
-  const { userId, status } = req.params;
-
-  try {
-    const count = await Order.countDocuments({ user: userId, status });
-    res.status(200).json({
-      success: true,
-      message: "Order count for user and status fetched successfully.",
-      data: { count },
-    });
-  } catch (error) {
-    console.error("Error fetching order count by user and status:", error);
-    res.status(500).json({
-      message: "Internal server error",
-      error: error.message,
-    });
-  }
-};
-
-export const getOrdersByDateRange = async (req, res) => {
-  const { startDate, endDate } = req.query;
-
-  try {
-    const orders = await Order.find({
-      createdAt: {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate),
-      },
-    }).populate("user items.product");
-
-    if (!orders || orders.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No orders found in this date range." });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "Orders fetched successfully.",
-      data: orders,
-    });
-  } catch (error) {
-    console.error("Error fetching orders by date range:", error);
-    res
-      .status(500)
-      .json({ message: "Internal server error", error: error.message });
-  }
-};
-
 export default {
   createOrder,
   getClientOrders,
@@ -574,15 +432,4 @@ export default {
   downloadInvoice,
   cancelOrder,
   getMyOrders,
-  //   getOrderById,
-  //   getAllOrders,
-  //   updateOrderStatus,
-  //   deleteOrder,
-  //   getOrdersByStatus,
-  //   getOrderCountByStatus,
-  //   getOrderCount,
-  //   getOrdersByUserAndStatus,
-  //   getOrderCountByUser,
-  //   getOrderCountByUserAndStatus,
-  //   getOrdersByDateRange,
 };

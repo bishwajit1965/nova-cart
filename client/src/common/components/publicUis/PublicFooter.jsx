@@ -11,6 +11,7 @@ import { useState } from "react";
 import { Input } from "../ui/Input";
 import { LucideIcon } from "../../lib/LucideIcons";
 import Button from "../ui/Button";
+import { Link } from "react-router-dom";
 
 const PublicFooter = () => {
   const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
@@ -70,18 +71,25 @@ const PublicFooter = () => {
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8 gap-6">
         {/* Brand info */}
         <div className="">
-          <div className="mb-4">
-            <img
-              src={`${apiURL}/uploads/${systemSettings?.logo}`}
-              alt={systemSettings?.appName}
-              className="w-12 h-12 object-contain"
-            />
-          </div>
-          <div className="">
-            <h3 className="text-2xl font-bold mb-2">
-              {systemSettings?.appName}
-            </h3>
-          </div>
+          <Link to="/" className="text-primary">
+            <div className="mb-4">
+              {systemSettings && (
+                <div className="flex items-center-safe space-x-1">
+                  <img
+                    src={`${apiURL}/uploads/${systemSettings?.logo}`}
+                    alt={systemSettings?.appName}
+                    className="w-12 h-12 object-contain"
+                  />
+                  <div className="hidden lg:block">
+                    <div className="text-xl font-extrabold uppercase">
+                      {systemSettings?.appName}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </Link>
+
           <p className="text-sm">
             {systemSettings?.tagline || "Your Trusted E-commerce Platform"}
             Trusted by thousands of happy customers.

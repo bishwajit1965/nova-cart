@@ -1,6 +1,8 @@
 import Order from "../../models/client/Order.js";
 import Product from "../../models/Product.js";
+import generateInvoiceFile from "../../utils/generateInvoiceFile.js";
 import generateInvoice from "../../utils/invoiceGenerator.js";
+import sendEmailWithAttachment from "../../utils/sendEmailWithAttachment.js";
 
 export const createOrder = async (req, res) => {
   try {
@@ -63,33 +65,29 @@ export const createOrder = async (req, res) => {
 
 export const getAllOrders = async (req, res) => {
   try {
-    const { status, page = 1, limit = 20 } = req.query;
-    const filter = {};
-    if (status) filter.status = status;
-    const order = await Order.find(filter)
+    const orders = await Order.find({})
       .populate("user", "name email")
-      .sort({ createAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(Number(limit));
+      .sort({ createdAt: -1 }); // typo fixed: should be createdAt
 
-    if (!order)
-      return res
-        .status(404)
-        .json({ success: false, message: "Orders not found" });
+    if (!orders.length) {
+      return res.status(404).json({
+        success: false,
+        message: "No orders found",
+      });
+    }
 
-    const total = await Order.countDocuments(filter);
     res.status(200).json({
       success: true,
-      message: "Filtered orders are fetched.",
-      data: order,
-      total,
+      message: "All orders fetched successfully",
+      data: orders,
+      total: orders.length,
     });
   } catch (error) {
-    console.error("Error in fetching order.", error);
+    console.error("Error fetching all orders:", error);
     res.status(500).json({
       success: false,
-      message: "Internal server error!",
-      message: error.message,
+      message: "Internal server error",
+      error: error.message,
     });
   }
 };
@@ -136,29 +134,71 @@ export const downloadInvoice = async (req, res) => {
 };
 
 export const updateOrderStatus = async (req, res) => {
+  const { orderId } = req.params;
+  const { status } = req.body;
   try {
-    const { orderId } = req.params;
-    const { status } = req.body;
+    const foundOrder = await Order.findOne({ orderId }).populate(
+      "user",
+      "name email"
+    );
+    console.log("Order found", foundOrder);
+    // ✅ Find order by custom orderId, not _id
+    const order = await Order.findOneAndUpdate(
+      { orderId },
+      { status },
+      { new: true, runValidators: false }
+    ).populate("user", "email name"); // ensures we get user email
+    console.log("Order found", order);
 
-    const order = await Order.findOne({ orderId });
-    if (!order)
-      return res
-        .status(404)
-        .json({ success: false, message: "Order not found!" });
+    if (!order) {
+      return res.status(404).json({ message: "Order not found." });
+    }
 
-    order.status = status;
-    order.statusHistory.push({ status, date: new Date() });
-    await order.save();
-    res
-      .status(200)
-      .json({ success: true, message: "Order status is updated", data: order });
-  } catch (error) {
-    console.error("Error in updating order status", error);
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      message: error.message,
+    console.log("✅ Order found:", order.orderId, "User:", order.user?.email);
+
+    // ✅ Send response immediately (avoid double headers)
+    res.status(200).json({
+      success: true,
+      message: "Order status updated successfully.",
+      data: order,
     });
+
+    // ✅ Background email sending (after response)
+    if (status === "delivered" && order.user?.email) {
+      try {
+        console.log("📦 Generating invoice for delivered order...");
+        const invoicePath = await generateInvoiceFile(order); // PDF file created
+
+        console.log("📧 Invoice file...", invoicePath);
+        console.log("📧 Sending delivery confirmation email...");
+        await sendEmailWithAttachment({
+          to: order.user.email,
+          subject: `Your Nova-Cart Order ${order.orderId} Invoice`,
+          text: `Hello ${
+            order.user.name || "Customer"
+          },\n\nYour order has been delivered successfully! Please find your invoice attached.\n\nThank you for shopping with Nova-Cart!`,
+          // attachmentPath: invoicePath,
+          attachments: [
+            {
+              filename: invoicePath.split("/").pop(),
+              path: invoicePath,
+              contentType: "application/pdf",
+            },
+          ],
+        });
+
+        console.log("✅ Email sent successfully!");
+      } catch (emailErr) {
+        console.error("❌ Email sending failed:", emailErr);
+      }
+    } else if (!order.user?.email) {
+      console.warn("⚠️ No email found for this user. Skipping notification.");
+    }
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    if (!res.headersSent) {
+      res.status(500).json({ message: "Internal server error" });
+    }
   }
 };
 

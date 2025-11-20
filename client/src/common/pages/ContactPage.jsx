@@ -17,8 +17,12 @@ import { useApiMutation } from "../../superAdmin/services/hooks/useApiMutation";
 import usePageTitle from "../../superAdmin/services/hooks/usePageTitle";
 import { useState } from "react";
 import useValidator from "../hooks/useValidator";
+import useSEO from "../hooks/useSeo";
+import { SEO_TEMPLATES } from "../../utils/seoTemplate";
 
 const ContactPage = () => {
+  // SEO
+  useSEO(SEO_TEMPLATES.contact);
   const [loading, setLoading] = useState(false);
   const pageTitle = usePageTitle();
   const [form, setForm] = useState({

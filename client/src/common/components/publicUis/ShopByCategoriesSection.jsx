@@ -47,7 +47,7 @@ const ShopByCategoriesSection = () => {
 
   return (
     <motion.section
-      className="lg:py-16 py-6 bg-base-200 rounded-md shadow"
+      className="lg:py-16 py-6 bg-base-200 rounded-md shadow border border-base-content/15"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: false }}
@@ -55,7 +55,7 @@ const ShopByCategoriesSection = () => {
     >
       <div className="max-w-6xl mx-auto lg:px-6 px-2 text-center text-base-content/70">
         <h2 className="lg:text-3xl text-xl font-extrabold lg:mb-8 mb-4">
-          Shop by Category
+          🏪 Shop by Category
         </h2>
         <motion.div className="" variants={itemVariants}>
           {categoryDataStatus.status !== "success" ? (

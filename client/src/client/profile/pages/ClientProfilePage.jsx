@@ -26,8 +26,13 @@ import useFetchedDataStatusHandler from "../../../common/utils/hooks/useFetchedD
 import { useNavigate } from "react-router-dom";
 import usePageTitle from "../../../superAdmin/services/hooks/usePageTitle";
 import { useQueryClient } from "@tanstack/react-query";
+import useSEO from "../../../common/hooks/useSeo";
+import { SEO_TEMPLATES } from "../../../utils/seoTemplate";
 
 const ClientProfilePage = () => {
+  // SEO
+  useSEO(SEO_TEMPLATES.portfolio);
+
   const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
   const pageTitle = usePageTitle();
   const [userData, setUserData] = useState({ name: "", email: "", phone: "" });

@@ -49,7 +49,7 @@ const BestSellersSection = () => {
 
   return (
     <motion.section
-      className="lg:py-16 py-6 bg-base-200 rounded-md shadow"
+      className="lg:py-16 py-6 bg-base-200 rounded-md shadow border border-base-content/15"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: false }}
@@ -63,7 +63,7 @@ const BestSellersSection = () => {
           className="lg:text-3xl text-xl font-extrabold lg:mb-8 mb-4"
           variants={itemVariants}
         >
-          Best Sellers
+          🛒 Best Sellers
         </motion.h2>
         {bestSellersDataStatus.status !== "success" ? (
           bestSellersDataStatus.content

@@ -1,7 +1,6 @@
-import { Clock, Clock11Icon, FileCheck2Icon, ShoppingCart } from "lucide-react";
+import { Clock, FileCheck2Icon, ShoppingCart } from "lucide-react";
 import { useLoaderData, useNavigate } from "react-router-dom";
 
-import Badge from "../../common/components/ui/Badge";
 import Button from "../../common/components/ui/Button";
 import DynamicPageTitle from "../../common/utils/pageTitle/DynamicPageTitle";
 import { LucideIcon } from "../../common/lib/LucideIcons";
@@ -9,6 +8,7 @@ import api from "../../common/lib/api";
 import toast from "react-hot-toast";
 import usePageTitle from "../../superAdmin/services/hooks/usePageTitle";
 import { useState } from "react";
+import OrderTimeline from "./components/OrderTimeline";
 
 const ClientOrderDetailsPage = () => {
   const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
@@ -114,6 +114,13 @@ const ClientOrderDetailsPage = () => {
           <h3 className="font-semibold mb-2 flex items-center space-x-2">
             <Clock /> <span>Order Timeline</span>
           </h3>
+          <OrderTimeline
+            statusHistory={order.statusHistory}
+            currentStatus={order.status} // e.g., "processing"
+            order={order}
+          />
+        </div>
+        <div className="">
           <ul className="space-y-1">
             {order?.statusHistory?.map((s, idx) => (
               <li key={idx} className="space-x-2">

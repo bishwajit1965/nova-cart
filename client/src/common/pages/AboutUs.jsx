@@ -9,6 +9,8 @@ import { motion } from "framer-motion";
 import { useApiQuery } from "../../superAdmin/services/hooks/useApiQuery.js";
 import useFetchedDataStatusHandler from "../utils/hooks/useFetchedDataStatusHandler.jsx";
 import usePageTitle from "../../superAdmin/services/hooks/usePageTitle";
+import useSEO from "../hooks/useSeo.js";
+import { SEO_TEMPLATES } from "../../utils/seoTemplate.js";
 
 const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 const skills = [
@@ -28,6 +30,9 @@ const skills = [
 ];
 
 const AboutUs = () => {
+  // SEO
+  useSEO(SEO_TEMPLATES.about);
+
   const pageTitle = usePageTitle();
 
   /*** ------> About Content data fetched ------> */

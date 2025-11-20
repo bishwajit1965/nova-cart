@@ -26,7 +26,7 @@ const FeaturedCategoriesSection = () => {
 
   return (
     <motion.section
-      className="lg:py-16 py-6 bg-base-200 rounded-md shadow"
+      className="lg:py-16 py-6 bg-base-200 rounded-md shadow border border-base-content/15"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: false }}
@@ -37,7 +37,7 @@ const FeaturedCategoriesSection = () => {
           className="lg:text-3xl text-xl font-extrabold lg:mb-8 mb-4"
           variants={itemVariants}
         >
-          Featured Categories
+          🚀 Featured Categories
         </motion.h2>
         <div className="grid lg:gap-6 gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           {featuredCategories?.map((feature, idx) => (

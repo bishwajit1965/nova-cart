@@ -48,7 +48,7 @@ const links = [
 
 const SocialMediaLinks = () => {
   return (
-    <div className="flex justify-evenly">
+    <div className="flex">
       {links.length > 0
         ? links.map((link) => (
             <ul key={link.id} className="inline-flex my-2">

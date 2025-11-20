@@ -23,9 +23,6 @@ const BannerSection = () => {
         .CLIENT_FEATURED_PROMOTION_BANNER_KEY,
   });
 
-  // console.log("Banners data", bannerData);
-  // console.log("Banners", banners);
-
   useEffect(() => {
     if (bannerData) {
       // Filter only "banner" type slides
@@ -48,10 +45,10 @@ const BannerSection = () => {
   /** <-------- Use Fetched Data Status Handler <-------- */
   if (slidesDataStatus.status !== "success") return slidesDataStatus.content;
 
-  if (bannerData.length === 0) return null;
+  if (bannerData?.length === 0) return null;
 
   return (
-    <section className="max-w-7xl mx-auto bg-base-200 lg:p-16 p-8 rounded-md shadow-md">
+    <section className="max-w-7xl mx-auto bg-base-200 lg:p-16 p-8 rounded-md shadow-md border border-base-content/15">
       <h2 className="lg:text-2xl text-xl font-bold text-center mb-8 flex items-center justify-center gap-2">
         <Layers /> Featured Promotions
       </h2>

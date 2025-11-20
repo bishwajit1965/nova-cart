@@ -66,7 +66,7 @@ const TestimonialsSection = () => {
   });
   return (
     <motion.section
-      className="lg:py-16 py-6 bg-base-200 text-base-content rounded-md shadow"
+      className="lg:py-16 py-6 bg-base-200 text-base-content rounded-md shadow border border-base-content/15"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: false }}

@@ -2,15 +2,16 @@ import API_PATHS from "../../superAdmin/services/apiPaths/apiPaths";
 import Button from "../../common/components/ui/Button";
 import { CheckCircleIcon } from "lucide-react";
 import { Input } from "../../common/components/ui/Input";
-import { LucideIcon } from "../../common/lib/LucideIcons";
 import NoDataFound from "../../common/components/ui/NoDataFound";
 import ProductCard from "./ProductCard";
 import { useApiQuery } from "../../superAdmin/services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import { useState } from "react";
+import { LucideIcon } from "../../common/lib/LucideIcons";
 
 const ProductsListSection = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [visibleProductsCount, setVisibleProductsCount] = useState(9);
 
   /*** ------> Products data fetched ------> */
   const {
@@ -35,6 +36,19 @@ const ProductsListSection = () => {
       p.description?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const visibleFilteredProducts = filteredProducts.slice(
+    0,
+    visibleProductsCount
+  );
+
+  const handleLoadMoreProducts = () => {
+    setVisibleProductsCount((prevCount) => prevCount + 9);
+  };
+
+  const handleLoadLessProducts = () => {
+    setVisibleProductsCount((prevCount) => prevCount - 9);
+  };
+
   /*** ------> Data fetch status handlers ------> */
   const productsDataStatus = useFetchedDataStatusHandler({
     isLoading: isLoadingProducts,
@@ -44,7 +58,7 @@ const ProductsListSection = () => {
   });
 
   return (
-    <div className="bg-base-200 text-base-content/70 lg:p-15 p-2 shadow">
+    <div className="bg-base-200 text-base-content/70 lg:p-15 p-2 shadow border border-base-content/15">
       <div className="lg:pb-8 pb-4">
         <h2 className="lg:text-3xl font-extrabold text-center">
           🚙Our Products
@@ -74,15 +88,41 @@ const ProductsListSection = () => {
       <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-6 gap-2 justify-between">
         {productsDataStatus.status !== "success" ? (
           productsDataStatus.content
-        ) : (filteredProducts || []).length === 0 ? (
+        ) : (visibleFilteredProducts || []).length === 0 ? (
           <div className="text-xl font-bold text-center w-full col-span-12">
             <NoDataFound label="Product" />
           </div>
         ) : (
-          (filteredProducts || []).map((product, idx) => (
+          (visibleFilteredProducts || []).map((product, idx) => (
             <ProductCard key={idx} product={product} />
           ))
         )}
+        <div className="flex w-full justify-center col-span-12">
+          {visibleProductsCount < filteredProducts.length && (
+            <div className="text-center mt-4">
+              <Button
+                onClick={handleLoadMoreProducts}
+                icon={LucideIcon.ChevronDown}
+                variant="indigoRounded"
+                className="border-none"
+              >
+                Load More Products
+              </Button>
+            </div>
+          )}
+          {visibleProductsCount > filteredProducts.length && (
+            <div className="text-center mt-4">
+              <Button
+                onClick={handleLoadLessProducts}
+                icon={LucideIcon.ChevronUp}
+                variant="successRounded"
+                className="border-none"
+              >
+                Load Less Products
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -22,9 +22,13 @@ import { containerVariants } from "../../client/service/animations";
 import { motion } from "framer-motion";
 import { useAuth } from "../hooks/useAuth";
 import { useState } from "react";
-import GoogleSignInButton from "../components/googleAuthButton/GoogleSignInButton";
+import TopHeroSection from "../components/publicUis/TopHeroSection";
+import useSEO from "../hooks/useSeo";
+import { SEO_TEMPLATES } from "../../utils/seoTemplate";
 
 const LandingPage = () => {
+  //SEO
+  useSEO(SEO_TEMPLATES.home);
   const { user, isAuthenticated } = useAuth();
   console.log("USER DATA", user);
   console.log("USER Authenticated", isAuthenticated.toString());
@@ -38,20 +42,23 @@ const LandingPage = () => {
         description="Have a look on all in details."
       />
 
+      {/* Top hero Section */}
+      <TopHeroSection />
+
       {/* Announcement Bar */}
       <AnnouncementBar />
 
       {/*Hero section*/}
       <HeroSection />
 
+      {/* Products List Section */}
+      <ProductsListSection />
+
       {/* banner Section */}
       <BannerSection />
 
       {/* 🔥 Random Products Section (New) */}
       <RandomProductsSection />
-
-      {/* Products List Section */}
-      <ProductsListSection />
 
       {/*Why Choose Us Section*/}
       <WhyChooseUsSection />

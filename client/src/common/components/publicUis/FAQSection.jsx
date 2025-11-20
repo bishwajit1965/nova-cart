@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { useApiQuery } from "../../../superAdmin/services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../utils/hooks/useFetchedDataStatusHandler";
 import { useState } from "react";
+import { FaQuestion } from "react-icons/fa";
 
 // const faqs = [
 //   {
@@ -72,7 +73,7 @@ const FAQSection = () => {
 
   return (
     <motion.section
-      className="lg:py-20 py-4 bg-base-200 rounded-md shadow"
+      className="lg:py-20 py-4 bg-base-200 rounded-md shadow border border-base-content/15"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: false }}
@@ -83,10 +84,10 @@ const FAQSection = () => {
         variants={itemVariants}
       >
         <motion.h2
-          className="text-xl lg:text-3xl font-extrabold text-center lg:mb-8 mb-4 text-base-content/70"
+          className="text-xl lg:text-3xl flex items-center gap-2 font-extrabold text-center lg:mb-8 mb-4 text-base-content/70"
           variants={itemVariants}
         >
-          Frequently Asked Questions
+          ❓ Frequently Asked Questions
         </motion.h2>
         <motion.div className="space-y-4" variants={itemVariants}>
           {faqs?.map((faq, idx) => (

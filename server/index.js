@@ -64,6 +64,7 @@ import googleAuthRoutes from "./routes/googleAuth/googleAuthRoutes.js";
 import facebookAuthRoutes from "./routes/facebookAuth/facebookAuthRoutes.js";
 import clientAnnouncementRoutes from "./routes/client/clientAnnouncementRoutes.js";
 import clientSystemSettingsRoutes from "./routes/client/clientSystemSettingsRoutes.js";
+import siteMapRoutes from "./routes/sitemapRoutes.js";
 
 /**==========================================
  * Essential configurations section
@@ -207,6 +208,11 @@ app.use(
   "/api/client/client-system-settings/preference",
   clientSystemSettingsRoutes
 );
+
+/***===================================
+ * Sitemap Routes Mounting for SEO
+ *====================================*/
+app.use("/api/sitemap", siteMapRoutes);
 
 /**=========================================
  * Server active status message display

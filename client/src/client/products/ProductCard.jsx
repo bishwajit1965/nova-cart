@@ -3,10 +3,35 @@ import { Link } from "react-router-dom";
 import { LucideIcon } from "../../common/lib/LucideIcons";
 import StarRating from "../../common/components/ui/StartRating";
 import textShortener from "../../utils/textShortener";
+import { useEffect } from "react";
+import { injectJsonLd } from "../../common/utils/injectJsonLd/injectJsonLd.js";
 
 const ProductCard = ({ product }) => {
   const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
   const rating = [5, 4, 3, 4.5];
+
+  // ✅ Inject JSON-LD for SEO
+  useEffect(() => {
+    if (!product) return;
+
+    injectJsonLd({
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: product.name,
+      image: product.images || [product.image],
+      description: product.description,
+      sku: product._id,
+      brand: "Nova-Cart",
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "USD",
+        price: product.price,
+        availability: "https://schema.org/InStock",
+        url: `${window.location.origin}/product-details/${product._id}`,
+      },
+    });
+  }, [product]);
+
   return (
     <div className="lg:col-span-4 col-span-12 shadow rounded-xl lg:space-y-4 space-y-2 border border-base-content/10 bg-base-100">
       <div className="bg-base-300 rounded-t-xl pb-4">

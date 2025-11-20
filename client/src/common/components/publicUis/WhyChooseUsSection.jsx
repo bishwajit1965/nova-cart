@@ -25,10 +25,10 @@ const features = [
 
 const WhyChooseUsSection = () => {
   return (
-    <section className="lg:py-16 py-6 bg-base-200 text-base-content rounded-md shadow">
+    <section className="lg:py-16 py-6 bg-base-200 text-base-content rounded-md shadow border border-base-content/15">
       <div className="max-w-6xl mx-auto lg:px-6 px-2 text-center text-base-content/70">
         <h2 className="lg:text-3xl text-xl font-extrabold lg:mb-8 mb-4">
-          Why Choose Nova-Cart?
+          🎯 Why Choose Nova-Cart?
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
           {features.map((item, index) => (

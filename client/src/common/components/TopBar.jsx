@@ -11,7 +11,7 @@ import { useTheme } from "../hooks/useTheme";
 
 const TopBar = ({ role }) => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { logout, isAuthenticated } = useAuth();
+  const { logout, user, isAuthenticated } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
@@ -94,24 +94,32 @@ const TopBar = ({ role }) => {
             </label>
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content mt-3 w-52 p-2 bg-base-100 rounded-box shadow"
+              className="menu menu-sm dropdown-content mt-3 w-52 p-2 bg-base-100 rounded-box shadow space-y-2"
             >
               {isAuthenticated ? (
-                <li>
-                  <button onClick={handleLogout}>
-                    <FaSignOutAlt /> Log out
-                  </button>
-                </li>
+                <>
+                  <li>
+                    <button onClick={handleLogout} className="p-0">
+                      <FaSignOutAlt size={15} className="text-red-500" /> Log
+                      out
+                    </button>
+                  </li>
+                  <li className="text-xs">👤{user.name}</li>
+                  <li className="text-xs">{user.email}</li>
+                </>
               ) : (
                 <li>
                   <Link to="/login">
-                    <FaSign /> Login
+                    <FaSign size={15} className="text-green-500" /> Login
                   </Link>
                 </li>
               )}
               <li>
-                <Link to="/portfolio">
-                  <FaPortrait /> Portfolio
+                <Link
+                  to="/super-admin/developer-portfolio-management"
+                  className="p-0"
+                >
+                  <FaPortrait size={15} /> Portfolio
                 </Link>
               </li>
             </ul>
@@ -139,12 +147,16 @@ const TopBar = ({ role }) => {
             )}
           </button>
           {isAuthenticated ? (
-            <button
-              onClick={handleLogout}
-              className="flex items-center space-x-2"
-            >
-              <FaSignOutAlt /> <span>Log out</span>
-            </button>
+            <>
+              <button
+                onClick={handleLogout}
+                className="flex items-center space-x-2 pl-0"
+              >
+                <FaSignOutAlt /> <span>Log out</span>
+              </button>
+              <p className="text-xs -ml-1">👤{user.name}</p>
+              <p className="text-xs ml-0">{user.email}</p>
+            </>
           ) : (
             <Link to="/login" className="flex items-center space-x-2">
               <FaSign /> <span>Login</span>

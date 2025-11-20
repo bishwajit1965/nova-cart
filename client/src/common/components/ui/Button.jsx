@@ -23,6 +23,13 @@ const Button = ({
       "bg-gray-200 text-gray-800 hover:text-base-800 hover:bg-gray-300 shadow-md rounded-md",
     indigo:
       "bg-indigo-800 text-white hover:text-base-300 hover:bg-indigo-900 shadow-md rounded-md",
+
+    indigoRounded:
+      "bg-indigo-800 hover:bg-indigo-700 text-white hover:text-base-300 hover:bg-indigo-900 shadow-md rounded-full lg:px-4 px-2  py-2",
+
+    successRounded:
+      "bg-green-600 hover:bg-green-800 text-white hover:text-base-300 shadow-md rounded-full lg:px-4 px-2  py-2",
+
     danger:
       "bg-red-600 text-white hover:text-base-100 hover:bg-red-700 shadow-md outline-none border-none rounded-md",
     green:
@@ -32,6 +39,7 @@ const Button = ({
     ghost:
       "text-gray-600 hover:text-gray-800 hover:text-black hover:bg-gray-100 border border-gray-200 shadow-md rounded-md",
     cyan: "bg-cyan-700 text-base-200 hover:text-white hover:bg-cyan-800 shadow-md",
+
     outline:
       "border border-gray-300 text-gray-800 hover:text-gray-800 hover:bg-gray-100 shadow-md ring-2 ring-offset-2 ring-slate-700 ring-2 outline-2 shadow-md rounded-md",
     warning:

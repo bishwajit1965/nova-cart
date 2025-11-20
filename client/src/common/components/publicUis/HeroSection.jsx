@@ -60,10 +60,6 @@ const HeroSection = () => {
     }
   }, [bannerData]);
 
-  console.log("BANNER DATA", bannerData);
-  console.log("HERO SLIDES DATA", heroSlidesData);
-  console.log("BANNER SLIDES DATA", bannerSlidesData);
-
   // /** --------> Use Fetched Data Status Handler --------> */
   const slidesDataStatus = useFetchedDataStatusHandler({
     isLoading: isLoadingBannerData,

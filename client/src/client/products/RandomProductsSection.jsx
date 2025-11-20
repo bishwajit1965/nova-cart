@@ -52,7 +52,7 @@ const RandomProductsSection = () => {
         duration: 0.8, // total animation time
         ease: "easeInOut", // ease in and out
       }}
-      className="lg:py-16 py-6 bg-base-200 text-base-content rounded-md shadow"
+      className="lg:py-16 py-6 bg-base-200 text-base-content rounded-md shadow border border-base-content/15"
     >
       {randomProductsDataStatus.status !== "success" ? (
         randomProductsDataStatus.content
@@ -65,8 +65,8 @@ const RandomProductsSection = () => {
             className="lg:text-3xl text-xl font-extrabold text-center lg:mb-8 mb-4"
             variants={itemVariants}
           >
-            Discover Something New{" "}
-            {randomProducts?.length > 0 ? randomProducts?.length : "0"} ✨
+            ✨ Discover Something New{" "}
+            {randomProducts?.length > 0 ? randomProducts?.length : "0"}
           </motion.h2>
           <motion.div
             className="grid lg:grid-cols-12 grid-cols-1 md:grid-cols-4 lg:gap-6 gap-4 justify-between"

@@ -45,13 +45,21 @@ const PublicNavBar = () => {
     <header className="bg-base-200 shadow-md">
       <div className="max-w-7xl mx-auto px-2 lg:py-0 py-2 flex items-center justify-between">
         {/* Site Logo */}
+
         <Link to="/" className="lg:text-xl font-bold text-primary">
           {systemSettings && (
-            <img
-              src={`${apiURL}/uploads/${systemSettings?.logo}`}
-              alt={systemSettings?.appName || "Nova Cart"}
-              className="w-12 h-12 object-contain flex items-center"
-            />
+            <div className="flex items-center-safe space-x-1">
+              <img
+                src={`${apiURL}/uploads/${systemSettings?.logo}`}
+                alt={systemSettings?.appName || "Nova Cart"}
+                className="w-12 h-12 object-contain flex items-center"
+              />
+              <div className="hidden lg:block">
+                <div className="text-xl font-extrabold uppercase">
+                  {systemSettings?.appName}
+                </div>
+              </div>
+            </div>
           )}
         </Link>
 
