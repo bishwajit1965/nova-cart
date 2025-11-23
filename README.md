@@ -210,8 +210,8 @@ npm run dev
 
 ## Provide a live demo link for recruiters or clients
 
-![Home Page](https://i.ibb.co.com/Q3s9YK8b/web-Dev-Pro-F.png)
+<!-- ![Home Page](https://i.ibb.co.com/Q3s9YK8b/web-Dev-Pro-F.png)
 
-![Home Page](https://i.ibb.co/Q3s9YK8b/web-Dev-Pro-F.png)
+![Home Page](https://i.ibb.co/Q3s9YK8b/web-Dev-Pro-F.png) -->
 
-<img src="https://i.ibb.co/Q3s9YK8b/web-Dev-Pro-F.png" alt="Home Page" width="200" height="200"/>
+<img src="https://i.ibb.co/Q3s9YK8b/web-Dev-Pro-F.png" alt="Home Page" width="100" height="100"/>
