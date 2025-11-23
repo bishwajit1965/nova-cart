@@ -212,7 +212,7 @@ app.use(
 /***===================================
  * Sitemap Routes Mounting for SEO
  *====================================*/
-app.use("/api/sitemap", siteMapRoutes);
+app.use("/", siteMapRoutes);
 
 /**=========================================
  * Server active status message display

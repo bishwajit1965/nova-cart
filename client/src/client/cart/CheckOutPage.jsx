@@ -220,6 +220,10 @@ const CheckOutPage = () => {
         onSuccess: (res) => {
           if (res.success) {
             toast.success(res.message);
+            // Clear local state
+            setCartItems([]);
+
+            // Navigate to order confirmation page with order details
             navigate("/client-order-confirmation", {
               state: {
                 order: {

@@ -87,7 +87,7 @@ const FAQSection = () => {
           className="text-xl lg:text-3xl flex items-center gap-2 font-extrabold text-center lg:mb-8 mb-4 text-base-content/70"
           variants={itemVariants}
         >
-          ❓ Frequently Asked Questions
+          <FaQuestion className="text-primary" /> Frequently Asked Questions
         </motion.h2>
         <motion.div className="space-y-4" variants={itemVariants}>
           {faqs?.map((faq, idx) => (
