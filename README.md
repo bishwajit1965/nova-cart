@@ -78,7 +78,7 @@ nova-cart/
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/nova-cart.git
+git clone https://github.com/bishwajit1965/nova-cart.git
 
 ```
 
