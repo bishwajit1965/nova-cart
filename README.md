@@ -1,7 +1,3 @@
-# nova-cart
-
-An e-commerce site with express mongoose react tailwind and daisyui
-
 # Nova-Cart
 
 **Nova-Cart** is a full-stack, feature-rich e-commerce platform demonstrating modern web development skills with a complete shopping experience, including authentication, cart, checkout, and admin management.
