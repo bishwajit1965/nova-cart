@@ -82,14 +82,14 @@ git clone https://github.com/your-username/nova-cart.git
 
 ```
 
-2.Install dependencies:
+## 2.Install dependencies:
 
 cd client
 npm install
 cd ../server
 npm install
 
-3. Set environment variables in .env (server):
+## 3. Set environment variables in .env (server):
 
 MONGO_URI=<your_mongo_uri>
 JWT_SECRET=<your_jwt_secret>
@@ -97,113 +97,115 @@ STRIPE_KEY=<your_stripe_test_key>
 EMAIL_USER=<email>
 EMAIL_PASS=<email_password>
 
-4. Start development servers:
-   cd server
-   npm run dev
-   cd ../client
-   npm run dev
+## 4. Start development servers:
 
-5. Access the app: http://localhost:5173
+cd server
+npm run dev
+cd ../client
+npm run dev
 
-Features
-Authentication
+## 5. Access the app: http://localhost:5173
 
-JWT-based login and registration
+## Features
 
-Google & Facebook OAuth
+- Authentication
 
-Role-based access (Client, Admin, Super Admin)
+- JWT-based login and registration
 
-Product & Cart
+- Google & Facebook OAuth
 
-Browse products and select variants
+- Role-based access (Client, Admin, Super Admin)
 
-Cart persists across refreshes
+## Product & Cart
 
-Wishlist prevents duplicates with toast alerts
+- Browse products and select variants
 
-Checkout & Orders
+- Cart persists across refreshes
 
-Multi-step checkout with shipping address selection or new address
+- Wishlist prevents duplicates with toast alerts
 
-Payment methods: COD, Card, Bkash, Nagad
+## Checkout & Orders
 
-Coupon validation with max discount and ownership check
+- Multi-step checkout with shipping address selection or new address
 
-Order confirmation emails
+- Payment methods: COD, Card, Bkash, Nagad
 
-Admin / Super Admin
+- Coupon validation with max discount and ownership check
 
-Admin: Manage products, orders, coupons, and stats
+- Order confirmation emails
 
-Super Admin: Manage vendors, settings, and FAQs
+## Admin / Super Admin
 
-Newsletter & SEO
+- Admin: Manage products, orders, coupons, and stats
 
-Newsletter subscription with email validation
+- Super Admin: Manage vendors, settings, and FAQs
 
-SEO-optimized pages with Open Graph tags
+## Newsletter & SEO
 
-Developer Challenges & Solutions
+- Newsletter subscription with email validation
 
-Cart Persistence: React Context + localStorage to prevent stale cart items
+- SEO-optimized pages with Open Graph tags
 
-Coupon Logic: Percentage/fixed discounts, max discount, user validation, no negative totals
+## Developer Challenges & Solutions
 
-Order Submission: Prevent empty cart from creating orders
+- Cart Persistence: React Context + localStorage to prevent stale cart items
 
-Dynamic Forms: Adapt shipping form when saved addresses exist
+- Coupon Logic: Percentage/fixed discounts, max discount, user validation, no negative totals
 
-State Management: Smooth transitions with Framer Motion, preventing flicker
+- Order Submission: Prevent empty cart from creating orders
 
-Screenshots / GIFs
+- Dynamic Forms: Adapt shipping form when saved addresses exist
 
-Add screenshots or GIFs of:
+- State Management: Smooth transitions with Framer Motion, preventing flicker
 
-Home Page
+## Screenshots / GIFs
 
-Product Page
+- Add screenshots or GIFs of:
 
-Cart Page
+- Home Page
 
-Checkout Page
+- Product Page
 
-Admin Dashboard
+- Cart Page
 
-Newsletter popup
+- Checkout Page
 
-Future Enhancements
+- Admin Dashboard
 
-Inventory management with low-stock notifications
+- Newsletter popup
 
-Vendor management (multi-seller)
+## Future Enhancements
 
-PDF invoice generation
+- Inventory management with low-stock notifications
 
-Enhanced analytics dashboard for Admin
+- Vendor management (multi-seller)
 
-Deployment & Demo
+- PDF invoice generation
 
-Frontend: Vercel / Netlify
+- Enhanced analytics dashboard for Admin
 
-Backend: Render / Railway / Heroku
+## Deployment & Demo
 
-Stripe sandbox integration for demo purchases
+- Frontend: Vercel / Netlify
 
-Portfolio & LinkedIn Usage
+- Backend: Render / Railway / Heroku
 
-Showcase full-stack expertise, role-based dashboards, payment integration, and state management.
+- Stripe sandbox integration for demo purchases
 
-Include screenshots/GIFs with bullet points for skills:
+## Portfolio & LinkedIn Usage
 
-React + Tailwind responsive UI
+- Showcase full-stack expertise, role-based dashboards, payment integration, and state management.
 
-Node.js + Express API
+- Include screenshots/GIFs with bullet points for skills:
 
-MongoDB queries & schema design
+- React + Tailwind responsive UI
 
-Stripe payments & coupon logic
+- Node.js + Express API
 
-JWT + OAuth authentication
+- MongoDB queries & schema design
+
+- Stripe payments & coupon logic
+
+- JWT + OAuth authentication
 
 Provide a live demo link for recruiters or clients
