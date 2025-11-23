@@ -209,3 +209,5 @@ npm run dev
 - JWT + OAuth authentication
 
 Provide a live demo link for recruiters or clients
+
+![Home Page](http://url/to/img.png)
