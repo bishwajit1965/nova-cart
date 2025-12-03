@@ -20,12 +20,22 @@ const generateTags = ({ name, brand, categoryName, subCategoryName }) => {
   return [...new Set(tags.map((t) => t.toLowerCase().trim()))];
 };
 
+// Generate slug from name to create product
+async function generateUniqueSlug(name) {
+  let baseSlug = slugify(name.toLowerCase());
+  let slug = baseSlug;
+  let counter = 1;
+  while (await Product.findOne({ slug })) {
+    slug = `${baseSlug}-${counter++}`;
+  }
+  return slug;
+}
+
 /** -------> Create Product -------> */
 export const createProduct = async (req, res) => {
   try {
-    // Parse JSON payload
+    // 1️⃣ Parse JSON payload
     const bodyData = JSON.parse(req.body.data);
-
     const {
       name,
       description,
@@ -38,14 +48,16 @@ export const createProduct = async (req, res) => {
       tags,
     } = bodyData;
 
-    // Validate category exists
+    console.log("Body data:", bodyData);
+
+    // 2️⃣ Validate category exists
     const cat = await Category.findById(category);
     if (!cat)
       return res
         .status(400)
         .json({ success: false, message: "Category not found" });
 
-    // Validate subCategory belongs to category
+    // 3️⃣ Validate subCategory belongs to category
     if (subCategory) {
       const subCat = await SubCategory.findById(subCategory);
       if (!subCat || subCat.category.toString() !== category)
@@ -54,39 +66,71 @@ export const createProduct = async (req, res) => {
           .json({ success: false, message: "Invalid subCategory" });
     }
 
-    // Use uploaded files from multer
-    const productImages = req.files
-      ? req.files.map((file) => `/uploads/${file.filename}`)
-      : [];
+    // 4️⃣ Separate product images and variant images
+    const productImages = [];
+    const variantImagesMap = {};
 
-    // Create product instance
+    console.log("Uploaded files:", req.files);
+
+    if (req.files && req.files.length > 0) {
+      req.files.forEach((file) => {
+        if (file.originalname.startsWith("product-")) {
+          // Example: product-0-main.png
+          productImages.push(`/uploads/${file.filename}`);
+        } else if (file.originalname.startsWith("variant-")) {
+          // Example: variant-1-0-red.png
+          const parts = file.originalname.split("-");
+          const variantIndex = Number(parts[1]); // variant-1-...
+
+          if (!variantImagesMap[variantIndex]) {
+            variantImagesMap[variantIndex] = [];
+          }
+
+          variantImagesMap[variantIndex].push(`/uploads/${file.filename}`);
+        }
+      });
+    }
+
+    const normalizedVariants = (variants || []).map((v, i) => ({
+      color: v.color || "",
+      size: v.size || "",
+      price: Number(v.price) || 0,
+      discountPrice: Number(v.discountPrice) || 0,
+      SKU: v.SKU || nanoid(8),
+      stock: Number(v.stock) || 0,
+      images: variantImagesMap[i] || [],
+    }));
+
+    // 6️⃣ Calculate global stock
+    const globalStock =
+      normalizedVariants.length > 0
+        ? normalizedVariants.reduce((sum, v) => sum + v.stock, 0)
+        : stock || 0;
+
+    // Slug uniqueness
+    const slug = await generateUniqueSlug(name);
+
+    // 7️⃣ Create product instance
     const product = new Product({
       name,
       description,
-      price,
+      price: Number(price) || 0,
       category,
       subCategory,
-      variants: variants || [],
-      stock: stock || 0,
+      variants: normalizedVariants,
+      stock: globalStock,
       images: productImages,
       brand,
-      slug: slugify(name.toLowerCase()),
+      slug: slug,
       createdBy: req.user._id,
       status: "active",
       tags: tags || [],
     });
 
-    // Auto-generate SKU for variants if not present
-    if (product.variants.length > 0) {
-      product.variants = product.variants.map((v) => ({
-        ...v,
-        SKU: v.SKU || nanoid(8),
-      }));
-    }
-
+    // 8️⃣ Save product
     const savedProduct = await product.save();
 
-    // Log the action
+    // 9️⃣ Log action
     await logAction({
       userId: req.user._id,
       action: "CREATE_PRODUCT",
@@ -96,6 +140,7 @@ export const createProduct = async (req, res) => {
       ipAddress: req.ip,
     });
 
+    // 10️⃣ Return success
     res.status(201).json({
       success: true,
       message: "Product created successfully!",

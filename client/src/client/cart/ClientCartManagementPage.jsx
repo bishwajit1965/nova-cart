@@ -556,7 +556,22 @@ const ClientCartManagementPage = () => {
                           }`}
                         >
                           <Button
-                            onClick={() => handleAddToCart(item.product)}
+                            onClick={() => {
+                              const hasVariants =
+                                item.product.variants &&
+                                item.product.variants.length > 0;
+                              if (hasVariants) {
+                                toast.error(
+                                  "Product has variants, please select from product page."
+                                );
+                                navigate(
+                                  `/product-details/${item.product._id}`
+                                );
+                                return;
+                              }
+
+                              handleAddToCart(item.product);
+                            }}
                             variant={`${
                               addedToCart.some(
                                 (list) => list._id === item.product._id

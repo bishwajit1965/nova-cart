@@ -8,6 +8,7 @@ import { useApiQuery } from "../services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import { useMemo } from "react";
 import { useState } from "react";
+import textShortener from "../../utils/textShortener";
 
 const SuperAdminProductListTable = ({
   onEdit,
@@ -16,8 +17,9 @@ const SuperAdminProductListTable = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [viewProduct, setViewProduct] = useState(null);
+  const [isExpanded, setIsExpanded] = useState(false);
   const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-
+  console.log("View Product", viewProduct);
   /*** Products fetcher Query */
   const {
     data: products,
@@ -162,17 +164,17 @@ const SuperAdminProductListTable = ({
                           <MiniIconButton
                             onClick={() => onEdit(product)}
                             icon="edit"
-                            variant="default"
+                            variant="indigo"
                           />
                           <MiniIconButton
                             onClick={() => setViewProduct(product)}
                             icon="view"
-                            variant="default"
+                            variant="success"
                           />
                           <MiniIconButton
                             onClick={() => onConfirmDelete(product)}
                             icon="delete"
-                            variant="default"
+                            variant="danger"
                           />
                         </div>
                       </td>
@@ -208,20 +210,30 @@ const SuperAdminProductListTable = ({
                 isOpen={viewProduct}
                 onClose={() => setViewProduct(null)}
                 title="Nova Cart"
-                className="lg:min-w-2xl w-lg"
+                className="lg:min-w-2xl w-lg max-h-[40rem] overflow-y-auto"
               >
                 <div className="">
                   <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-6 gap-4 justify-between">
                     <div className="lg:col-span-6 col-span-12">
-                      <img
-                        src={
-                          viewProduct.image
-                            ? viewProduct.image
-                            : viewProduct.images[0]
-                        }
-                        alt={viewProduct.name}
-                        className="object-contain height-auto"
-                      />
+                      <div className="">
+                        {viewProduct.images
+                          ? viewProduct.images.map(
+                              (imgSrc, index) => (
+                                console.log("Image source", imgSrc),
+                                (
+                                  <img
+                                    key={index}
+                                    src={`${apiURL}${
+                                      imgSrc.startsWith("/") ? "" : "/uploads/"
+                                    }${imgSrc}`}
+                                    alt={viewProduct.name}
+                                    className="object-contain mb-2 max-h-60 w-full"
+                                  />
+                                )
+                              )
+                            )
+                          : ""}
+                      </div>
                     </div>
                     <div className="lg:col-span-6 col-span-12">
                       <h2 className="text-xl font-bold mb-4">
@@ -237,26 +249,61 @@ const SuperAdminProductListTable = ({
                         <strong>Stock:</strong> {viewProduct.stock}
                       </p>
                       <p>
-                        <strong>Category:</strong> {viewProduct.categoryName}
+                        {/* <strong>Category:</strong> {viewProduct.categoryName} */}
                       </p>
                       <p>
-                        <strong>Description:</strong> {viewProduct.description}
-                      </p>
+                        <strong>Description:</strong>
+                        {isExpanded
+                          ? viewProduct?.description
+                          : textShortener(viewProduct?.description, 300)}
 
-                      {viewProduct.variants &&
-                        viewProduct.variants.length > 0 && (
-                          <div className="mt-4">
-                            <h3 className="font-bold">Variants:</h3>
-                            <ul className="list-disc ml-5">
-                              {viewProduct.variants.map((v, idx) => (
-                                <li key={idx}>
-                                  Color: {v.color}, Size: {v.size}, Price: $
-                                  {v.price}, Stock: {v.stock}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
+                        {viewProduct?.description &&
+                        viewProduct.description.length > 300 ? (
+                          <button
+                            onClick={() => setIsExpanded(!isExpanded)}
+                            className="text-indigo-500 link ml-1 text-sm font-semibold"
+                          >
+                            {isExpanded ? "Read Less" : "Read More"}
+                          </button>
+                        ) : null}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Variants */}
+                  <div className="w-full lg:my-6 my-4">
+                    <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-6 gap-4 justify-between">
+                      {viewProduct.variants
+                        ? viewProduct?.variants.map((variantImgSrc, index) =>
+                            variantImgSrc.images.map((img, imgIdx) => (
+                              <div
+                                key={imgIdx}
+                                className="lg:col-span-4 col-span-12 flex flex-col items-center border border-base-content/15 shadow p-2 rounded-lg w-full"
+                              >
+                                <img
+                                  key={`${index}-${imgIdx}`}
+                                  src={`${apiURL}${
+                                    img.startsWith("/") ? "" : "/uploads/"
+                                  }${img}`}
+                                  alt={viewProduct.variants.name}
+                                  className="w-full h-20 object-contain mb-2 max-h-60"
+                                />
+                                <ul key={imgIdx} className="">
+                                  <li className="text-sm space-x-1">
+                                    <span>Color: {variantImgSrc.color},</span>
+                                    <span>
+                                      Size: {variantImgSrc.size}, Price: $
+                                      {variantImgSrc.price},
+                                    </span>
+                                    <span> Stock: {variantImgSrc.stock},</span>
+
+                                    <span>SKU: {variantImgSrc.SKU}</span>
+                                  </li>
+                                </ul>
+                              </div>
+                            ))
+                          )
+                        : ""}
                     </div>
                   </div>
                   <div className="border-t border-base-content/15 flex justify-end pt-2">

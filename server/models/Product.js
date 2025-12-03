@@ -7,6 +7,8 @@ const variantSchema = new mongoose.Schema({
   discountPrice: { type: Number },
   SKU: { type: String, unique: true, sparse: true },
   stock: { type: Number, default: 0 },
+  // ⭐ NEW: Variant-level image gallery support
+  images: [String],
 });
 
 const productSchema = new mongoose.Schema(

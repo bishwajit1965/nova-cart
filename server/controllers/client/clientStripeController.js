@@ -14,10 +14,17 @@ export const createPaymentIntent = async (req, res) => {
     return res.status(400).json({ message: "Order ID and amount required" });
 
   try {
+    // const paymentIntent = await stripe.paymentIntents.create({
+    //   amount: Math.round(amount * 100),
+    //   currency,
+    //   metadata: { orderId },
+    // });
+
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(amount * 100),
+      amount: Math.round(amount * 100), // always in cents
       currency,
       metadata: { orderId },
+      automatic_payment_methods: { enabled: true }, // easier for cards
     });
     res.status(200).json({
       success: true,
@@ -51,7 +58,11 @@ export const capturePayment = async (req, res) => {
       // Optionally: mark order as paid in DB
       await Order.findByIdAndUpdate(
         orderId,
-        { paymentStatus: "paid", status: "confirmed" },
+        {
+          paymentStatus: "paid",
+          status: "confirmed",
+          stripePaymentIntentId: paymentIntent.id,
+        },
         { new: true }
       );
       res.status(200).json({

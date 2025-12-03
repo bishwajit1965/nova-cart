@@ -148,11 +148,42 @@ const SuperAdminProductManagementPage = () => {
     const fd = new FormData();
     fd.append("data", JSON.stringify(payload));
 
+    // 🟢 Add product-level images
     if (Array.isArray(formData.images)) {
-      formData.images.forEach((file) => {
-        if (file instanceof File) fd.append("images", file);
+      formData.images.forEach((file, i) => {
+        if (file instanceof File) {
+          // Prefix file name so backend can identify it
+          const renamedFile = new File([file], `product-${i}-${file.name}`, {
+            type: file.type,
+          });
+          fd.append("images", renamedFile);
+        }
       });
     }
+
+    // 🟢 Add variant-level images
+    if (Array.isArray(formData.variants)) {
+      formData.variants.forEach((variant, vIndex) => {
+        if (Array.isArray(variant.images)) {
+          variant.images.forEach((file, imgIndex) => {
+            if (file instanceof File) {
+              const renamed = new File(
+                [file],
+                `variant-${vIndex}-${imgIndex}-${file.name}`,
+                { type: file.type }
+              );
+              fd.append("images", renamed);
+            }
+          });
+        }
+      });
+    }
+
+    // if (Array.isArray(formData.images)) {
+    //   formData.images.forEach((file) => {
+    //     if (file instanceof File) fd.append("images", file);
+    //   });
+    // }
 
     // 6️⃣ Debug: check FormData
     for (let [key, value] of fd.entries()) {

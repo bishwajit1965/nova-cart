@@ -52,6 +52,8 @@ const ClientStripePaymentForm = ({
             paymentIntentId: result.paymentIntent.id,
           });
           onPaymentSuccess?.();
+        } else {
+          toast.error("Payment failed. Please try again.");
         }
       } catch (error) {
         console.error(error);
@@ -63,6 +65,7 @@ const ClientStripePaymentForm = ({
     onError: (error) => {
       toast.error("Error processing payment");
       console.error(error);
+      setIsProcessing(false); // also reset loader on mutation error
     },
   });
 

@@ -11,6 +11,8 @@ import toast from "react-hot-toast";
 import { useApiMutation } from "../../superAdmin/services/hooks/useApiMutation";
 import usePageTitle from "../../superAdmin/services/hooks/usePageTitle";
 import { useState } from "react";
+import { useEffect } from "react";
+import { AlertTriangle, ShoppingCart } from "lucide-react";
 
 const ProductDetails = () => {
   const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
@@ -62,14 +64,16 @@ const ProductDetails = () => {
   };
 
   // Variant color set
-  const colors = Array.from(new Set(product.data.variants.map((v) => v.color)));
+  const colors = product.data.variants.length
+    ? Array.from(new Set(product.data.variants.map((v) => v.color)))
+    : [];
 
   const [quantity, setQuantity] = useState(1);
   const [inWishList, setInWishList] = useState(false);
-  const [mainImage, setMainImage] = useState(product?.data?.images[0]);
-  const [selectedColor, setSelectedColor] = useState(colors[0]);
+  const [mainImage, setMainImage] = useState(product?.data?.images[0]) || "";
+  const [selectedColor, setSelectedColor] = useState(colors[0]) || "";
   const [selectedVariant, setSelectedVariant] = useState(
-    product.data.variants.find((v) => v.color === colors[0])
+    product.data.variants.find((v) => v.color === colors[0] || null)
   );
 
   console.log("Selected variants", selectedVariant);
@@ -122,13 +126,14 @@ const ProductDetails = () => {
   const handleAddToWishlist = (productId) => {
     if (inWishList) {
       toast.success("Already added in wish list!");
+      return;
     }
-    setInWishList(true);
     addToWishListMutation.mutate(
       { data: { productId } },
       {
         onSuccess: (res) => {
           setWishList(res.data.items);
+          setInWishList(true);
         },
         onError: (err) => {
           toast.error("Failed to add product to wishlist");
@@ -144,6 +149,20 @@ const ProductDetails = () => {
     setSelectedVariant(variant);
     // Optional: update main image if variant images exist per color
   };
+
+  // Update sizes and selected variant when selectedColor changes
+  useEffect(() => {
+    const newSizes = product.data.variants
+      .filter((v) => v.color === selectedColor)
+      .map((v) => v.size);
+
+    setSelectedSize(newSizes[0] || "");
+    setSelectedVariant(
+      product.data.variants.find(
+        (v) => v.color === selectedColor && v.size === newSizes[0]
+      ) || null
+    );
+  }, [selectedColor]);
 
   return (
     <div className="">
@@ -256,6 +275,7 @@ const ProductDetails = () => {
           <p className="text-xl font-bold">
             Variant Price: $ {selectedVariant?.price.toFixed(2)}
           </p>
+
           {selectedVariant?.stock && (
             <p
               className={`font-semibold ${
@@ -263,7 +283,7 @@ const ProductDetails = () => {
               }`}
             >
               {selectedVariant.stock > 0
-                ? `${selectedVariant?.stock} in stock`
+                ? `Product: ${productDetail?.name} || Brand: ${productDetail?.brand} || in stock ➡️ ${selectedVariant?.stock}`
                 : "Out of stock!"}
             </p>
           )}
@@ -277,44 +297,35 @@ const ProductDetails = () => {
               {" "}
               -{" "}
             </button>
-            <span className="font-semibold">{quantity} </span>
+            <span className="font-semibold text-xl">{quantity} </span>
             <button
-              className="btn btn-sm text-xl"
-              onClick={() => setQuantity((q) => Math.max(1, q + 1))}
+              className={
+                quantity >= (selectedVariant?.stock || 1)
+                  ? "btn btn-sm text-xl opacity-20 cursor-not-allowed border-red-500"
+                  : "btn btn-sm text-xl"
+              }
+              onClick={() =>
+                setQuantity((q) => Math.min(selectedVariant.stock || 1, q + 1))
+              }
+              disabled={quantity >= (selectedVariant?.stock || 1)}
             >
               {" "}
               +{" "}
             </button>
+            <p className="text-xs font-bold">
+              {quantity >= (selectedVariant?.stock || 1) ? (
+                <span className="text-red-500 flex items-center gap-1">
+                  <AlertTriangle size={18} /> Can not buy more than in stock.
+                </span>
+              ) : (
+                <span className="flex items-center gap-1">
+                  <ShoppingCart size={18} />
+                  Add more quantity
+                </span>
+              )}
+            </p>
           </div>
-          <div className="flex items-center gap-4 flex-wrap">
-            <Button
-              variant="primary"
-              icon={LucideIcon.ShoppingCart}
-              className="btn lg:btn-lg"
-              onClick={handleAddToCart}
-              disabled={selectedVariant?.stock <= 0}
-            >
-              Add to Cart
-            </Button>
 
-            <Button
-              variant="indigo"
-              icon={LucideIcon.Heart}
-              className="btn lg:btn-lg"
-              onClick={() => handleAddToWishlist(productData?._id)}
-            >
-              {inWishList ? "In Wishlist" : "Add to Wishlist"}
-            </Button>
-            <Link to="/">
-              <Button
-                variant="primary"
-                icon={LucideIcon.Home}
-                className="btn lg:btn-lg"
-              >
-                Home
-              </Button>
-            </Link>
-          </div>
           {/* Variants display */}
           <div className="flex items-center space-x-2 gap-3 mt-4 flex-wrap">
             {colors.map((color, index) => (
@@ -346,6 +357,35 @@ const ProductDetails = () => {
                 </button>
               ))}
             </div>
+          </div>
+          <div className="flex items-center gap-4 flex-wrap">
+            <Button
+              variant="primary"
+              icon={LucideIcon.ShoppingCart}
+              className="btn lg:btn-lg"
+              onClick={handleAddToCart}
+              disabled={selectedVariant?.stock <= 0}
+            >
+              Add to Cart
+            </Button>
+
+            <Button
+              variant="indigo"
+              icon={LucideIcon.Heart}
+              className="btn lg:btn-lg"
+              onClick={() => handleAddToWishlist(productData?._id)}
+            >
+              {inWishList ? "In Wishlist" : "Add to Wishlist"}
+            </Button>
+            <Link to="/">
+              <Button
+                variant="primary"
+                icon={LucideIcon.Home}
+                className="btn lg:btn-lg"
+              >
+                Home
+              </Button>
+            </Link>
           </div>
         </motion.div>
       </motion.div>

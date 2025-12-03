@@ -54,6 +54,6 @@ router.delete(
   deleteProduct
 );
 
-router.post("/", seedProducts);
+// router.post("/", seedProducts);
 
 export default router;
