@@ -179,12 +179,6 @@ const SuperAdminProductManagementPage = () => {
       });
     }
 
-    // if (Array.isArray(formData.images)) {
-    //   formData.images.forEach((file) => {
-    //     if (file instanceof File) fd.append("images", file);
-    //   });
-    // }
-
     // 6️⃣ Debug: check FormData
     for (let [key, value] of fd.entries()) {
       console.log(key, value);
