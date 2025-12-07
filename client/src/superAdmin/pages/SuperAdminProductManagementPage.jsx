@@ -172,7 +172,8 @@ const SuperAdminProductManagementPage = () => {
                 `variant-${vIndex}-${imgIndex}-${file.name}`,
                 { type: file.type }
               );
-              fd.append("images", renamed);
+              fd.append(`variant-${vIndex}`, renamed);
+              // fd.append("images", renamed);
             }
           });
         }

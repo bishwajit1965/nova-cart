@@ -28,7 +28,8 @@ router.post(
   "/",
   authenticationMiddleware,
   authorizeRole("super-admin"),
-  upload.array("images", 5),
+  upload.any(),
+  // upload.array("images", 5),
   createProduct
 );
 
@@ -43,7 +44,8 @@ router.patch(
   "/:id",
   authenticationMiddleware,
   authorizeRole("super-admin"),
-  upload.array("images", 5),
+  upload.any(),
+  // upload.array("images", 5),
   updateProduct
 );
 

@@ -94,6 +94,7 @@ const CheckOutPage = () => {
     enabled: !!userId,
   });
   const latestOrder = savedOrdersData?.[0];
+
   /** --------> Fetch addresses --------> */
   const {
     data: addressData,
@@ -201,9 +202,20 @@ const CheckOutPage = () => {
       return;
     }
 
-    const { _id, ...addressWithoutId } = selectedAddress;
+    let finalAddressPayload = {};
 
-    const payload = isNewAddressForm ? formData : addressWithoutId;
+    if (isNewAddressForm) {
+      finalAddressPayload = formData;
+    } else {
+      if (!selectedAddress) {
+        toast.error("Please select a shipping address.");
+        return;
+      }
+      const { _id, ...addressWithoutId } = selectedAddress;
+      finalAddressPayload = addressWithoutId;
+    }
+
+    // const payload = isNewAddressForm ? formData : addressWithoutId;
 
     orderMutation.mutate(
       {
@@ -212,7 +224,7 @@ const CheckOutPage = () => {
           totalAmount: calculateTotal(cartItems) - discountAmount,
           discountAmount,
           couponCode: appliedCoupon, // ✅ send correct key
-          shippingAddress: payload,
+          shippingAddress: finalAddressPayload,
           paymentMethod,
         },
       },

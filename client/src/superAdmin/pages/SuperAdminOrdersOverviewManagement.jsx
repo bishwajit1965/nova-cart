@@ -20,6 +20,7 @@ import { useState } from "react";
 const STATUSES = ["pending", "processing", "shipped", "delivered"];
 
 const SuperAdminOrdersOverviewManagement = () => {
+  const apiPath = import.meta.env.VITE_API_URL || "http://localhost:3000";
   const [loadingInvoice, setLoadingInvoice] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,6 +29,13 @@ const SuperAdminOrdersOverviewManagement = () => {
   const [statusFilter, setStatusFilter] = useState(""); // pending, processing, shipped, delivered, cancelled
   const [paymentFilter, setPaymentFilter] = useState(""); // unpaid, paid, failed
   const [filteredOrders, setFilteredOrders] = useState([]); // assuming `orders` is the fetched list
+
+  /** ------> Build url to display image of product ------> */
+  const buildUrl = (path) => {
+    if (!path) return "";
+    if (path.startsWith("http")) return path;
+    return `${apiPath}${path}`;
+  };
 
   /** --------> Fetch Orders Query --------> */
   const {
@@ -221,7 +229,7 @@ const SuperAdminOrdersOverviewManagement = () => {
                                 {order?.items.map((item) => (
                                   <img
                                     key={item._id}
-                                    src={item?.image}
+                                    src={buildUrl(item?.image)}
                                     alt={item?.name}
                                     className="h-12 w-12"
                                   />

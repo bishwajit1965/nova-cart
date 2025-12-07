@@ -3,6 +3,7 @@ import { Input } from "../../common/components/ui/Input";
 import { LucideIcon } from "../../common/lib/LucideIcons";
 import Textarea from "../../common/components/ui/Textarea";
 import { useState } from "react";
+import { LucidePlug2 } from "lucide-react";
 
 const SuperAdminProductInsertForm = ({
   formData,
@@ -20,6 +21,18 @@ const SuperAdminProductInsertForm = ({
   const [selectedProductImages, setSelectedProductImages] = useState([]);
 
   const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
+  const getPreviewURL = (img) => {
+    // If File → temporary preview
+    if (img instanceof File) return URL.createObjectURL(img);
+
+    // If string → use server URL
+    if (typeof img === "string") {
+      return `${apiURL}/${img.replace(/^\//, "")}`;
+    }
+
+    return "";
+  };
 
   /** Handle generic input */
   const handleInputChange = (e) => {
@@ -163,7 +176,19 @@ const SuperAdminProductInsertForm = ({
           className="file-input px-0"
         />
 
-        {selectedProductImages.length > 0 && (
+        {formData.images?.length > 0 && (
+          <div className="flex gap-2 mt-2">
+            {formData.images.map((img, i) => (
+              <img
+                key={i}
+                src={getPreviewURL(img)}
+                className="w-20 h-20 object-cover rounded"
+              />
+            ))}
+          </div>
+        )}
+
+        {/* {selectedProductImages.length > 0 && (
           <div className="flex gap-2 mt-2">
             {selectedProductImages.map((file, i) => (
               <img
@@ -173,7 +198,7 @@ const SuperAdminProductInsertForm = ({
               />
             ))}
           </div>
-        )}
+        )} */}
 
         {/* Variants */}
         {formData.variants.map((variant, idx) => (
@@ -240,6 +265,18 @@ const SuperAdminProductInsertForm = ({
             <div className="flex justify-between items-center">
               {variant.images?.length > 0 && (
                 <div className="flex gap-2 mt-2">
+                  {variant.images.map((img, i) => (
+                    <img
+                      key={i}
+                      src={getPreviewURL(img)}
+                      className="w-16 h-16 object-cover rounded"
+                    />
+                  ))}
+                </div>
+              )}
+
+              {/* {variant.images?.length > 0 && (
+                <div className="flex gap-2 mt-2">
                   {variant.images.map((file, i) => (
                     <img
                       key={i}
@@ -248,7 +285,7 @@ const SuperAdminProductInsertForm = ({
                     />
                   ))}
                 </div>
-              )}
+              )} */}
 
               <div className="">
                 <Button
@@ -271,7 +308,7 @@ const SuperAdminProductInsertForm = ({
           onClick={addVariant}
           className="bg-indigo-600 text-white px-3 py-1 rounded mt-2"
         >
-          Add Variant
+          <LucidePlug2 size={18} /> Add Variant
         </Button>
 
         <div className="divider">Add Variant or Create</div>

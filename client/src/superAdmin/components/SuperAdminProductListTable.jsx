@@ -210,7 +210,7 @@ const SuperAdminProductListTable = ({
                 isOpen={viewProduct}
                 onClose={() => setViewProduct(null)}
                 title="Nova Cart"
-                className="lg:min-w-2xl w-lg max-h-[40rem] overflow-y-auto"
+                className="lg:min-w-2xl w-lg max-h-[44rem] overflow-y-auto"
               >
                 <div className="">
                   <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-6 gap-4 justify-between">
@@ -272,13 +272,19 @@ const SuperAdminProductListTable = ({
 
                   {/* Variants */}
                   <div className="w-full lg:my-6 my-4">
+                    <h2 className="text-xl shadow-2xl font-bold mb-2">
+                      Variants{" "}
+                      {viewProduct.variants
+                        ? `(${viewProduct.variants.length})`
+                        : ""}
+                    </h2>
                     <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-6 gap-4 justify-between">
                       {viewProduct.variants
                         ? viewProduct?.variants.map((variantImgSrc, index) =>
                             variantImgSrc.images.map((img, imgIdx) => (
                               <div
                                 key={imgIdx}
-                                className="lg:col-span-4 col-span-12 flex flex-col items-center border border-base-content/15 shadow p-2 rounded-lg w-full"
+                                className="lg:col-span-4 col-span-12 flex flex-col items-center border border-base-content/15 shadow p-2 rounded-lg w-full hover:shadow-2xl transition-shadow duration-300"
                               >
                                 <img
                                   key={`${index}-${imgIdx}`}
@@ -286,17 +292,16 @@ const SuperAdminProductListTable = ({
                                     img.startsWith("/") ? "" : "/uploads/"
                                   }${img}`}
                                   alt={viewProduct.variants.name}
-                                  className="w-full h-20 object-contain mb-2 max-h-60"
+                                  className="w-full object-cover mb-2 max-h-32"
                                 />
                                 <ul key={imgIdx} className="">
-                                  <li className="text-sm space-x-1">
+                                  <li className="text-sm space-x-1 capitalize">
                                     <span>Color: {variantImgSrc.color},</span>
                                     <span>
                                       Size: {variantImgSrc.size}, Price: $
                                       {variantImgSrc.price},
                                     </span>
                                     <span> Stock: {variantImgSrc.stock},</span>
-
                                     <span>SKU: {variantImgSrc.SKU}</span>
                                   </li>
                                 </ul>

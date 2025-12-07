@@ -275,6 +275,17 @@ export const updateProduct = async (req, res) => {
       const merged = [...bodyImages.filter(Boolean), ...filePaths];
       return Array.from(new Set(merged)); // ensure no duplicates
     };
+
+    const mergeVariantImages = (oldImages = [], newImages = []) => {
+      // If no new images uploaded → keep old images
+      if (!newImages || newImages.length === 0) {
+        return oldImages;
+      }
+
+      // If new files exist → merge them
+      return [...oldImages, ...newImages];
+    };
+
     const merged = mergeImages(bodyImages, req.files);
     if (merged.length > 0) {
       product.images = merged;
@@ -285,7 +296,40 @@ export const updateProduct = async (req, res) => {
     product.slug = name ? slugify(name.toLowerCase()) : product.slug;
     product.description = description || product.description;
     product.price = price ?? product.price;
-    product.variants = variants || product.variants;
+    // product.variants = variants || product.variants;
+    // --- only change is in the variant update section ---
+    if (variants && variants.length > 0) {
+      product.variants = variants.map((variant, i) => {
+        const oldVariant = product.variants[i] || {};
+        return {
+          ...oldVariant,
+          ...variant,
+          images: mergeVariantImages(
+            oldVariant.images,
+            variant.images // these could be new uploads OR empty
+          ),
+        };
+      });
+    }
+
+    const variantFilesMap = {};
+    req.files.forEach((file) => {
+      if (file.fieldname.startsWith("variant-")) {
+        const index = Number(file.fieldname.split("-")[1]);
+        if (!variantFilesMap[index]) variantFilesMap[index] = [];
+        variantFilesMap[index].push(`/uploads/${file.filename}`);
+      }
+    });
+
+    product.variants = variants.map((variant, i) => {
+      const oldVariant = product.variants[i] || {};
+      const newImages = variantFilesMap[i] || [];
+      return {
+        ...oldVariant,
+        ...variant,
+        images: [...(oldVariant.images || []), ...newImages],
+      };
+    });
 
     // If no global stock provided, compute from variants
     if (stock !== undefined) {
@@ -355,7 +399,7 @@ export const deleteProduct = async (req, res) => {
       product.images.map(async (imgPath) => {
         const filePath = path.join("uploads", path.basename(imgPath));
         try {
-          await fs.promises.unlink(filePath);
+          await fs.prom7ises.unlink(filePath);
         } catch (err) {
           console.error("Failed to delete image:", filePath, err);
         }
