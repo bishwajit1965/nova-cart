@@ -1,5 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
-import { ListCheck, ShoppingCart } from "lucide-react";
+import {
+  CircleMinus,
+  CirclePlus,
+  HeartPlus,
+  ShoppingCart,
+  Trash2,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 
 import API_PATHS from "../../superAdmin/services/apiPaths/apiPaths";
@@ -35,6 +41,7 @@ const ClientCartManagementPage = () => {
   const navigate = useNavigate();
   const CART_LIMIT = 10;
   const WISH_LIST_LIMIT = 10;
+
   console.log("Delete Id Token", deleteIdToken);
   console.log("Is delete modal Open", isDeleteModalOpen.toString());
   console.log("Product", product);
@@ -105,11 +112,11 @@ const ClientCartManagementPage = () => {
 
   useEffect(() => {
     if (cartsData?.items) {
-      setCart(cartsData.items);
+      setCart(cartsData?.items);
     } else {
       setCart([]);
     }
-  }, [cartsData, cart]);
+  }, [cartsData]);
 
   /*** ------> Add to Cart Mutation Query ------> */
   const addToCartMutation = useApiMutation({
@@ -326,7 +333,7 @@ const ClientCartManagementPage = () => {
     setDeleteIdToken(productId);
   };
 
-  // /** --------> Remove product from cart -------- */
+  //*** --------> Remove product from cart -------- */
   const handleRemoveItem = async (productId) => {
     try {
       deleteCartMutation.mutate(productId, {
@@ -346,6 +353,10 @@ const ClientCartManagementPage = () => {
   /*** ------> handle generate coupon code ------> */
   const handleGenerateCouponCode = (e) => {
     e?.preventDefault();
+    if (cart?.length === 0) {
+      toast.error("Your cart is empty! Add products to cart.");
+      return;
+    }
     const payload = { data: { code: "code" } };
     couponMutation.mutate(payload);
     navigate("/client-cart-checkout");
@@ -379,23 +390,34 @@ const ClientCartManagementPage = () => {
         title="Cart Management Page || Nova-Cart"
         description="You can palace items in cart."
       />
+
       <DynamicPageTitle pageTitle={pageTitle} />
-      <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-12 gap-2 justify-between">
+
+      <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-8 gap-2 justify-between">
         <div className="lg:col-span-9 col-span-12 rounded-lg">
           {/* -----> ALL PRODUCTS DISPLAYED -----> */}
           <div className="">
-            <div className="flex justify-between items-center border border-base-content/20 rounded-t-lg w-full lg:p-4 p-2 bg-base-200">
+            <div className="flex justify-between items-center border border-base-content/20 rounded-t-lg w-full lg:p-1.5 p-1 bg-base-300">
               <div className="hidden lg:block">
-                <h2 className="lg:text-2xl text-lg font-bold ">
-                  {wishList && <span>🛒 Welcome to - &nbsp;</span>}
-                  Nova-Cart
+                <h2 className="lg:text-xl text-lg font-extrabold flex items-center">
+                  {wishList && (
+                    <span className="flex items-center space-x-2">
+                      🛒 Welcome to ➡️{" "}
+                      <span className="text-purple-500 lg:text-xl text-lg uppercase">
+                        Nova{" "}
+                      </span>{" "}
+                      <span className="text-green-500 lg:text-xl text-lg uppercase">
+                        Cart
+                      </span>
+                    </span>
+                  )}
                 </h2>
               </div>
               <div className="flex items-center lg:justify-end justify-center lg:space-x-4 space-x-16">
                 <div>
                   <Link to="/client-product-wishlist">
-                    <Button variant="global" className="lg:text-xl font-bold">
-                      <ListCheck size={20} />
+                    <Button variant="base" className="btn btn-sm">
+                      <HeartPlus size={20} />
                       Wish List
                     </Button>
                   </Link>
@@ -404,7 +426,7 @@ const ClientCartManagementPage = () => {
                   <Button
                     onClick={handleGenerateCouponCode}
                     variant="indigo"
-                    className="lg:text-xl font-bold"
+                    className="btn btn-sm"
                   >
                     <ShoppingCart size={20} />
                     Checkout
@@ -413,7 +435,7 @@ const ClientCartManagementPage = () => {
               </div>
             </div>
 
-            <div className="lg:space-y-6 space-y-4 lg:py-8 py-4">
+            <div className="lg:space-y-6 space-y-4 lg:py-4 py-2">
               {/*Added product limit to cart pop-up*/}
               {addedToCart.length > 0 && (
                 <div className="rounded-xl shadow hover:shadow-md lg:p-4 p-2">
@@ -504,12 +526,49 @@ const ClientCartManagementPage = () => {
                         </div>
                       ))}
                     </div>
+                    <div className="pr-4 pb-2 flex justify-end">
+                      <Link to="/client-product-wishlist">
+                        <Button variant="indigo">
+                          <HeartPlus size={20} />
+                          Go to Wish List
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
                 </div>
               )}
             </div>
+            {/* ------> CARTS LIST DATA DISPLAYED ------> */}
+            <div className="lg:mb-10 mb-6">
+              {/*------> Client cart item management ------> */}
+              {cart.length > 0 && (
+                <div className="lg:my- my-3 bg-base-200 p-2 rounded-t-lg">
+                  <h2 className="lg:text-2xl text-xl font-extrabold flex items-center gap-2 text-base-content/70 m-0 p-0">
+                    <span className="flex items-center gap-2">
+                      <CirclePlus className="text-indigo-500" />{" "}
+                      <CircleMinus className="text-green-500" />{" "}
+                      <Trash2 className="text-red-500" />
+                    </span>{" "}
+                    ➡️ Manage Cart Items❓
+                  </h2>
+                </div>
+              )}
 
-            <div className="lg:space-y-4 space-y-2 lg:pt-6">
+              {cartsDataStatus.status !== "success" ? (
+                cartsDataStatus.content
+              ) : (
+                <CartItemList
+                  cart={cart}
+                  handleIncreaseQuantity={handleIncreaseQuantity}
+                  handleDecreaseQuantity={handleDecreaseQuantity}
+                  onModalToggle={handleDeleteModalToggle}
+                  modalOpen={setIsDeleteModalOpen}
+                  setDeleteIdToken={setDeleteIdToken}
+                  onSet={setProduct}
+                />
+              )}
+            </div>
+            <div className="lg:space-y-4 space-y-2 lg:pt-2">
               {productsDataStatus.status !== "success" ? (
                 productsDataStatus.content
               ) : (

@@ -491,7 +491,7 @@ const CheckOutPage = () => {
                 isApplyingCoupon={isApplyingCoupon}
                 appliedCoupon={appliedCoupon}
                 discountAmount={discountAmount}
-                orders={savedOrdersData}
+                // orders={savedOrdersData}
                 coupons={coupons}
               />
             </div>

@@ -7,6 +7,7 @@ import generateInvoice from "../../utils/invoiceGenerator.js";
 import { v4 as uuidv4 } from "uuid";
 
 import { sendOrderConfirmationEmail } from "../../utils/clientEmailService.js";
+import Cart from "../../models/Cart.js";
 
 const generateCoupon = () => {
   const timestamp = Date.now().toString().slice(-5);
@@ -191,6 +192,11 @@ export const createOrder = async (req, res) => {
     });
 
     const savedOrder = await order.save();
+
+    await Cart.findOneAndUpdate(
+      { user: req.user._id },
+      { $set: { items: [] } }
+    );
 
     console.log("🚀 Sending email to user");
 

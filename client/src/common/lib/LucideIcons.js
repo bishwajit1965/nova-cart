@@ -2,6 +2,10 @@
 
 import {
   AlertCircle,
+  ArrowBigLeft,
+  ArrowBigRight,
+  ArrowBigRightDash,
+  ArrowRight,
   CalendarClock,
   CalendarDays,
   Check,
@@ -77,6 +81,12 @@ import {
 
 // Central registry
 export const LucideIcon = {
+  ArrowBigRight,
+  ArrowRight,
+  ArrowBigLeft,
+  ArrowBigRightDash,
+  ArrowBigLeft,
+  ArrowBigLeft,
   AlertCircle,
   Check,
   CheckCircle2Icon,

@@ -26,9 +26,9 @@ const CartSummaryPanel = ({ cart, handleGenerateCouponCode }) => {
 
   return (
     <div className="">
-      <div className="flex items-center space-x-2 border-b border-base-content/20 lg:p-5 p-2 bg-base-200">
-        <ListOrdered size={25} />
-        <h2 className="lg:text-2xl text-lg font-bold">Cart Summary</h2>
+      <div className="flex items-center space-x-2 border-b border-base-content/20 lg:p-2 p-2 bg-base-300">
+        <ListOrdered size={20} />
+        <h2 className="lg:text-xl text-lg font-bold">Cart Summary</h2>
       </div>
       <div className="lg:space-y-4 space-y-2 lg:px-4 lg:py-6 p-2">
         {!cart || cart.length === 0 ? (
