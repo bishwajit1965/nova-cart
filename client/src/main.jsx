@@ -12,7 +12,7 @@ import { createRoot } from "react-dom/client";
 import { loadStripe } from "@stripe/stripe-js";
 import router from "./admin/routes/Routes.jsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import CartContextProvider from "./common/providers/CartContextProvider.jsx";
+import GlobalContextProvider from "./common/providers/GlobalContextProvider.jsx";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -24,7 +24,7 @@ createRoot(document.getElementById("root")).render(
     <AuthProvider>
       <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
         <QueryClientProvider client={queryClient}>
-          <CartContextProvider>
+          <GlobalContextProvider>
             <SystemSettingsProvider>
               <Elements stripe={stripePromise}>
                 <RouterProvider router={router} />
@@ -41,7 +41,7 @@ createRoot(document.getElementById("root")).render(
                 />
               </Elements>
             </SystemSettingsProvider>
-          </CartContextProvider>
+          </GlobalContextProvider>
         </QueryClientProvider>
       </GoogleOAuthProvider>
     </AuthProvider>

@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from "react-router-dom";
+import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import { containerVariants, itemVariants } from "../service/animations";
 
 import API_PATHS from "../../superAdmin/services/apiPaths/apiPaths";
@@ -12,33 +12,46 @@ import { useApiMutation } from "../../superAdmin/services/hooks/useApiMutation";
 import usePageTitle from "../../superAdmin/services/hooks/usePageTitle";
 import { useState } from "react";
 import { useEffect } from "react";
-import { AlertTriangle, ShoppingCart } from "lucide-react";
-import useCart from "../../common/hooks/useCart";
+import {
+  AlertTriangle,
+  CheckCircle,
+  Package,
+  ShoppingCart,
+  ShoppingCartIcon,
+} from "lucide-react";
 import CartSummaryPanel from "../cart/components/CartSummaryPanel";
+import useGlobalContext from "../../common/hooks/useGlobalContext";
+import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
+import { useApiQuery } from "../../superAdmin/services/hooks/useApiQuery";
+import CartItemList from "../cart/components/CartItemList";
+import ConfirmModal from "../../common/components/ui/ConfirmModal";
 
 const ProductDetails = () => {
   const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-
+  const navigate = useNavigate();
   const pageTitle = usePageTitle();
+
   const product = useLoaderData();
   const productData = product?.data;
   const [cartData, setCart] = useState([]);
   const [wishList, setWishList] = useState([]);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteIdToken, setDeleteIdToken] = useState(null);
+  const [cartProduct, setCartProduct] = useState(null);
+  const [instruction, setInstruction] = useState(false);
+
+  console.log("CART PRODUCT", cartProduct);
 
   // Global cart data
   const {
-    globalCartData,
+    cart,
+    handleIncreaseQuantity,
+    handleDecreaseQuantity,
     cartsDataStatus,
-    coupons,
-    handleGenerateCouponCode,
-    isDeleteModalOpen,
-    deleteIdToken,
-    setIsDeleteModalOpen,
-    handleRemoveItem,
-    updateQuantity,
-  } = useCart();
-  console.log("Cart data on Product details page", globalCartData);
+  } = useGlobalContext();
+
+  console.log("Cart data on Product details page", cart);
 
   /*** ------> Helper to build image URL safely ------> */
   const buildUrl = (src) => {
@@ -49,7 +62,26 @@ const ProductDetails = () => {
     return `${apiURL}${cleaned}`;
   };
 
-  /*** ------> Add to Cart Mutation Query ------> */
+  /*** ========> API USE-QUERIES ========> */
+
+  const {
+    data: coupons,
+    isLoading: isLoadingCoupon,
+    isError: isErrorCoupon,
+    error: errorCoupon,
+  } = useApiQuery({
+    url: API_PATHS.CLIENT_COUPON.CLIENT_COUPON_ENDPOINT,
+    queryKey: API_PATHS.CLIENT_COUPON.CLIENT_COUPON_KEY,
+    options: {
+      staleTime: 0,
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
+    },
+  });
+
+  /*** ========> API USE-MUTATIONS ========> */
+
+  // Add to cart mutation
   const addToCartMutation = useApiMutation({
     method: "create",
     path: `${API_PATHS.CLIENT_CARTS.CLIENT_ENDPOINT}`,
@@ -63,7 +95,7 @@ const ProductDetails = () => {
     },
   });
 
-  /*** ------> Add to wish-list ------> */
+  // Add to Wishlist mutation
   const addToWishListMutation = useApiMutation({
     method: "create",
     path: `${API_PATHS.CLIENT_WISH_LISTS.CLIENT_WISH_LIST_ENDPOINT}`,
@@ -78,6 +110,27 @@ const ProductDetails = () => {
     },
   });
 
+  // Delete cart mutation
+  const deleteCartMutation = useApiMutation({
+    method: "delete",
+    path: (productId) =>
+      `${API_PATHS.CLIENT_CARTS.CLIENT_ENDPOINT}/${productId}`,
+    key: API_PATHS.CLIENT_CARTS.CLIENT_KEY,
+    options: {
+      staleTime: 0,
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
+    },
+  });
+
+  // Coupon Mutation
+  const couponMutation = useApiMutation({
+    method: "create",
+    path: API_PATHS.CLIENT_COUPON.CLIENT_COUPON_ENDPOINT,
+    key: API_PATHS.CLIENT_COUPON.CLIENT_COUPON_KEY,
+  });
+
+  // Product details destructured
   const productDetail = {
     image: product.data.image || null,
     images: product.data.images || [],
@@ -119,6 +172,63 @@ const ProductDetails = () => {
     );
     setSelectedVariant(variant);
   };
+
+  /*** ========> USE-EFFECTS ========> */
+
+  // mobile sticky add-to-cart visibility on scroll
+  const [showSticky, setShowSticky] = useState(false);
+  useEffect(() => {
+    const onScroll = () => {
+      setShowSticky(window.scrollY > 300);
+    };
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // animations
+  const mainImgVariants = {
+    enter: { opacity: 0, scale: 0.98 },
+    center: { opacity: 1, scale: 1, transition: { duration: 0.22 } },
+    exit: { opacity: 0, scale: 0.98, transition: { duration: 0.18 } },
+  };
+
+  // update selectedVariant when selectedColor changes (keep size preference)
+  useEffect(() => {
+    if (!selectedColor) return;
+    const match = productData.variants?.find((v) => v.color === selectedColor);
+    if (match) setSelectedVariant(match);
+  }, [selectedColor, productData.variants]);
+
+  // update main image when selectedVariant changes
+  useEffect(() => {
+    if (!selectedVariant) return;
+    if (selectedVariant.images?.length) {
+      setMainImage(selectedVariant.images[0]);
+    } else if (productDetail.image) {
+      setMainImage(productDetail.image);
+    } else if (productDetail.images?.length) {
+      setMainImage(productDetail.images[0]);
+    } else {
+      setMainImage("");
+    }
+    setQuantity(1); // reset quantity when variant changes
+  }, [selectedVariant]); // eslint-disable-line
+
+  // Update sizes and selected variant when selectedColor changes
+  useEffect(() => {
+    const newSizes = product.data.variants
+      .filter((v) => v.color === selectedColor)
+      .map((v) => v.size);
+
+    setSelectedSize(newSizes[0] || "");
+    setSelectedVariant(
+      product.data.variants.find(
+        (v) => v.color === selectedColor && v.size === newSizes[0]
+      ) || null
+    );
+  }, [selectedColor]);
+
+  /*** ========> HANDLER METHODS ========> */
 
   const handleAddToCart = () => {
     if (!selectedVariant || selectedVariant.stock <= 0) {
@@ -185,58 +295,51 @@ const ProductDetails = () => {
     }
   };
 
-  // mobile sticky add-to-cart visibility on scroll
-  const [showSticky, setShowSticky] = useState(false);
-  useEffect(() => {
-    const onScroll = () => {
-      setShowSticky(window.scrollY > 300);
-    };
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // animations
-  const mainImgVariants = {
-    enter: { opacity: 0, scale: 0.98 },
-    center: { opacity: 1, scale: 1, transition: { duration: 0.22 } },
-    exit: { opacity: 0, scale: 0.98, transition: { duration: 0.18 } },
+  // coupon generator handler
+  const handleGenerateCouponCode = (e) => {
+    e?.preventDefault();
+    if (cart?.length === 0) {
+      toast.error("Your cart is empty! Add products to cart.");
+      return;
+    }
+    const payload = { data: { code: "code" } };
+    couponMutation.mutate(payload);
+    navigate("/client-cart-checkout");
   };
 
-  // update selectedVariant when selectedColor changes (keep size preference)
-  useEffect(() => {
-    if (!selectedColor) return;
-    const match = productData.variants?.find((v) => v.color === selectedColor);
-    if (match) setSelectedVariant(match);
-  }, [selectedColor, productData.variants]);
+  // Delete Modal open Toggle handler
+  const handleDeleteModalToggle = (productId) => {
+    setIsDeleteModalOpen(true);
+    setDeleteIdToken(productId);
+  };
 
-  // update main image when selectedVariant changes
-  useEffect(() => {
-    if (!selectedVariant) return;
-    if (selectedVariant.images?.length) {
-      setMainImage(selectedVariant.images[0]);
-    } else if (productDetail.image) {
-      setMainImage(productDetail.image);
-    } else if (productDetail.images?.length) {
-      setMainImage(productDetail.images[0]);
-    } else {
-      setMainImage("");
+  //*** --------> Remove product from cart -------- */
+  const handleRemoveItem = async (productId) => {
+    try {
+      deleteCartMutation.mutate(productId, {
+        onSuccess: () => {
+          setIsDeleteModalOpen(false);
+        },
+        onError: (error) => {
+          toast.error("Error in deleting cart item!", error);
+        },
+      });
+    } catch (err) {
+      console.error("Failed to remove item:", err);
+      toast.error("Failed to remove item");
     }
-    setQuantity(1); // reset quantity when variant changes
-  }, [selectedVariant]); // eslint-disable-line
+  };
 
-  // Update sizes and selected variant when selectedColor changes
-  useEffect(() => {
-    const newSizes = product.data.variants
-      .filter((v) => v.color === selectedColor)
-      .map((v) => v.size);
+  const handleInstruct = () => setInstruction((prev) => !prev);
 
-    setSelectedSize(newSizes[0] || "");
-    setSelectedVariant(
-      product.data.variants.find(
-        (v) => v.color === selectedColor && v.size === newSizes[0]
-      ) || null
-    );
-  }, [selectedColor]);
+  /*** ========> DATA FETCHED STATUS ========> */
+
+  const couponDataStatus = useFetchedDataStatusHandler({
+    isLoading: isLoadingCoupon,
+    isError: isErrorCoupon,
+    error: errorCoupon,
+    label: "Coupon",
+  });
 
   return (
     <div className="">
@@ -255,7 +358,7 @@ const ProductDetails = () => {
           variant={itemVariants}
         >
           <div className="lg:p- p-">
-            <div className="bg-base-300 p-2">
+            <div className="bg-base-300 p-2 border-b border-base-content/15">
               <h2 className="text-xl font-bold">Product & Variant Images</h2>
             </div>
 
@@ -367,13 +470,13 @@ const ProductDetails = () => {
           className="lg:col-span-5 col-span-12 border border-base-content/15 shadow rounded-lg pointer-events-auto"
           variant={itemVariants}
         >
-          <div className="bg-base-300 p-2">
+          <div className="bg-base-300 p-2 border-b border-base-content/15">
             <h2 className="text-xl font-bold">
               Your Product Details & Variants
             </h2>
           </div>
 
-          <div className="lg:p-4 p-2 lg:space-y-6 space-y-4">
+          <div className="lg:p-4 p-2 lg:space-y-5 space-y-3">
             <h2 className="lg:text-2xl text-xl lg:font-extrabold font-bold font-sans">
               Product ➡️ {productDetail?.name}
             </h2>
@@ -384,9 +487,9 @@ const ProductDetails = () => {
               <strong>Description: </strong>
               {isExpanded
                 ? productDetail?.description
-                : textShortener(productDetail?.description, 230)}
+                : textShortener(productDetail?.description, 165)}
               {productDetail?.description &&
-              productDetail?.description.length >= 230 ? (
+              productDetail?.description.length >= 165 ? (
                 <button
                   onClick={() => setIsExpanded(!isExpanded)}
                   className="text-indigo-500 link ml-1 text-sm font-semibold"
@@ -398,7 +501,8 @@ const ProductDetails = () => {
             <p className="font-bold">
               Price: $ {productDetail?.price.toFixed(2)}
             </p>
-            {/* VARIANT CONTROLS FOLLOW --> */}
+
+            {/* ----> VARIANT CONTROLS FOLLOW --> */}
             {/* Variant wise price display */}
             <p className="text-xl font-bold">
               Variant Price: $ {selectedVariant?.price.toFixed(2)}
@@ -456,15 +560,15 @@ const ProductDetails = () => {
             </div>
             {/* SELECTED VARIANTS DETAILS */}
             {selectedVariant && (
-              <div className="flex flex-col border border-base-content/15 shadow hover:shadow-xl lg:p-2 p-2 rounded-md bg-base-100">
+              <div className="flex flex-col border border-base-content/15 shadow hover:shadow-lg lg:p-2 p-2 rounded-md bg-base-100">
                 <div className="">
                   <h2 className="lg:text-2xl text-xl font-bold flex items-center gap-2">
                     <ShoppingCart /> Selected Variant Details
                   </h2>
                 </div>
-                <div className="flex flex-row items-center flex-wrap mt-1">
+                <div className="grid lg:grid-cols-12 grid-cols-1 justify-between gap-4">
                   {/*Variant Image */}
-                  <div className="">
+                  <div className="lg:col-span-2 col-span-12">
                     {selectedVariant?.images?.length > 0 && (
                       <div className="mt-2">
                         <div className="flex gap-3 flex-wrap">
@@ -486,69 +590,124 @@ const ProductDetails = () => {
                   </div>
 
                   {/* Variant Name */}
-                  <div className="flex flex-col">
-                    <div className="">
-                      {productDetail && (
-                        <div className="mt-2">
-                          <h2 className="font-semibold mb-1">
-                            Product: {productDetail.name}
-                          </h2>
-                        </div>
-                      )}
-                    </div>
+                  <div className="lg:col-span-10 col-span-12">
+                    <div className="flex flex-col">
+                      <div className="">
+                        {productDetail && (
+                          <div className="mt-2">
+                            <h2 className="font-extrabold mb-1 text-lg">
+                              Product ➡️ {productDetail?.name}
+                            </h2>
+                          </div>
+                        )}
+                      </div>
 
-                    {/* Variant details */}
-                    <div className="">
-                      {selectedVariant && (
-                        <p className="font-semibold">
-                          {selectedVariant?.stock !== undefined
-                            ? `Stock: ${selectedVariant?.stock}`
-                            : ""}{" "}
-                          ⏺️ Price: ${selectedVariant?.price.toFixed(2)} ⏺️
-                          Color: {selectedVariant?.color} ⏺️ Size:{" "}
-                          {selectedVariant?.size}
-                        </p>
-                      )}
+                      {/* Variant details */}
+                      <div className="">
+                        {selectedVariant && (
+                          <p className="font-semibold">
+                            {selectedVariant?.stock !== undefined
+                              ? `Stock: ${selectedVariant?.stock}`
+                              : ""}{" "}
+                            ⏺️ Price: ${selectedVariant?.price.toFixed(2)} ⏺️
+                            Color: {selectedVariant?.color} ⏺️ Size:{" "}
+                            {selectedVariant?.size}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             )}
             {/* Variants display */}
-            <div className="flex items-center lg:space-x-3 space-x-2 gap- mt-4 flex-wrap">
-              {/* Color display & Variant Selector */}
-              <h3 className="font-semibold hidden lg:block">Color ➡️</h3>
-              {colors.map((color, index) => (
-                <div
-                  key={index}
-                  className={`w-6 h-6 rounded-full cursor-pointer border-4 bg-base-100 ${
-                    selectedColor === color
-                      ? "border border-cyan-400 p-1 ring-1 ring-offset-1 ring-offset-cyan-400"
-                      : "border-base-100"
-                  }`}
-                  style={{ backgroundColor: color }}
-                  onClick={() => handleColorSelect(color)}
-                  title={color}
-                />
-              ))}
 
-              {/* Size display */}
-              <div className="flex items-center gap-2 flex-wrap lg:pl-6 pl-3">
-                <h3 className="font-semibold hidden lg:block">Size ➡️</h3>
-                {sizes.map((size, index) => (
-                  <button
-                    key={index}
-                    className={`px-3 py-1 border rounded-md cursor-pointer shadow ${
-                      selectedSize === size
-                        ? "bg-black text-white"
-                        : "bg-white text-black"
-                    }`}
-                    onClick={() => handleSizeSelect(size)}
-                  >
-                    {size}
-                  </button>
-                ))}
+            <div className="">
+              {instruction && (
+                <div className="bg-black text-white p-3 rounded-lg mb-2 animate-pulse border-amber-500 border-l-8">
+                  <p className="flex items-center gap-2">
+                    {" "}
+                    <span>
+                      <CheckCircle size={25} />
+                    </span>
+                    Click any color dot value to select product you prefer, then
+                    add to cart. You can increase or decrease quantity and can
+                    also delete your added product to cart. Thank you for
+                    choosing our Nova Cart E-commerce site.
+                  </p>
+                </div>
+              )}
+              <div className="flex items-center gap-2">
+                <h2 className="text-xl font-extrabold mb-1 flex items-center gap-2">
+                  <Package /> Select Product Variant
+                </h2>
+                <button
+                  onMouseOver={handleInstruct}
+                  className="text-indigo-500 link ml-4"
+                >
+                  Guidance
+                </button>
               </div>
+
+              <div className="flex items-center lg:space-x-2 space-x-2 gap-1 mt- flex-wrap border border-base-content/15 rounded-lg shadow hover:shadow-lg px-2 py-4">
+                {/* Color display & Variant Selector */}
+                <h3 className="font-semibold hidden lg:block">Color ➡️</h3>
+                {colors.map((color, index) => (
+                  <div
+                    key={index}
+                    className={`w-6 h-6 rounded-full cursor-pointer border-4 bg-base-100 ${
+                      selectedColor === color
+                        ? "border border-cyan-400 p-1 ring-1 ring-offset-1 ring-offset-cyan-400"
+                        : "border-base-100"
+                    }`}
+                    style={{ backgroundColor: color }}
+                    onClick={() => handleColorSelect(color)}
+                    title={color}
+                  />
+                ))}
+
+                {/* Size display */}
+                <div className="flex items-center gap-2 flex-wrap lg:pl-6 pl-3">
+                  <h3 className="font-semibold hidden lg:block">Size ➡️</h3>
+                  {sizes.map((size, index) => (
+                    <button
+                      key={index}
+                      className={`px-3 py-1 border rounded-md cursor-pointer shadow ${
+                        selectedSize === size
+                          ? "bg-black text-white"
+                          : "bg-white text-black"
+                      }`}
+                      onClick={() => handleSizeSelect(size)}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* ------> CARTS LIST DATA DISPLAYED ------> */}
+
+            <div className="">
+              <div className="mb-1">
+                <h2 className="text-xl font-extrabold flex items-center gap-2">
+                  <ShoppingCartIcon />
+                  Your Cart Products
+                </h2>
+              </div>
+              {cartsDataStatus.status !== "success" ? (
+                cartsDataStatus.content
+              ) : (
+                <CartItemList
+                  cart={cart}
+                  handleIncreaseQuantity={handleIncreaseQuantity}
+                  handleDecreaseQuantity={handleDecreaseQuantity}
+                  onModalToggle={handleDeleteModalToggle}
+                  modalOpen={setIsDeleteModalOpen}
+                  setDeleteIdToken={setDeleteIdToken}
+                  onSet={setCartProduct}
+                />
+              )}
             </div>
 
             {/* Action Buttons */}
@@ -581,62 +740,90 @@ const ProductDetails = () => {
                   Go Home
                 </Button>
               </Link>
+
+              <Link to="/client-product-wishlist">
+                <Button
+                  variant="success"
+                  icon={LucideIcon.Heart}
+                  className="btn lg:btn-md btn-sm"
+                >
+                  Go to Wish List
+                </Button>
+              </Link>
             </div>
 
             {/* Mobile Sticky Add to Cart */}
-            <div
-              className={`fixed left-0 right-0 bottom-0 z-40 lg:hidden transition-transform duration-300 ${
-                showSticky ? "translate-y-0" : "translate-y-full"
-              }`}
-            >
-              <div className="bg-white p-3 border-t border-base-content/10 flex items-center justify-between">
-                <div>
-                  <div className="font-bold">
-                    ${selectedVariant?.price ?? productDetail.price}
+            <AnimatePresence>
+              {showSticky && (
+                <motion.div
+                  initial={{ y: 120, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: 120, opacity: 0 }}
+                  transition={{ type: "spring", stiffness: 120, damping: 16 }}
+                  className={`fixed left-0 right-0 bottom-0 z-40 lg:hidden transition-transform duration-300 ${
+                    showSticky ? "translate-y-0" : "translate-y-full"
+                  }`}
+                >
+                  <div className="bg-white p-3 border-t border-base-content/10 flex items-center justify-between">
+                    <div>
+                      <div className="font-bold">
+                        ${selectedVariant?.price ?? productDetail.price}
+                      </div>
+                      <div className="text-xs text-muted">
+                        {productDetail.name}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                        className="btn btn-sm"
+                      >
+                        -
+                      </button>
+
+                      <div className="px-3 py-1 border rounded">{quantity}</div>
+
+                      <button
+                        onClick={() => setQuantity((q) => q + 1)}
+                        className="btn btn-sm"
+                      >
+                        +
+                      </button>
+                      <button
+                        onClick={handleAddToCart}
+                        disabled={selectedVariant?.stock <= 0}
+                        className="bg-black text-white px-4 py-2 rounded"
+                        aria-label="Add to cart sticky"
+                      >
+                        Add
+                      </button>
+                    </div>
                   </div>
-                  <div className="text-xs text-muted">{productDetail.name}</div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    className="btn btn-sm"
-                  >
-                    -
-                  </button>
-                  <div className="px-3 py-1 border rounded">{quantity}</div>
-                  <button
-                    onClick={() => setQuantity((q) => q + 1)}
-                    className="btn btn-sm"
-                  >
-                    +
-                  </button>
-                  <button
-                    onClick={handleAddToCart}
-                    className="bg-black text-white px-4 py-2 rounded"
-                    aria-label="Add to cart sticky"
-                  >
-                    Add
-                  </button>
-                </div>
-              </div>
-            </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </motion.div>
 
         {/* ------> RIGHT SIDE BAR -> CART SUMMARY PANELS ------>  */}
         <div className="lg:col-span-3 col-span-12">
           <div className="sticky top-18">
-            <div className="rounded-lg border border-base-content/15 shadow-sm">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35 }}
+              className="rounded-lg border border-base-content/15 shadow-sm"
+            >
               {cartsDataStatus.status !== "success" ? (
                 cartsDataStatus.content
               ) : (
                 <CartSummaryPanel
-                  cart={globalCartData}
+                  cart={cart}
                   handleGenerateCouponCode={handleGenerateCouponCode}
                   coupons={coupons}
                 />
               )}
-            </div>
+            </motion.div>
           </div>
         </div>
       </motion.div>
@@ -646,13 +833,15 @@ const ProductDetails = () => {
         <ConfirmModal
           isOpen={isDeleteModalOpen}
           deleteIdToken={deleteIdToken}
-          product={product}
+          cartProduct={cartProduct}
           title="Remove item from cart ?"
           message={
             <>
               Do you really want to remove{" "}
-              <span className="font-semibold text-red-600">{product}</span> from
-              your cart?
+              <span className="font-semibold text-red-600 italic">
+                {cartProduct.toString() ?? "Unknown product"}
+              </span>{" "}
+              from your cart?
             </>
           }
           cancelText="Keep"

@@ -11,6 +11,7 @@ const CartItemList = ({
   handleDecreaseQuantity,
   onModalToggle,
   onSet,
+  modalOpen,
 }) => {
   console.log("CART DATA VIEW IN CART ITEM LIST", cart);
 
@@ -23,7 +24,7 @@ const CartItemList = ({
       {cart?.map((item) => (
         <div
           key={item.product._id}
-          className="grid lg:grid-cols-12 grid-cols-1 items-center justify-between border border-base-content/15 p-3 shadow-sm rounded-lg lg:space-y-0 space-y-4"
+          className="grid lg:grid-cols-12 grid-cols-1 items-center justify-between border border-base-content/15 p-2 shadow-sm rounded-lg lg:space-y-0 space-y-4"
         >
           <div className="lg:col-span-4 col-span-12 flex items-center gap-3">
             <img
@@ -58,14 +59,15 @@ const CartItemList = ({
 
           <div className="lg:col-span-4 col-span-12 flex items-center justify-end gap-2">
             <span className="font-bold">
-              ${(item.product.price * item.quantity).toFixed(2)}
+              ${(item?.product?.price * item?.quantity).toFixed(2)}
             </span>
             <Button
               variant="danger"
               icon={LucideIcon.Trash2}
               onClick={() => {
+                modalOpen(true);
                 onModalToggle(item?.product?._id);
-                onSet(item?.product?.name);
+                onSet(item?.product?.name?.toString?.() ?? "");
               }}
               className="btn btn-sm"
             >
