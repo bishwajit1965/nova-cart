@@ -42,10 +42,6 @@ const ClientCartManagementPage = () => {
   const CART_LIMIT = 10;
   const WISH_LIST_LIMIT = 10;
 
-  console.log("Delete Id Token", deleteIdToken);
-  console.log("Is delete modal Open", isDeleteModalOpen.toString());
-  console.log("Product", product);
-
   /** ------> View product details in modal ------> */
   const handleModalToggleView = (productId) => {
     const item = allProducts.find((i) => i.product._id === productId);

@@ -1,4 +1,4 @@
-import { CreditCard, CreditCardIcon, LucideCreditCard } from "lucide-react";
+import { LucideCreditCard } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 import API_PATHS from "../../superAdmin/services/apiPaths/apiPaths";
@@ -10,6 +10,7 @@ import { useApiQuery } from "../../superAdmin/services/hooks/useApiQuery";
 import { useAuth } from "../../common/hooks/useAuth";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import usePageTitle from "../../superAdmin/services/hooks/usePageTitle";
+import NoDataFound from "../../common/components/ui/NoDataFound";
 
 const OrderConfirmationPage = () => {
   const { user } = useAuth();
@@ -40,9 +41,7 @@ const OrderConfirmationPage = () => {
   const pageTitle = usePageTitle();
   const apiURL = import.meta.env.VITE_API_URL || "http://localhost:300";
   if (!order?.items || order?.items?.length === 0) {
-    return (
-      <div className="text-center py-6 font-semibold">No order found.</div>
-    );
+    return <NoDataFound label="Orders" />;
   }
 
   const { items, totalAmount, orderId } = order;

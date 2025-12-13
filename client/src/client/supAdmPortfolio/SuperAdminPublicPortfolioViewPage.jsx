@@ -170,8 +170,8 @@ const SuperAdminPublicPortfolioViewPage = () => {
                 <div className="lg:mt-6 nt-3 flex flex-col sm:flex-row items-center gap-3">
                   <Button
                     onClick={() => handleDownloadPDF(pf._id)}
-                    variant="defaultRounded"
-                    className=" rounded-full"
+                    variant="indigoRounded"
+                    className="btn lg:btn-md btn-sm"
                     aria-label="Download PDF"
                   >
                     <FaFilePdf className="w-5 h-5" />

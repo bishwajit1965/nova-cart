@@ -141,20 +141,17 @@ export const updateOrderStatus = async (req, res) => {
       "user",
       "name email"
     );
-    console.log("Order found", foundOrder);
+
     // ✅ Find order by custom orderId, not _id
     const order = await Order.findOneAndUpdate(
       { orderId },
       { status },
       { new: true, runValidators: false }
     ).populate("user", "email name"); // ensures we get user email
-    console.log("Order found", order);
 
     if (!order) {
       return res.status(404).json({ message: "Order not found." });
     }
-
-    console.log("✅ Order found:", order.orderId, "User:", order.user?.email);
 
     // ✅ Send response immediately (avoid double headers)
     res.status(200).json({
@@ -166,11 +163,8 @@ export const updateOrderStatus = async (req, res) => {
     // ✅ Background email sending (after response)
     if (status === "delivered" && order.user?.email) {
       try {
-        console.log("📦 Generating invoice for delivered order...");
         const invoicePath = await generateInvoiceFile(order); // PDF file created
 
-        console.log("📧 Invoice file...", invoicePath);
-        console.log("📧 Sending delivery confirmation email...");
         await sendEmailWithAttachment({
           to: order.user.email,
           subject: `Your Nova-Cart Order ${order.orderId} Invoice`,
@@ -186,8 +180,6 @@ export const updateOrderStatus = async (req, res) => {
             },
           ],
         });
-
-        console.log("✅ Email sent successfully!");
       } catch (emailErr) {
         console.error("❌ Email sending failed:", emailErr);
       }

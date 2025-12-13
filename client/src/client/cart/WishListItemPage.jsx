@@ -1,10 +1,10 @@
-import { CheckCircleIcon, ShoppingCartIcon } from "lucide-react";
+import { CheckCircleIcon, Heart, ShoppingCartIcon } from "lucide-react";
 
 import API_PATHS from "../../superAdmin/services/apiPaths/apiPaths";
 import Button from "../../common/components/ui/Button";
 import ConfirmDeleteModal from "../../common/components/ui/ConfirmDeleteModal";
 import DynamicPageTitle from "../../common/utils/pageTitle/DynamicPageTitle";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LucideIcon } from "../../common/lib/LucideIcons";
 import NoDataFound from "../../common/components/ui/NoDataFound";
 import PageMeta from "../../common/components/ui/PageMeta";
@@ -15,19 +15,35 @@ import { useApiQuery } from "../../superAdmin/services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import usePageTitle from "../../superAdmin/services/hooks/usePageTitle";
 import { useState } from "react";
+import useGlobalContext from "../../common/hooks/useGlobalContext";
+import ConfirmModal from "../../common/components/ui/ConfirmModal";
+import CartItemList from "./components/CartItemList";
+import { motion } from "framer-motion";
+import CartSummaryPanel from "./components/CartSummaryPanel";
 
 const WishListItemPage = () => {
   const [cart, setCart] = useState([]);
   const [isExpanded, setIsExpanded] = useState(false);
   const [productId, setProductId] = useState(null);
   const pageTitle = usePageTitle();
-  const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
   const [addedToCart, setAddedToCart] = useState([]);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteIdToken, setDeleteIdToken] = useState(null);
+  const [cartProduct, setCartProduct] = useState(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+  const navigate = useNavigate();
   const CART_LIMIT = 10;
   const wishlistIds = [];
 
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState(null);
+  // Global cart data
+  const {
+    cart: cartData,
+    handleIncreaseQuantity,
+    handleDecreaseQuantity,
+    cartsDataStatus,
+  } = useGlobalContext();
 
   const handleDeleteClick = (item) => {
     setItemToDelete(item);
@@ -65,6 +81,28 @@ const WishListItemPage = () => {
   // Push all wishlist Ids to -> wishlistIds
   wishListData?.items?.map((item) => {
     wishlistIds.push(item?.product?._id);
+  });
+
+  const {
+    data: coupons,
+    isLoading: isLoadingCoupon,
+    isError: isErrorCoupon,
+    error: errorCoupon,
+  } = useApiQuery({
+    url: API_PATHS.CLIENT_COUPON.CLIENT_COUPON_ENDPOINT,
+    queryKey: API_PATHS.CLIENT_COUPON.CLIENT_COUPON_KEY,
+    options: {
+      staleTime: 0,
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
+    },
+  });
+
+  // Coupon Mutation
+  const couponMutation = useApiMutation({
+    method: "create",
+    path: API_PATHS.CLIENT_COUPON.CLIENT_COUPON_ENDPOINT,
+    key: API_PATHS.CLIENT_COUPON.CLIENT_COUPON_KEY,
   });
 
   /** -------- Add to Cart Mutation Query -------- */
@@ -140,6 +178,60 @@ const WishListItemPage = () => {
     );
   };
 
+  // Delete cart mutation
+  const deleteCartMutation = useApiMutation({
+    method: "delete",
+    path: (productId) =>
+      `${API_PATHS.CLIENT_CARTS.CLIENT_ENDPOINT}/${productId}`,
+    key: API_PATHS.CLIENT_CARTS.CLIENT_KEY,
+    options: {
+      staleTime: 0,
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
+    },
+  });
+
+  /*** ------> Toggle read more and read less ------> */
+  const handleToggleView = (product) => {
+    setIsExpanded(!isExpanded);
+    setProductId(product._id);
+  };
+
+  // coupon generator handler
+  const handleGenerateCouponCode = (e) => {
+    e?.preventDefault();
+    if (cartData?.length === 0) {
+      toast.error("Your cart is empty! Add products to cart.");
+      return;
+    }
+    const payload = { data: { code: "code" } };
+    couponMutation.mutate(payload);
+    navigate("/client-cart-checkout");
+  };
+
+  // Delete Modal open Toggle handler
+  const handleDeleteModalToggle = (productId) => {
+    setIsDeleteModalOpen(true);
+    setDeleteIdToken(productId);
+  };
+
+  //*** --------> Remove product from cart -------- */
+  const handleRemoveItem = async (productId) => {
+    try {
+      deleteCartMutation.mutate(productId, {
+        onSuccess: () => {
+          setIsDeleteModalOpen(false);
+        },
+        onError: (error) => {
+          toast.error("Error in deleting cart item!", error);
+        },
+      });
+    } catch (err) {
+      console.error("Failed to remove item:", err);
+      toast.error("Failed to remove item");
+    }
+  };
+
   /** ------> Use Fetched Data Status Handler ------> */
   const wishListStatus = useFetchedDataStatusHandler({
     isLoading: isLoadingWishList,
@@ -148,11 +240,12 @@ const WishListItemPage = () => {
     label: "wish List",
   });
 
-  /*** ------> Toggle read more and read less ------> */
-  const handleToggleView = (product) => {
-    setIsExpanded(!isExpanded);
-    setProductId(product._id);
-  };
+  const couponDataStatus = useFetchedDataStatusHandler({
+    isLoading: isLoadingCoupon,
+    isError: isErrorCoupon,
+    error: errorCoupon,
+    label: "Coupon",
+  });
 
   return (
     <>
@@ -163,168 +256,255 @@ const WishListItemPage = () => {
       />
       <DynamicPageTitle pageTitle={pageTitle} />
 
-      {/**--------> Wish list section --------> */}
-      {wishListStatus.status !== "success" ? (
-        wishListStatus.content
-      ) : (
-        <div className="lg:p-4">
-          <div className="lg:space-y-3 space-y-2">
-            {wishListData?.items?.length > 0 ? (
-              <div className="">
-                <div className="text-center lg:space-y-3 space-y-2">
-                  <h2 className="lg:text-3xl text-xl font-bold text-green-500">
-                    🛒You can add item to cart{" "}
-                  </h2>
-                  <p className="text-xs">
-                    You can add item to cart from here as well OR land on to
-                    check out cart page for placing order.
-                  </p>
+      {/*** --------> Wish list section --------> */}
+
+      <div className="lg:p-">
+        <div className="lg:space-y-3 space-y-2">
+          <div className="">
+            <div className=""></div>
+            <div className="text-center lg:space-y-3 space-y-2">
+              <h2 className="lg:text-3xl text-xl font-bold text-green-500">
+                🛒You can add item to cart{" "}
+              </h2>
+              <p className="text-xs">
+                You can add item to cart from here as well OR land on to check
+                out cart page for placing order.
+              </p>
+            </div>
+            <div className="flex justify-center lg:my-8 my-4 lg:space-x-6 space-x-2">
+              <Link to="/client-cart-management">
+                <Button variant="global" className="">
+                  <ShoppingCartIcon size={25} /> Shop Here
+                </Button>
+              </Link>
+              <Link to="/client-cart-management">
+                <Button variant="indigo" className="">
+                  <CheckCircleIcon size={25} />
+                  Your Cart
+                </Button>
+              </Link>
+            </div>
+
+            {/* Added to cart limit display pop up panel */}
+            <div className="lg:space-y-6 space-y-4 lg:py- py-4">
+              {/*Added product limit to cart pop-up*/}
+              {addedToCart.length > 0 && (
+                <div className="rounded-xl shadow hover:shadow-md lg:p-4 p-2">
+                  <div className="space-y-4">
+                    <div className="text-base-content">
+                      <h2 className="lg:text-2xl text-xl font-bold text-center">
+                        🛒 Products Added to Cart Calculation Panel ➡️
+                        <span className="w-10 h-10 rounded-full bg-white text-red-500">
+                          {addedToCart.length}
+                        </span>{" "}
+                      </h2>
+                    </div>
+                    {addedToCart.length >= CART_LIMIT && (
+                      <p className="text-xl text-red-600 text-center">
+                        You have reached the limit of 10 products!!!
+                      </p>
+                    )}
+                    <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-4 gap-2 justify-between bg-base-100 rounded-2xl lg:p-4 p-2">
+                      {addedToCart?.map((c, idx) => (
+                        <div className="lg:col-span-3 col-span-6" key={c._id}>
+                          <div className="flex items-center flex-wrap p-2 border border-base-content/15 rounded-lg shadow space-y-2 min-h-20 space-x-2">
+                            <div className="">
+                              {c?.image && (
+                                <img
+                                  src={`${apiURL}${c?.image}`}
+                                  alt={c?.brand}
+                                  className="w-12 h-12 object-cover"
+                                />
+                              )}
+                            </div>
+                            <div className="">
+                              <h2 className="font-bold text-sm">
+                                {idx + 1} {") "}
+                                {c?.brand}
+                                {<br />}
+                                ➡️
+                                {c?.name}
+                              </h2>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-                <div className="flex justify-center lg:my-8 my-4 lg:space-x-6 space-x-2">
-                  <Link to="/client-cart-management">
-                    <Button variant="global" className="">
-                      <ShoppingCartIcon size={25} /> Shop Here
-                    </Button>
-                  </Link>
-                  <Link to="/client-cart-management">
-                    <Button variant="indigo" className="">
-                      <CheckCircleIcon size={25} />
-                      Your Cart
-                    </Button>
-                  </Link>
+              )}
+            </div>
+
+            <div className="grid lg:grid-cols-12 grid-cols-1 justify-between lg:gap-6 gap-2">
+              {/* ========> LEFT SIDEBAR -> Wish list items ========> */}
+              <div className="lg:col-span-9 col-span-12 lg:space-y-4 space-y-2">
+                <div className="bg-base-300 p-2 rounded-t-lg border-b border-base-content/10 shadow-sm">
+                  <h2 className="text-xl font-extrabold flex items-center gap-2">
+                    <span className="flex items-center gap-2">
+                      <ShoppingCartIcon /> Your Cart Data{" "}
+                    </span>
+                    <span className="w-6 h-6 rounded-full flex items-center bg-indigo-500 text-white justify-center shadow text-sm">
+                      {cartData.length > 0 ? cartData.length : 0}
+                    </span>
+                  </h2>
                 </div>
 
-                {/* Added to cart limit display pop up panel */}
-                <div className="lg:space-y-6 space-y-4 lg:py-8 py-4">
-                  {/*Added product limit to cart pop-up*/}
-                  {addedToCart.length > 0 && (
-                    <div className="rounded-xl shadow hover:shadow-md lg:p-4 p-2">
-                      <div className="space-y-4">
-                        <div className="text-base-content">
-                          <h2 className="lg:text-2xl text-xl font-bold text-center">
-                            🛒 Products Added to Cart Calculation Panel ➡️
-                            <span className="w-10 h-10 rounded-full bg-white text-red-500">
-                              {addedToCart.length}
-                            </span>{" "}
-                          </h2>
-                        </div>
-                        {addedToCart.length >= CART_LIMIT && (
-                          <p className="text-xl text-red-600 text-center">
-                            You have reached the limit of 10 products!!!
-                          </p>
-                        )}
-                        <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-4 gap-2 justify-between bg-base-100 rounded-2xl lg:p-4 p-2">
-                          {addedToCart?.map((c, idx) => (
-                            <div
-                              className="lg:col-span-3 col-span-6"
-                              key={c._id}
-                            >
-                              <div className="flex items-center flex-wrap p-2 border border-base-content/15 rounded-lg shadow space-y-2 min-h-20 space-x-2">
-                                <div className="">
-                                  {c?.image && (
-                                    <img
-                                      src={`${apiURL}${c?.image}`}
-                                      alt={c?.brand}
-                                      className="w-12 h-12 object-cover"
-                                    />
-                                  )}
-                                </div>
-                                <div className="">
-                                  <h2 className="font-bold text-sm">
-                                    {idx + 1} {") "}
-                                    {c?.brand}
-                                    {<br />}
-                                    ➡️
-                                    {c?.name}
-                                  </h2>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
+                {/* ------> CARTS LIST DATA DISPLAYED ------> */}
+
+                <div className="">
+                  {cartsDataStatus.status !== "success" ? (
+                    cartsDataStatus.content
+                  ) : (
+                    <CartItemList
+                      cart={cartData}
+                      handleIncreaseQuantity={handleIncreaseQuantity}
+                      handleDecreaseQuantity={handleDecreaseQuantity}
+                      onModalToggle={handleDeleteModalToggle}
+                      modalOpen={setIsDeleteModalOpen}
+                      setDeleteIdToken={setDeleteIdToken}
+                      onSet={setCartProduct}
+                    />
                   )}
                 </div>
 
-                <div className="grid lg:grid-cols-12 grid-cols-1 justify-between lg:gap-6 gap-2">
-                  {wishListData?.items?.map((item) => (
-                    <div
-                      key={item.product._id}
-                      className="lg:col-span-3 col-span-12 border border-base-content/15 rounded-xl shadow-md bg-base-100 hover:shadow-xl"
-                    >
-                      <div className=" mb-4">
-                        <img
-                          src={`${apiURL}${item?.product?.images[0]}`}
-                          alt={item.product.name}
-                          className="w-full h-32 object-contain rounded mb-2"
-                        />
-                      </div>
-                      <div className="lg:max-h-48 max-h-48 lg:p-4 p-2 overflow-y-auto lg:space-y-2">
-                        <h3 className="lg:text-xl text-lg font-bold">
-                          {item.product.name} || {item.product.brand}
-                        </h3>
-                        <p className="mt-1 font-bold">
-                          ${item.product.price.toFixed(2)}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          {isExpanded && productId === item.product._id
-                            ? item.product.description
-                            : textShortener(item.product.description, 90)}
-
-                          <button
-                            onClick={() => handleToggleView(item.product)}
-                            className="text-sm text-indigo-500 font-bold link ml-1"
-                          >
-                            {isExpanded && productId === item.product._id
-                              ? "Read Less"
-                              : "Read More"}
-                          </button>
-                        </p>
-                      </div>
-                      <div className=" bottom-0 right-0 p-2 w-full flex justify-between items-center">
-                        <Button
-                          className="text-red-500 btn btn-sm"
-                          variant="danger"
-                          icon={LucideIcon.Trash2}
-                          onClick={() => handleDeleteClick(item.product)}
-                        >
-                          Remove
-                        </Button>
-                        <Link to={`/product-details/${item.product._id}`}>
-                          <Button variant="base" className="btn btn-sm">
-                            <LucideIcon.Eye />
-                          </Button>
-                        </Link>
-                        <Button
-                          className="btn btn-sm"
-                          variant="indigo"
-                          icon={LucideIcon.ShoppingCart}
-                          onClick={() => handleMoveToCart(item.product)}
-                        >
-                          Add to Cart
-                        </Button>
-                      </div>
+                <div className="">
+                  {wishListData?.items && wishListData?.items.length > 0 ? (
+                    <div className="bg-base-300 p-2 rounded-t-lg border-b border-base-content/10 shadow-sm mb-6">
+                      <h2 className="text-xl font-extrabold flex items-center gap-2">
+                        <span className="flex items-center gap-2">
+                          <Heart /> Wish List Products{" "}
+                        </span>
+                        <span className="w-6 h-6 rounded-full flex items-center bg-indigo-500 text-white justify-center shadow text-sm">
+                          {wishListData?.items.length > 0
+                            ? wishListData?.items.length
+                            : 0}
+                        </span>
+                      </h2>
                     </div>
-                  ))}
+                  ) : (
+                    <div className="">
+                      <NoDataFound label="Wish List" />
+                    </div>
+                  )}
+
+                  <div className="grid lg:grid-cols-12 grid-cols-1 justify-between lg:gap-6 gap-2">
+                    {wishListData?.items?.map((item) => (
+                      <div
+                        key={item.product._id}
+                        className="lg:col-span-4 col-span-12 border border-base-content/15 rounded-xl shadow-md bg-base-100 hover:shadow-xl"
+                      >
+                        <div className=" mb-4">
+                          <img
+                            src={`${apiURL}${item?.product?.images[0]}`}
+                            alt={item.product.name}
+                            className="w-full h-32 object-contain rounded mb-2"
+                          />
+                        </div>
+                        <div className="lg:max-h-48 max-h-48 lg:p-4 p-2 overflow-y-auto lg:space-y-2">
+                          <h3 className="lg:text-xl text-lg font-bold">
+                            {item.product.name} || {item.product.brand}
+                          </h3>
+                          <p className="mt-1 font-bold">
+                            ${item.product.price.toFixed(2)}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            {isExpanded && productId === item.product._id
+                              ? item.product.description
+                              : textShortener(item.product.description, 90)}
+
+                            <button
+                              onClick={() => handleToggleView(item.product)}
+                              className="text-sm text-indigo-500 font-bold link ml-1"
+                            >
+                              {isExpanded && productId === item.product._id
+                                ? "Read Less"
+                                : "Read More"}
+                            </button>
+                          </p>
+                        </div>
+                        <div className=" bottom-0 right-0 p-2 w-full flex justify-between items-center">
+                          <Button
+                            className="text-red-500 btn btn-sm"
+                            variant="danger"
+                            icon={LucideIcon.Trash2}
+                            onClick={() => handleDeleteClick(item.product)}
+                          >
+                            Remove
+                          </Button>
+                          <Link to={`/product-details/${item.product._id}`}>
+                            <Button variant="primary" className="btn btn-sm">
+                              <LucideIcon.Eye />
+                            </Button>
+                          </Link>
+                          <Button
+                            className="btn btn-sm"
+                            variant="indigo"
+                            icon={LucideIcon.ShoppingCart}
+                            onClick={() => handleMoveToCart(item.product)}
+                          >
+                            Add to Cart
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-            ) : (
-              <NoDataFound label={"Products"} />
-            )}
 
-            {/* Delete Modal Toggler */}
-            {deleteModalOpen && (
-              <ConfirmDeleteModal
-                isOpen={deleteModalOpen}
-                onClose={() => setDeleteModalOpen(false)}
-                onConfirm={() => handleConfirmDelete(itemToDelete?._id)}
-                itemName={itemToDelete?.name}
-              />
-            )}
+              {/* ========> RIGHT SIDEBAR ->  Cart summary panel ========>  */}
+              <div className="lg:col-span-3 col-span-12 max-h-[26.5rem] sticky top-20">
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.35 }}
+                  className="rounded-lg border border-base-content/15 shadow-sm"
+                >
+                  {cartsDataStatus.status !== "success" ? (
+                    cartsDataStatus.content
+                  ) : (
+                    <CartSummaryPanel
+                      cart={cartData}
+                      handleGenerateCouponCode={handleGenerateCouponCode}
+                      coupons={coupons}
+                    />
+                  )}
+                </motion.div>
+              </div>
+            </div>
           </div>
+
+          {/* Delete Modal Toggler -> Delete wishlist data */}
+          {deleteModalOpen && (
+            <ConfirmDeleteModal
+              isOpen={deleteModalOpen}
+              onClose={() => setDeleteModalOpen(false)}
+              onConfirm={() => handleConfirmDelete(itemToDelete?._id)}
+              itemName={itemToDelete?.name}
+            />
+          )}
+          {/* Delete Modal Toggle -> Delete cart item data */}
+          {isDeleteModalOpen && (
+            <ConfirmModal
+              isOpen={isDeleteModalOpen}
+              deleteIdToken={deleteIdToken}
+              cartProduct={cartProduct}
+              title="Remove item from cart ?"
+              message={
+                <>
+                  Do you really want to remove{" "}
+                  <span className="font-semibold text-red-600 italic">
+                    {cartProduct.toString() ?? "Unknown product"}
+                  </span>{" "}
+                  from your cart?
+                </>
+              }
+              cancelText="Keep"
+              onConfirm={() => handleRemoveItem(deleteIdToken)}
+              onCancel={() => setIsDeleteModalOpen(false)}
+            />
+          )}
         </div>
-      )}
+      </div>
     </>
   );
 };

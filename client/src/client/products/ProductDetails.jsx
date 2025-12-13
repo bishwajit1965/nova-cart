@@ -14,7 +14,6 @@ import { useState } from "react";
 import { useEffect } from "react";
 import {
   AlertTriangle,
-  CheckCircle,
   Package,
   ShoppingCart,
   ShoppingCartIcon,
@@ -41,8 +40,7 @@ const ProductDetails = () => {
   const [cartProduct, setCartProduct] = useState(null);
   const [instruction, setInstruction] = useState(false);
 
-  console.log("CART PRODUCT", cartProduct);
-
+ 
   // Global cart data
   const {
     cart,
@@ -50,8 +48,6 @@ const ProductDetails = () => {
     handleDecreaseQuantity,
     cartsDataStatus,
   } = useGlobalContext();
-
-  console.log("Cart data on Product details page", cart);
 
   /*** ------> Helper to build image URL safely ------> */
   const buildUrl = (src) => {
@@ -153,8 +149,6 @@ const ProductDetails = () => {
   const [selectedVariant, setSelectedVariant] = useState(
     product.data.variants.find((v) => v.color === colors[0] || null)
   );
-
-  console.log("Selected variants", selectedVariant);
 
   // Variant sizes
   const sizes = selectedColor
@@ -566,7 +560,13 @@ const ProductDetails = () => {
                     <ShoppingCart /> Selected Variant Details
                   </h2>
                 </div>
-                <div className="grid lg:grid-cols-12 grid-cols-1 justify-between gap-4">
+                <div
+                  className={`${
+                    selectedVariant?.images?.length > 0
+                      ? "flex items-center flex-wrap"
+                      : "grid lg:grid-cols-12 grid-cols-1 justify-between gap-4"
+                  }`}
+                >
                   {/*Variant Image */}
                   <div className="lg:col-span-2 col-span-12">
                     {selectedVariant?.images?.length > 0 && (
@@ -620,16 +620,12 @@ const ProductDetails = () => {
                 </div>
               </div>
             )}
-            {/* Variants display */}
 
+            {/* Variants display */}
             <div className="">
               {instruction && (
                 <div className="bg-black text-white p-3 rounded-lg mb-2 animate-pulse border-amber-500 border-l-8">
-                  <p className="flex items-center gap-2">
-                    {" "}
-                    <span>
-                      <CheckCircle size={25} />
-                    </span>
+                  <p className="">
                     Click any color dot value to select product you prefer, then
                     add to cart. You can increase or decrease quantity and can
                     also delete your added product to cart. Thank you for
@@ -772,6 +768,7 @@ const ProductDetails = () => {
                       <div className="text-xs text-muted">
                         {productDetail.name}
                       </div>
+                      4{" "}
                     </div>
                     <div className="flex items-center gap-3">
                       <button

@@ -39,7 +39,6 @@ export const getProfile = async (req, res) => {
 
 // UPDATE profile
 export const updateProfile = async (req, res) => {
-  console.log("✅ Update profile method is hit");
   try {
     const userId = req.user._id;
 

@@ -188,18 +188,6 @@ const SuperAdminProductInsertForm = ({
           </div>
         )}
 
-        {/* {selectedProductImages.length > 0 && (
-          <div className="flex gap-2 mt-2">
-            {selectedProductImages.map((file, i) => (
-              <img
-                key={i}
-                src={URL.createObjectURL(file)}
-                className="w-20 h-20 object-cover rounded"
-              />
-            ))}
-          </div>
-        )} */}
-
         {/* Variants */}
         {formData.variants.map((variant, idx) => (
           <div
@@ -274,19 +262,6 @@ const SuperAdminProductInsertForm = ({
                   ))}
                 </div>
               )}
-
-              {/* {variant.images?.length > 0 && (
-                <div className="flex gap-2 mt-2">
-                  {variant.images.map((file, i) => (
-                    <img
-                      key={i}
-                      src={URL.createObjectURL(file)}
-                      className="w-16 h-16 object-cover rounded"
-                    />
-                  ))}
-                </div>
-              )} */}
-
               <div className="">
                 <Button
                   type="button"

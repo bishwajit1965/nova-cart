@@ -19,7 +19,7 @@ const SuperAdminProductListTable = ({
   const [viewProduct, setViewProduct] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-  console.log("View Product", viewProduct);
+
   /*** Products fetcher Query */
   const {
     data: products,

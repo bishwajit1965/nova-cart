@@ -3,8 +3,6 @@ import Faq from "../../models/Faq.js";
 // ✅ Create FAQ
 export const createFaq = async (req, res) => {
   try {
-    console.log("🎯 Create FAQ controller method is hit!");
-    console.log("REQ>BODY", req.body);
     const faq = new Faq({ ...req.body, createdBy: req.user?._id });
     await faq.save();
     res

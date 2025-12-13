@@ -3,10 +3,8 @@ import Announcement from "../../models/Announcement.js";
 // Create
 export const createAnnouncement = async (req, res) => {
   try {
-    console.log("🎯 Create announcement controller is hit!");
-    console.log("REQ>BODY", req.body);
     const announcement = await Announcement.create(req.body);
-    console.log("Announcement:", announcement);
+
     res.status(201).json({
       success: true,
       message: "Announcement has been created!",

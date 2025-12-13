@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import API_PATHS from "../../superAdmin/services/apiPaths/apiPaths";
 import CheckOutItemList from "./components/CheckOutItemList";
 import CheckOutSummaryPanel from "./components/CheckOutSummaryPanel";
-import ClientStripePaymentForm from "../checkout/ClientStripePaymentForm";
 import DynamicPageTitle from "../../common/utils/pageTitle/DynamicPageTitle";
 import { FaAddressCard } from "react-icons/fa";
 import toast from "react-hot-toast";

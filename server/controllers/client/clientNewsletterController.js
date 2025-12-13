@@ -3,7 +3,7 @@ import Newsletter from "../../models/client/Newsletter.js ";
 export const subscribeNewsletter = async (req, res) => {
   try {
     const { email } = req.body; // Get email from request body
-    console.log("Request Body:", req.body);
+
     if (!email) {
       return res
         .status(400)

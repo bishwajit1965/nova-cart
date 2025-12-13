@@ -48,8 +48,6 @@ export const createProduct = async (req, res) => {
       tags,
     } = bodyData;
 
-    console.log("Body data:", bodyData);
-
     // 2️⃣ Validate category exists
     const cat = await Category.findById(category);
     if (!cat)
@@ -69,8 +67,6 @@ export const createProduct = async (req, res) => {
     // 4️⃣ Separate product images and variant images
     const productImages = [];
     const variantImagesMap = {};
-
-    console.log("Uploaded files:", req.files);
 
     if (req.files && req.files.length > 0) {
       req.files.forEach((file) => {
@@ -219,8 +215,6 @@ export const updateProduct = async (req, res) => {
     } else {
       bodyData = req.body; // JSON case
     }
-
-    console.log("✅ Product controller hit with bodyData:", bodyData);
 
     const {
       name,
@@ -392,14 +386,12 @@ export const deleteProduct = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Product not found" });
 
-    console.log("Product->", product);
-
     // Delete all images
     await Promise.all(
       product.images.map(async (imgPath) => {
         const filePath = path.join("uploads", path.basename(imgPath));
         try {
-          await fs.prom7ises.unlink(filePath);
+          await fs.promises.unlink(filePath);
         } catch (err) {
           console.error("Failed to delete image:", filePath, err);
         }

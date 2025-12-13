@@ -51,28 +51,30 @@ const ProductsListSection = () => {
   });
 
   return (
-    <div className="bg-base-200 text-base-content/70 lg:p-15 p-2 shadow border border-base-content/15">
-      <div className="lg:pb-8 pb-4">
-        <h2 className="lg:text-3xl font-extrabold text-center">
-          🚙 Our Products
-        </h2>
-      </div>
+    <div className="bg-base-200 text-base-content/70 lg:p-15 p-2 shadow border border-base-content/15 rounded-lg">
+      <div className="bg-base-300 rounded-lg lg:p-8 p-4 lg:mb-12 mb-6 shadow">
+        <div className="lg:pb-8 pb-4">
+          <h2 className="lg:text-3xl font-extrabold text-center">
+            🚙 Our Products
+          </h2>
+        </div>
 
-      {/* Search Bar */}
-      <div className="max-w-lg mx-auto lg:pb-8 pb-4 flex items-center gap-2">
-        <Input
-          icon={LucideIcon.Search}
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search products..."
-          className="w-full border rounded-full px-3 py-2 focus:outline-indigo-500"
-        />
-        {searchTerm && (
-          <Button onClick={() => setSearchTerm("")} variant="defaultRounded">
-            <CheckCircleIcon size={18} /> Clear
-          </Button>
-        )}
+        {/* Search Bar */}
+        <div className="max-w-lg mx-auto lg:pb-8 pb-4 flex items-center gap-2">
+          <Input
+            icon={LucideIcon.Search}
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search products..."
+            className="w-full border rounded-full px-3 py-2 focus:outline-indigo-500"
+          />
+          {searchTerm && (
+            <Button onClick={() => setSearchTerm("")} variant="defaultRounded">
+              <CheckCircleIcon size={18} /> Clear
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Products Grid */}
@@ -103,7 +105,7 @@ const ProductsListSection = () => {
       </div>
 
       {/* Load More / Less Buttons */}
-      <div className="flex w-full justify-center mt-6 gap-4">
+      <div className="flex w-full justify-center mt-10 gap-4">
         {visibleProductsCount < filteredProducts.length && (
           <Button
             onClick={handleLoadMoreProducts}

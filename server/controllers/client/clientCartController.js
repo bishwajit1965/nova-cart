@@ -11,9 +11,7 @@ export const addToCart = async (req, res) => {
         message: "Product ID and quantity are required",
       });
     }
-
     let cart = await Cart.findOne({ user: req.user._id });
-
     if (!cart) {
       // Create new cart
       cart = await Cart.create({
@@ -38,7 +36,6 @@ export const addToCart = async (req, res) => {
           item.product.toString() === productId &&
           item.variantId?.toString() === variantId
       );
-
       if (itemIndex > -1) {
         cart.items[itemIndex].quantity += quantity; // increase quantity
       } else {
@@ -55,7 +52,6 @@ export const addToCart = async (req, res) => {
       }
       await cart.save();
     }
-
     const populatedCart = await cart.populate("items.product");
     res.status(201).json({
       success: true,
@@ -79,7 +75,6 @@ export const getAllCarts = async (req, res) => {
       select: "name price images category",
       match: { _id: { $ne: null } }, // skip missing products
     });
-
     if (!cartsData || cartsData.length === 0)
       return res
         .status(404)
@@ -113,15 +108,12 @@ export const getCart = async (req, res) => {
       select: "name price images category",
       match: { _id: { $ne: null } },
     });
-
     if (!cart) {
       // No cart found, create an empty cart
       cart = await Cart.create({ user: req.user._id, items: [] });
     }
-
     // Now safe to filter items
     cart.items = cart.items.filter((item) => item.product);
-
     res.status(200).json({
       success: true,
       message: "Cart fetched successfully",
@@ -141,13 +133,11 @@ export const updateCartItem = async (req, res) => {
   try {
     const { productId, quantity } = req.body;
     const userId = req.user._id;
-
     if (typeof quantity !== "number") {
       return res
         .status(400)
         .json({ success: false, message: "Quantity must be a number" });
     }
-
     // Use let to allow reassignment
     let cart = await Cart.findOne({ user: userId });
 
@@ -171,7 +161,6 @@ export const updateCartItem = async (req, res) => {
         cart.items[itemIndex].quantity = quantity;
       }
     }
-
     await cart.save();
     const populatedCart = await cart.populate("items.product");
 
@@ -194,7 +183,6 @@ export const updateCartItem = async (req, res) => {
 export const removeFromCart = async (req, res) => {
   try {
     const { productId } = req.params;
-
     const cart = await Cart.findOne({ user: req.user._id });
     if (!cart)
       return res

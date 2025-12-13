@@ -10,7 +10,6 @@ export const createAuditLog = async ({
   entityId,
   description,
 }) => {
-  console.log("Audit log create method is hit!");
   try {
     const log = new AuditLog({
       user: userId,

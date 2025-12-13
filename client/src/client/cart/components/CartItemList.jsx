@@ -2,6 +2,7 @@ import { Minus, Plus } from "lucide-react";
 
 import Button from "../../../common/components/ui/Button";
 import { LucideIcon } from "../../../common/lib/LucideIcons";
+import NoDataFound from "../../../common/components/ui/NoDataFound";
 
 const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -13,10 +14,8 @@ const CartItemList = ({
   onSet,
   modalOpen,
 }) => {
-  console.log("CART DATA VIEW IN CART ITEM LIST", cart);
-
   if (!cart || cart.length === 0) {
-    return <p className="text-center text-red-500">Your cart is empty</p>;
+    return <NoDataFound label="Cart item" />;
   }
 
   return (

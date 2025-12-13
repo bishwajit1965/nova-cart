@@ -57,8 +57,6 @@ const SuperAdminOrdersOverviewManagement = () => {
   // To display total permissions in pagination
   const dataLength = orders?.length;
 
-  console.log("Orders length", dataLength);
-
   /** --------> Filtering searched term --------> */
   useEffect(() => {
     // if API returns { data: [...] } adjust here

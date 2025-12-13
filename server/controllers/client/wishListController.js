@@ -1,12 +1,11 @@
 import WishList from "../../models/client/WishList.js";
 
 export const getWishList = async (req, res) => {
-  console.log("🚨 Wishlist controller is hit!");
   try {
     const wishListData = await WishList.findOne({
       user: req.user._id,
     }).populate("items.product");
-    console.log("WishlistData fetched:", wishListData);
+
     if (!wishListData) {
       return res.status(404).json({
         success: false,

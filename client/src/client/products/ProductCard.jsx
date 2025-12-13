@@ -53,15 +53,17 @@ const ProductCard = ({ product }) => {
         />
 
         {/* Quick Actions */}
-        <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-t-xl">
+        <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-t-xl hover:bg-base-100">
           <Link to="/client-cart-management">
             <Button icon={LucideIcon.ShoppingCart} variant="baseRounded">
               Add to Cart
             </Button>
           </Link>
-          <Button icon={LucideIcon.Heart} variant="defaultRounded">
-            Wishlist
-          </Button>
+          <Link to="/client-product-wishlist">
+            <Button icon={LucideIcon.Heart} variant="defaultRounded">
+              Wishlist
+            </Button>
+          </Link>
         </div>
 
         {/* Badge Example */}

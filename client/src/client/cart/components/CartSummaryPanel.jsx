@@ -2,9 +2,10 @@ import { ListOrdered, ShoppingCart } from "lucide-react";
 
 import Button from "../../../common/components/ui/Button";
 import { Link } from "react-router-dom";
+import { FaShoppingCart } from "react-icons/fa";
+import NoDataFound from "../../../common/components/ui/NoDataFound";
 
 const CartSummaryPanel = ({ cart, handleGenerateCouponCode }) => {
-  console.log("Cart summary", cart);
   const productsOnly = [];
   const productWithVariants = [];
 
@@ -27,13 +28,11 @@ const CartSummaryPanel = ({ cart, handleGenerateCouponCode }) => {
   return (
     <div className="">
       <div className="flex items-center space-x-2 border-b border-base-content/20 lg:p-2 p-2 bg-base-300">
-        <ListOrdered size={20} />
+        <FaShoppingCart size={20} />
         <h2 className="lg:text-xl text-lg font-bold">Cart Summary</h2>
       </div>
       <div className="lg:space-y-4 space-y-2 lg:px-4 lg:py-6 p-2">
-        {!cart || cart.length === 0 ? (
-          <p className="text-center text-red-500">Your cart is empty</p>
-        ) : null}
+        {!cart || cart.length === 0 ? <NoDataFound label="Cart item" /> : null}
 
         <div className="flex flex-col gap-2 text-sm">
           {productsOnly?.map((item) => (

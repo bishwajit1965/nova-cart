@@ -2,24 +2,15 @@ import Order from "../../models/client/Order.js"; // your Order model
 import { STRIPE } from "../../utils/constants.js";
 import Stripe from "stripe";
 
-// console.log("STRIPE", STRIPE);
-
 const stripe = new Stripe(STRIPE?.SECRET_KEY);
 
 export const createPaymentIntent = async (req, res) => {
-  // console.log("🎯 Create Payment Intent is hit");
   const { orderId } = req.params;
   const { amount, currency = "usd" } = req.body;
   if (!orderId || !amount)
     return res.status(400).json({ message: "Order ID and amount required" });
 
   try {
-    // const paymentIntent = await stripe.paymentIntents.create({
-    //   amount: Math.round(amount * 100),
-    //   currency,
-    //   metadata: { orderId },
-    // });
-
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(amount * 100), // always in cents
       currency,
@@ -50,7 +41,6 @@ export const capturePayment = async (req, res) => {
   }
   const { paymentIntentId, orderId } = req.body;
 
-  console.log("🎯 Capture Payment method is hit");
   try {
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
 
@@ -70,7 +60,6 @@ export const capturePayment = async (req, res) => {
         message: "Order paid successfully!",
         paymentIntent,
       });
-      console.log("🎯 ✅Payment is successful!!!!!!!!");
     } else {
       res.status(400).json({ message: "Payment not completed yet" });
     }

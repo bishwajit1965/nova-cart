@@ -47,8 +47,6 @@ const ClientOrdersPage = () => {
     label: "orders",
   });
 
-  console.log("Orders", orders);
-
   /*** -----> Cancel order MUTATION -----> */
   const cartMutation = useApiMutation({
     method: "update",
@@ -81,9 +79,6 @@ const ClientOrdersPage = () => {
     orders?.filter((order) => order.status !== "cancelled") || [];
   const cancelledOrders =
     orders?.filter((order) => order.status === "cancelled") || [];
-
-  console.log("Active order", activeOrders);
-  console.log("Cancelled order", cancelledOrders);
 
   const renderOrderCard = (order) => (
     <div

@@ -197,9 +197,6 @@ export const createOrder = async (req, res) => {
       { user: req.user._id },
       { $set: { items: [] } }
     );
-
-    console.log("🚀 Sending email to user");
-
     // Send confirmation email
     await sendOrderConfirmationEmail({
       userEmail: req.user.email,
@@ -274,7 +271,6 @@ export const cancelOrder = async (req, res) => {
 export const getMyOrders = async (req, res) => {
   try {
     const { userId } = req.params;
-    console.log("➡️ User id of orders", userId);
     const user = await User.findById(userId)
       .populate({
         path: "plan",
@@ -343,8 +339,6 @@ export const getOrdersForUser = async (req, res) => {
 
 export const getOrderById = async (req, res) => {
   const { orderId } = req.params;
-
-  console.log("Order Id", orderId);
 
   try {
     const order = await Order.findOne({ orderId }).populate("items.product");

@@ -21,8 +21,6 @@ const CategoriesPage = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [addedToCart, setAddedToCart] = useState([]);
-  const CART_LIMIT = 10;
-
   const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 });
   const [selectedBrand, setSelectedBrand] = useState("All Brands");
   const apiURL = import.meta.env.VITE_API_URL || "http:localhost:3000";
@@ -31,9 +29,11 @@ const CategoriesPage = () => {
   const categorySlug = searchParams.get("category") || "";
   const subCategorySlug = searchParams.get("subCategory") || "";
   const brandFilter = searchParams.get("brand") || "All Brands";
-  const minPrice = parseFloat(searchParams.get("minPrice")) || 0;
+  const minPrice = parseFloat( searchParams.get( "minPrice" ) ) || 0;
+  
   // Always define the current filters from searchParams
   const maxPrice = parseFloat(searchParams.get("maxPrice")) || Infinity;
+  const CART_LIMIT = 10;
 
   // Local UI state synced to URL
   useEffect(() => {
@@ -262,12 +262,12 @@ const CategoriesPage = () => {
         {categoriesStatus.status !== "success" ? (
           categoriesStatus.content
         ) : (
-          <aside className="lg:col-span-3 col-span-12 shadow rounded-lg sticky lg:top-20 lg:max-h-[calc(100vh-200px)] pb-6 overflow-y-auto">
-            <div className="mb-4 text-sm text-gray-500 bg-base-200 p-2 lg:text-2xl font-bold border border-base-content/15 rounded-t-lg">
+          <aside className="lg:col-span-3 col-span-12 shadow rounded-lg sticky lg:top-20 lg:max-h-[calc(100vh-100px)]">
+            <div className="mb-4 text-sm text-gray-500 bg-base-300 p-2 lg:text-2xl font-bold border border-base-content/10 rounded-t-lg">
               <h3 className="lg:text-2xl font-bold text-lg">Categories</h3>
             </div>
 
-            <div className="lg:px-4 px-2">
+            <div className="lg:px-4 px-2 lg:max-h-[calc(100vh-180px)] pb-4 overflow-y-auto">
               <ul className="space-y-2 lg:mb-4 mb-2">
                 <li
                   className={`${
@@ -432,7 +432,7 @@ const CategoriesPage = () => {
         ) : (
           <main className="lg:col-span-9 col-span-12 rounded-lg">
             {/* Breadcrumb */}
-            <div className="mb-4 text-sm text-gray-500 bg-base-200 p-2 rounded-t-lg border-t border-b border-base-content/15">
+            <div className="mb-4 text-sm text-gray-500 bg-base-300 p-2 rounded-t-lg border-t border-b border-base-content/10">
               <Link to="/">
                 <h3 className="lg:text-2xl text-xl font-bold">Home</h3>
               </Link>

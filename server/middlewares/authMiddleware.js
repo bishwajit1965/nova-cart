@@ -4,8 +4,6 @@ import jwt from "jsonwebtoken";
 
 // ----> Authentication Middleware ---->
 export const authenticationMiddleware = async (req, res, next) => {
-  console.log("🔐 Incoming request to:", req.originalUrl);
-
   try {
     console.log("📨 All headers:", req.headers);
 

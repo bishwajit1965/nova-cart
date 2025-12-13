@@ -1,4 +1,4 @@
-import { Clock, FileCheck2Icon, ShoppingCart } from "lucide-react";
+import { Clock, ShoppingCart } from "lucide-react";
 import { useLoaderData, useNavigate } from "react-router-dom";
 
 import Button from "../../common/components/ui/Button";
@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import usePageTitle from "../../superAdmin/services/hooks/usePageTitle";
 import { useState } from "react";
 import OrderTimeline from "./components/OrderTimeline";
+import { FaFilePdf } from "react-icons/fa";
 
 const ClientOrderDetailsPage = () => {
   const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
@@ -41,7 +42,7 @@ const ClientOrderDetailsPage = () => {
   };
 
   const handleReorder = () => {
-    // You can push items back to cart
+    // I can push items back to cart
     // e.g., navigate("/client-cart-management", { state: { items: order.items } });
     toast.success("Items added to your cart!");
     navigate("/client-cart-management", { state: { items: order.items } });
@@ -59,7 +60,7 @@ const ClientOrderDetailsPage = () => {
           <p>
             Status: <span className="text-blue-700">{order?.status}</span>
           </p>
-          <p>Total: ${order?.totalAmount}</p>
+          <p>Total: ${order?.totalAmount.toFixed(2)}</p>
           <p>Date: {new Date(order.createdAt).toLocaleString()}</p>
         </div>
         {/* ----------> Shipping Address ----------> */}
@@ -99,13 +100,13 @@ const ClientOrderDetailsPage = () => {
               <div>
                 <p>{item?.name}</p>
                 <p>Qty: {item?.quantity}</p>
-                <p>Price: $ {item?.price}</p>
+                <p>Price: ${item?.price}</p>
               </div>
-              <div>$ {(item?.price * item?.quantity).toFixed(2)}</div>
+              <div>${(item?.price * item?.quantity).toFixed(2)}</div>
             </div>
           ))}
           <div className="flex justify-end text-xl font-black">
-            Total: $ {order?.totalAmount}
+            Total: ${order?.totalAmount.toFixed(2)}
           </div>
         </div>
 
@@ -151,7 +152,7 @@ const ClientOrderDetailsPage = () => {
                   )}
                 </span>
                 <span className="px-2 py-1 rounded-md bg-purple-500 text-gray-100">
-                  Total: $ {order?.totalAmount}
+                  Total: ${order?.totalAmount.toFixed(2)}
                 </span>
               </li>
             ))}
@@ -160,13 +161,18 @@ const ClientOrderDetailsPage = () => {
         {/* Action Buttons */}
         <div className="flex justify-center space-x-4 lg:mt-12 mt-4">
           <Button
-            variant="defaultRounded"
-            icon={LucideIcon.File}
+            variant="indigoRounded"
             onClick={() => handleDownloadInvoice(order.orderId)}
+            className="btn lg:btn-lg btn-sm"
           >
-            <FileCheck2Icon /> Download Invoice
+            <FaFilePdf size={18} />
+            Download Invoice
           </Button>
-          <Button variant="defaultRounded" onClick={handleReorder}>
+          <Button
+            variant="defaultRounded"
+            onClick={handleReorder}
+            className="btn lg:btn-lg btn-sm"
+          >
             <ShoppingCart />
             Like to Reorder ?
           </Button>

@@ -134,7 +134,7 @@ const GlobalContextProvider = ({ children }) => {
 
   /** ---------------- CONTEXT VALUE ---------------- */
 
-  const globalContext = {
+  const globalContextInfo = {
     cart,
     handleIncreaseQuantity,
     handleDecreaseQuantity,
@@ -143,7 +143,7 @@ const GlobalContextProvider = ({ children }) => {
   };
 
   return (
-    <GlobalContext.Provider value={globalContext}>
+    <GlobalContext.Provider value={globalContextInfo}>
       {children}
     </GlobalContext.Provider>
   );

@@ -19,7 +19,6 @@ const ClientStripePaymentForm = ({
   const elements = useElements();
 
   const [isProcessing, setIsProcessing] = useState(false);
-  console.log("Order ID", orderId);
 
   /** ------> STRIPE ORDER MUTATION HOOK ------> */
   const stripeOrderMutation = useApiMutation({
