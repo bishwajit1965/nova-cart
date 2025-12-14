@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import {
+  AlertCircle,
   CircleMinus,
   CirclePlus,
   HeartPlus,
@@ -481,19 +482,20 @@ const ClientCartManagementPage = () => {
 
               {/*Added product limit to wish list pop-up*/}
               {addedToWishList?.length > 0 && (
-                <div className="rounded-xl shadow hover:shadow-md lg:p-4 p-2">
+                <div className="rounded-xl shadow hover:shadow-md lg:p-2 p-2">
                   <div className="space-y-4">
                     <div className="text-base-content">
-                      <h2 className="lg:text-2xl text-xl font-bold text-center">
+                      <h2 className="lg:text-2xl text-lg font-bold text-center gap-2 flex items-center justify-center text-base-content/70">
                         🛒 Products Added to Wish List Calculation Panel ➡️
-                        <span className="w-10 h-10 rounded-full bg-white text-red-500">
+                        <span className="w-7 h-7 rounded-full bg-indigo-500 flex justify-center items-center text-white shadow text-sm">
                           {addedToWishList?.length}
-                        </span>{" "}
+                        </span>
                       </h2>
                     </div>
                     {addedToWishList.length >= WISH_LIST_LIMIT && (
-                      <p className="text-xl text-red-600 text-center">
-                        You have reached the limit of 10 products!!!
+                      <p className="text-xl text-red-500 justify-center flex items-center gap-1 font-bold flex-wrap">
+                        <AlertCircle /> You have reached the limit of 10
+                        products !
                       </p>
                     )}
                     <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-4 gap-2 justify-between bg-base-100 rounded-2xl lg:p-4 p-2">
@@ -545,7 +547,10 @@ const ClientCartManagementPage = () => {
                       <CircleMinus className="text-green-500" />{" "}
                       <Trash2 className="text-red-500" />
                     </span>{" "}
-                    ➡️ Manage Cart Items❓
+                    ➡️ Manage Cart Items❓{" "}
+                    <span className="w-7 h-7 rounded-full bg-indigo-500 flex justify-center items-center text-white shadow text-sm">
+                      {cart?.length}
+                    </span>
                   </h2>
                 </div>
               )}
@@ -726,14 +731,14 @@ const ClientCartManagementPage = () => {
                 </div>
               )}
               {/*------> Client cart item management ------> */}
-              <div className="lg:my-10 my-3">
+              {/* <div className="lg:my-10 my-3">
                 <DynamicPageTitle pageTitle={sectionTitle} />
-              </div>
+              </div> */}
             </div>
           </div>
 
           {/* ------> CARTS LIST DATA DISPLAYED ------> */}
-          {cartsDataStatus.status !== "success" ? (
+          {/* {cartsDataStatus.status !== "success" ? (
             cartsDataStatus.content
           ) : (
             <CartItemList
@@ -745,7 +750,7 @@ const ClientCartManagementPage = () => {
               setDeleteIdToken={setDeleteIdToken}
               onSet={setProduct}
             />
-          )}
+          )} */}
         </div>
 
         {/* ------> RIGHT PANEL BEGINS ------> */}

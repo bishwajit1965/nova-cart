@@ -1,4 +1,4 @@
-import { CheckCircleIcon, Heart, ShoppingCartIcon } from "lucide-react";
+import { Heart, ShoppingCartIcon } from "lucide-react";
 
 import API_PATHS from "../../superAdmin/services/apiPaths/apiPaths";
 import Button from "../../common/components/ui/Button";
@@ -20,6 +20,7 @@ import ConfirmModal from "../../common/components/ui/ConfirmModal";
 import CartItemList from "./components/CartItemList";
 import { motion } from "framer-motion";
 import CartSummaryPanel from "./components/CartSummaryPanel";
+import { FaCartPlus } from "react-icons/fa";
 
 const WishListItemPage = () => {
   const [cart, setCart] = useState([]);
@@ -279,7 +280,7 @@ const WishListItemPage = () => {
               </Link>
               <Link to="/client-cart-management">
                 <Button variant="indigo" className="">
-                  <CheckCircleIcon size={25} />
+                  <FaCartPlus size={25} />
                   Your Cart
                 </Button>
               </Link>
@@ -304,7 +305,7 @@ const WishListItemPage = () => {
                         You have reached the limit of 10 products!!!
                       </p>
                     )}
-                    <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-4 gap-2 justify-between bg-base-100 rounded-2xl lg:p-4 p-2">
+                    <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-4 gap-2 justify-between bg-base-100 rounded-2xl lg:p-2 p-2">
                       {addedToCart?.map((c, idx) => (
                         <div className="lg:col-span-3 col-span-6" key={c._id}>
                           <div className="flex items-center flex-wrap p-2 border border-base-content/15 rounded-lg shadow space-y-2 min-h-20 space-x-2">

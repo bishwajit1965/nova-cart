@@ -29,8 +29,8 @@ const CategoriesPage = () => {
   const categorySlug = searchParams.get("category") || "";
   const subCategorySlug = searchParams.get("subCategory") || "";
   const brandFilter = searchParams.get("brand") || "All Brands";
-  const minPrice = parseFloat( searchParams.get( "minPrice" ) ) || 0;
-  
+  const minPrice = parseFloat(searchParams.get("minPrice")) || 0;
+
   // Always define the current filters from searchParams
   const maxPrice = parseFloat(searchParams.get("maxPrice")) || Infinity;
   const CART_LIMIT = 10;
@@ -255,6 +255,7 @@ const CategoriesPage = () => {
         title="Category Page || Nova-Cart"
         description="Have a look on all categories in detail."
       />
+
       <DynamicPageTitle pageTitle={pageTile} />
 
       <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-10 gap-4 justify-between">
@@ -432,11 +433,11 @@ const CategoriesPage = () => {
         ) : (
           <main className="lg:col-span-9 col-span-12 rounded-lg">
             {/* Breadcrumb */}
-            <div className="mb-4 text-sm text-gray-500 bg-base-300 p-2 rounded-t-lg border-t border-b border-base-content/10">
+            <div className="mb-4 text-sm text-gray-500 bg-base-300 p-2 rounded-t-lg border-t border-b border-base-content/10 flex items-center gap-2">
               <Link to="/">
                 <h3 className="lg:text-2xl text-xl font-bold">Home</h3>
               </Link>
-              {selectedCategory && <> &gt; {selectedCategory}</>}
+              {selectedCategory && <>&gt; {selectedCategory}</>}
             </div>
 
             {/*Added product limit to cart pop-up*/}
