@@ -16,7 +16,6 @@ const couponSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Pre-save hook to generate a unique coupon code if not provided
 couponSchema.pre("save", async function (next) {
   if (!this.code) {
     const generateCode = () => {
@@ -41,6 +40,33 @@ couponSchema.pre("save", async function (next) {
   }
   next();
 });
+
+// couponSchema.pre("save", async function (next) {
+//   if (!this.code) {
+//     const generateCode = () => {
+//       const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+//       return Array.from({ length: 8 }, () =>
+//         chars.charAt(Math.floor(Math.random() * chars.length))
+//       ).join("");
+//     };
+
+//     let newCode;
+//     let exists = true;
+
+//     while (exists) {
+//       newCode = generateCode();
+//       exists = await mongoose.models.Coupon.findOne({ code: newCode });
+//     }
+
+//     this.code = newCode;
+//   } else {
+//     this.code = this.code.toUpperCase().trim();
+//   }
+
+//   next();
+// });
+
+// Pre-save hook to generate a unique coupon code if not provided
 
 const Coupon = mongoose.model("Coupon", couponSchema);
 

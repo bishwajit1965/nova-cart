@@ -35,15 +35,6 @@ export const sendOrderConfirmationEmail = async ({
   items,
   totalPrice,
 }) => {
-  // const itemsHtml = items
-  //   .map(
-  //     (item) =>
-  //       `<li>${item.name} x ${item.quantity} - $${
-  //         item.price * item.quantity
-  //       }</li>`
-  //   )
-  //   .join("");
-
   const html = `
   <div style="font-family: Arial, sans-serif; color:#333; max-width:700px; margin:auto; background:#fff; border-radius:10px; overflow:hidden; border:1px solid #e5e7eb;">
     <!-- Header with logo and gradient -->
@@ -113,39 +104,4 @@ export const sendOrderConfirmationEmail = async ({
     subject: `Your Nova-Cart Order Confirmation #${orderId}`,
     html,
   });
-
-  // const html = `
-  // <!-- Header with logo and gradient -->
-  //   <div style="background:linear-gradient(90deg,#4f46e5,#6366f1); padding:20px; text-align:center;">
-  //     <img src="https://i.ibb.co.com/Q3s9YK8b/web-Dev-Pro-F.png" alt="Nova-Cart" style="height:50px; margin-bottom:10px;" />
-  //     <h2 style="color:white; margin:0;">Nova Cart E-commerce</h2>
-  //   <address style="color:white; font:bold">
-  //   37/A Dhanmondi-12, Dhaka, Bangladesh
-  //   </address>
-  //   <p style="color:white; font: bold;">
-  //   ${new Date()}
-  //   </p>
-  //   </div>
-  //   <h2>Thank you for your order!</h2>
-  //   <p>Order ID: <strong>${orderId}</strong></p>
-  //   <ul>${itemsHtml}</ul>
-  //   <p>Total: <strong>$${totalPrice}</strong></p>
-  //   <p>We are processing your order and will notify you once it's shipped/delivered.</p>
-  //   <p>Happy Shopping, <strong>Nova-Cart Team</strong></p>
-  //   <!-- Footer -->
-  //   <div style="background:#f3f4f6; padding:10px; text-align:center; font-size:12px; color:#6b7280;">
-  //     Follow us on:
-  //     <a href="https://facebook.com/novacart" style="color:#4f46e5; text-decoration:none;">Facebook</a> |
-  //     <a href="https://twitter.com/novacart" style="color:#4f46e5; text-decoration:none;">Twitter</a> |
-  //     <a href="https://instagram.com/novacart" style="color:#4f46e5; text-decoration:none;">Instagram</a>
-  //     <br/>
-  //     Contact: support@novacart.com
-  //   </div>
-  // `;
-
-  // await sendEmail({
-  //   to: userEmail, // <-- must be userEmail
-  //   subject: `Your Nova-Cart Order Confirmation #${orderId}`,
-  //   html,
-  // });
 };

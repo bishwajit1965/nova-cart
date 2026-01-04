@@ -44,7 +44,7 @@ router.patch(
 
 // Remove a product from cart
 router.delete(
-  "/:productId",
+  "/:productId/:variantId",
   requireFeature("cart"),
   featureGuard(),
   authorizeRole("super-admin", "admin", "user"),

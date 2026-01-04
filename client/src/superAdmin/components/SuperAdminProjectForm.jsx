@@ -164,14 +164,14 @@ const SuperAdminProjectForm = ({
         )}
 
         {/* Image Previews CURRENT & NEW */}
-        <div className="flex items-center justify-between mt-2">
+        <div className="flex items-center justify-between mt-2 w-full">
           {editProject && editProject?.projectImage && (
             <div className="">
               <label htmlFor="current-image">Current Image</label>
               <img
                 src={`${apiURL}${editProject?.projectImage}`}
                 alt={editProject?.name}
-                className="w-20 h-20 object-cover rounded"
+                className="w-full h-40 object-cover rounded"
               />
             </div>
           )}
@@ -180,7 +180,7 @@ const SuperAdminProjectForm = ({
               <label htmlFor="current-image">New Image</label>
               <img
                 src={formData?.projectImagePreview}
-                className="w-20 h-20 object-cover rounded mt-2"
+                className="w-full h-40 object-cover rounded mt-2"
               />
             </div>
           )}

@@ -26,7 +26,7 @@ const TopHeroSection = () => {
   return (
     <section className="relative w-full min-h-[60vh] bg-[url('/online-shop-7089820_1920.png')] bg-cover bg-center rounded-xl shadow-2xl overflow-hidden">
       {/* Overlay */}
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-xs"></div>
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-12 lg:py-20">

@@ -16,6 +16,8 @@ import { useApiQuery } from "../services/hooks/useApiQuery";
 import { useEffect } from "react";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import { useState } from "react";
+import { LucideIcon } from "../../common/lib/LucideIcons";
+import { FaFilePdf } from "react-icons/fa";
 
 const STATUSES = ["pending", "processing", "shipped", "delivered"];
 
@@ -296,7 +298,7 @@ const SuperAdminOrdersOverviewManagement = () => {
                                   handleDownloadInvoice(order?.orderId)
                                 }
                                 tooltip="Download PDF"
-                                icon="download"
+                                icon="pdf"
                                 disabled={loadingInvoice}
                                 variant="success"
                               ></MiniIconButton>

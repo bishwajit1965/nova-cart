@@ -10,7 +10,10 @@ const OrderTimeline = ({ statusHistory, currentStatus }) => {
         const isCurrent = currentStatus === stage;
 
         return (
-          <div key={idx} className="flex-1 relative flex flex-col items-center">
+          <div
+            key={idx}
+            className="flex-1 relative flex flex-col items-center w-full"
+          >
             {/* Circle */}
             <div
               className={`w-8 h-8 rounded-full border-2 flex items-center justify-center
@@ -21,7 +24,7 @@ const OrderTimeline = ({ statusHistory, currentStatus }) => {
                 }`}
             >
               {isCompleted ? (
-                <LucideIcon.Check size={16} className="text-white" />
+                <LucideIcon.Check size={18} className="text-white" />
               ) : (
                 <span className="text-base-content/50">{idx + 1}</span>
               )}

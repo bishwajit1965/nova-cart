@@ -23,7 +23,7 @@ const productSchema = new mongoose.Schema(
     },
     subCategory: { type: mongoose.Schema.Types.ObjectId, ref: "SubCategory" },
     variants: [variantSchema],
-    stock: { type: Number, default: 0 }, // fallback stock if no variants
+    stock: { type: Number, default: 1 }, // fallback stock if no variants
     images: [String], // product-level images
     brand: { type: String },
     // ✅ SEO & Search
@@ -35,6 +35,18 @@ const productSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+productSchema.methods.getVariant = function (variantId) {
+  return this.variants.id(variantId);
+};
+
+productSchema.virtual("totalStock").get(function () {
+  if (this.variants && this.variants.length > 0) {
+    return this.variants.reduce((sum, v) => sum + v.stock, 0);
+  }
+  return this.stock;
+});
+
 // SKU (Stock Keeping Unit) = a unique code merchants use to track inventory.
 productSchema.pre("save", function (next) {
   if (this.isNew && this.variants && this.variants.length > 0) {

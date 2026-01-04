@@ -13,6 +13,7 @@ import {
 
 import Button from "./Button";
 import { cn } from "../../lib/utils";
+import { FaFilePdf } from "react-icons/fa";
 
 const icons = {
   edit: Edit,
@@ -25,6 +26,7 @@ const icons = {
   add: PlusCircleIcon,
   close: X,
   download: LucideDownload,
+  pdf: FaFilePdf,
 };
 
 const iconLabels = {

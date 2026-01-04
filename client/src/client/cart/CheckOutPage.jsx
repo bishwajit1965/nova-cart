@@ -22,6 +22,7 @@ const CheckOutPage = () => {
   const [discountAmount, setDiscountAmount] = useState(0);
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+  const [loader, setLoader] = useState(false);
 
   const pageTitle = usePageTitle();
   const navigate = useNavigate();
@@ -77,9 +78,31 @@ const CheckOutPage = () => {
     },
   });
 
+  // Generate coupon code mutation
+  const generateCouponMutation = useApiMutation({
+    method: "create",
+    path: API_PATHS.CLIENT_COUPON.CLIENT_COUPON_ENDPOINT,
+    key: API_PATHS.CLIENT_COUPON.CLIENT_COUPON_KEY,
+  });
+
+  // -----------> USE EFFECTS ------------>
   useEffect(() => {
     if (cartsData?.items) setCartItems(cartsData.items);
   }, [cartsData]);
+
+  useEffect(() => {
+    // Auto generate coupon on page load
+    generateCouponMutation.mutateAsync(null, {
+      onSuccess: (res) => {
+        if (res?.coupon?.code) {
+          setCouponCode(res.coupon.code); // show it in input
+        }
+      },
+      onError: (err) => {
+        console.error("Auto coupon generation failed", err);
+      },
+    });
+  }, []);
 
   /** --------> Fetch orders --------> */
   const {
@@ -154,12 +177,11 @@ const CheckOutPage = () => {
 
     const payload = {
       data: {
-        code: latestCoupon.code,
+        code: couponCode,
         userId: user?._id,
         cartTotal: calculateTotal(cartItems),
       },
     };
-    console.log("Payload", payload);
 
     couponMutation.mutate(payload, {
       onSuccess: (res) => {
@@ -177,12 +199,19 @@ const CheckOutPage = () => {
     });
   };
 
+  // const calculateTotal = (items) =>
+  //   items.reduce((sum, item) => sum + item?.price * item.quantity, 0);
+
   const calculateTotal = (items) =>
-    items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+    items.reduce((sum, item) => {
+      const price = item.price ?? item.product?.price ?? 0;
+      return sum + price * item.quantity;
+    }, 0);
 
   /*** ------> Confirms order submission ------> */
   const handleOrderConfirmation = (e) => {
     e?.preventDefault();
+    setLoader(true);
 
     if (!selectedAddress && !formData) {
       toast.error(
@@ -231,20 +260,25 @@ const CheckOutPage = () => {
         onSuccess: (res) => {
           if (res.success) {
             toast.success(res.message);
-            // Clear local state
-            setCartItems([]);
 
             // Navigate to order confirmation page with order details
             navigate("/client-order-confirmation", {
               state: {
                 order: {
-                  items: cartItems,
-                  totalAmount: calculateTotal(cartItems),
+                  items: res?.data?.items || cartItems,
+                  totalAmount: res?.data?.totalAmount,
+                  discountAmount: res?.data?.discountAmount ?? discountAmount,
+                  couponCode: res?.data?.coupon?.code || appliedCoupon, // 🔑 fallback
                   orderId: res?.data?.orderId,
+                  shippingAddress: finalAddressPayload,
+                  paymentMethod,
                 },
               },
             });
+
+            // Clear cart after navigation
             setCartItems([]);
+            setLoader(false);
           } else toast.error("Unexpected response from server.");
         },
         onError: (err) =>
@@ -490,21 +524,11 @@ const CheckOutPage = () => {
                 isApplyingCoupon={isApplyingCoupon}
                 appliedCoupon={appliedCoupon}
                 discountAmount={discountAmount}
-                // orders={savedOrdersData}
                 coupons={coupons}
+                amount={latestOrder?.totalAmount}
+                loader={loader}
               />
             </div>
-
-            {/* Payment section */}
-            {/* <div className="shadow hover:shadow-lg rounded-lg">
-              <h2 className="lg:text-xl text-xl mt-6 mb-2 font-bold">
-                Payment with Stripe
-              </h2>
-              <ClientStripePaymentForm
-                orderId={latestOrder?._id}
-                amount={latestOrder?.totalAmount}
-              />
-            </div> */}
           </div>
         </div>
       )}

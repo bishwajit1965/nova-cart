@@ -121,9 +121,19 @@ export const downloadInvoice = async (req, res) => {
   try {
     const { orderId } = req.params;
     const order = await Order.findOne({ orderId }).populate("items.product");
-
+    const userId = req.user._id; // From auth middleware
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
+    }
+
+    // 🔏 Ownership check
+    if (
+      order.user.toString() !== userId.toString &&
+      order.user.role !== "super-admin"
+    ) {
+      return res
+        .status(403)
+        .json({ success: false, message: "Access denied!" });
     }
 
     generateInvoice(order, res); // pass order to PDF generator
@@ -169,7 +179,7 @@ export const updateOrderStatus = async (req, res) => {
           to: order.user.email,
           subject: `Your Nova-Cart Order ${order.orderId} Invoice`,
           text: `Hello ${
-            order.user.name || "Customer"
+            order.user.name || "Valued Customer"
           },\n\nYour order has been delivered successfully! Please find your invoice attached.\n\nThank you for shopping with Nova-Cart!`,
           // attachmentPath: invoicePath,
           attachments: [

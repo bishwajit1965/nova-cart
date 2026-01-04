@@ -323,6 +323,29 @@ const API_PATHS = {
     CLIENT_ANNOUNCEMENT_KEY: ["client-announcements"],
   },
 
+  /** CLIENT RECENTLY VIEW PRODUCTS API PATHS -> for local storage */
+  CLIENT_RECENTLY_VIEWED_PRODUCTS: {
+    ENDPOINT: "client/recently-viewed/products",
+    KEY: ["recently-viewed"],
+  },
+
+  /*** CLIENT VIEWED PRODUCT RELATED PRODUCTS API PATH */
+  CLIENT_RELATED_PRODUCTS: {
+    ENDPOINT: "client/related-products/products",
+    KEY: ["related-products"],
+  },
+
+  /*** CLIENT REVIEW MANAGEMENT API PATHS -> for db interactions will be deleted soon*/
+  CLIENT_PRODUCT_ACTIVITY: {
+    ENDPOINT: "client/recent-activity/products",
+    KEY: ["recent-product-activity"],
+  },
+  // will be deleted soon
+  CLIENT_RECENTLY_VIEWED: {
+    ENDPOINT: "client/recently-viewed",
+    KEY: ["recently-viewed-ids"],
+  },
+
   // Extend this for other features.....
 };
 

@@ -110,7 +110,7 @@ const ClientOrdersPage = () => {
                         className="w-1/3 object-cover border p-1 rounded-md shadow border-base-content/15"
                       />
                     ) : (
-                      item?.product.images[0] && (
+                      item?.product.images && (
                         <img
                           src={`${apiURL}${
                             item.product.images[0].startsWith("/") ? "" : "/"
@@ -124,9 +124,9 @@ const ClientOrdersPage = () => {
                   <div className="lg:col-span-8 col-span-12">
                     <p className="flex items-center justify-end space-x-2">
                       {item?.product?.name} {" - "}
-                      {item?.product?.price} x {item.quantity} =
+                      {item?.price} x {item.quantity} =
                       <span className="font-semibold ml-2 flex justify-end">
-                        ${(item?.product?.price * item.quantity).toFixed(2)}
+                        ${(item?.price * item.quantity).toFixed(2)}
                       </span>
                     </p>
                   </div>

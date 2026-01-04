@@ -52,7 +52,7 @@ const PublicNavBar = () => {
               <img
                 src={`${apiURL}/uploads/${systemSettings?.logo}`}
                 alt={systemSettings?.appName || "Nova Cart"}
-                className="w-12 h-12 object-contain flex items-center"
+                className="lg:w-10 lg:h-10 h-8 w-8 object-contain flex items-center"
               />
               <div className="hidden lg:block">
                 <div className="text-xl font-extrabold uppercase">

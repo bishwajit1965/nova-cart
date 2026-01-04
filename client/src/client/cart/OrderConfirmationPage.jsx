@@ -46,6 +46,10 @@ const OrderConfirmationPage = () => {
 
   const { items, totalAmount, orderId } = order;
 
+  const discount = order.discountAmount.toFixed(2);
+
+  console.log("Order in Order confirmation page", order);
+
   return (
     <>
       <DynamicPageTitle pageTitle={pageTitle} />
@@ -61,7 +65,7 @@ const OrderConfirmationPage = () => {
                 </div>
               </div>
 
-              <div className="lg:space-y-3 space-y-2 text-center">
+              <div className="lg:space-y-3 space-y-2 text-center lg:-4 p-2">
                 <LucideIcon.CircleCheckBig
                   className=" text-green-500 lg:text-left mx-auto"
                   size={30}
@@ -86,7 +90,7 @@ const OrderConfirmationPage = () => {
               <div className="shadow hover:shadow-lg rounded-lg space-y-4">
                 <div className="bg-base-200 border-b border-base-content/15 shadow lg:p-3 p-2 rounded-t-lg">
                   <h2 className="lg:text-3xl text-lg font-bold text-center text-green-600 flex items-center space-x-2">
-                    <LucideCreditCard /> <span>Payment with Stripe</span>
+                    <LucideCreditCard /> <span> Payment with Stripe</span>
                   </h2>
                 </div>
                 <div className="">
@@ -104,45 +108,72 @@ const OrderConfirmationPage = () => {
           {items?.map((item, idx) => (
             <div
               key={idx}
-              className="flex items-center justify-between border-b border-base-content/15 w-full"
+              className="flex items-center justify-between border-b border-base-content/15 w-full h-20"
             >
-              <div className="lg:w-1/4 w-1/4 h-auto pb-2">
-                {item?.product?.images && (
+              <div className="lg:w-1/4 h-20 flex items-center">
+                {item?.image && (
                   <img
-                    src={`${apiURL}${item?.product?.images[0]}`}
+                    src={`${apiURL}${item.image}`}
                     alt={item?.product?.name}
                     className="lg:w-2/5 w-16 h-16 object-contain"
                   />
                 )}
               </div>
-              <div className="w-1/4 h-12">
-                {item?.product?.name} x {item?.product?.price} x{" "}
-                {item?.quantity}
+              <div className="w-1/4 h-12 flex flex-wrap items-center text-xs lg:text-[16px]">
+                {item?.name} x {item?.price} x {item?.quantity}
               </div>
-              <div className="w-1/4 text-right font-bold">
-                ${(item?.product?.price * item?.quantity).toFixed(2)}
+
+              <div className="w-1/4 h-12 flex items-center justify-end font-bold">
+                ${(item?.price * item?.quantity).toFixed(2)}
               </div>
             </div>
           ))}
+          <div className="text-right border-b border-base-content/15 lg:py-6 py-2 space-x-6">
+            <span> - Coupon Discount: </span>
+            <span className="font-bold">${discount}</span>
+          </div>
         </div>
-        <div className="lg:space-y-10 space-y-2">
-          <div className="flex justify-between font-bold text-lg">
-            <span>Total</span>
-            <span>${totalAmount.toFixed(2)}</span>
+        <div className="lg:space-y-6 space-y-2">
+          <div className="flex items-center justify-between font-bold lg:text-xl">
+            <span>Total Payable Amount: </span>
+            <span className="bg-indigo-700 lg:p-2 p-1 text-white rounded-md shadow">
+              ${totalAmount.toFixed(2)}
+            </span>
           </div>
 
           <div className="text-center lg:pt-12 pt-4 border-t border-base-content/15">
             <div className="lg:flex justify-center grid lg:space-x-4 space-x-2 lg:space-y-0 space-y-2">
               <Link to="/client-cart-management">
-                <Button variant="global" className="lg:w-52 w-52">
+                <Button variant="indigoRounded" className="btn lg:w-52 w-48">
                   <LucideIcon.ShoppingCart size={25} /> Continue Shopping
                 </Button>
               </Link>
               <Link to="/client-specific-orders">
-                <Button variant="global" className="lg:w-52 w-52">
+                <Button variant="successRounded" className="btn lg:w-52 w-48">
                   <LucideIcon.List size={25} /> My Order Details
                 </Button>
               </Link>
+            </div>
+          </div>
+
+          <div className="flex justify-center">
+            <div className="text-center">
+              <h2 className="lg:text-xl text-lg lg:font-bold font-bold">
+                🛒 Order Summary
+              </h2>
+              <p>
+                Subtotal: $
+                {order.items.reduce((sum, i) => sum + i.price * i.quantity, 0)}
+              </p>
+              {order.discountAmount > 0 && (
+                <p>
+                  Discount ({order.couponCode}): - $
+                  {order.discountAmount.toFixed(2)}
+                </p>
+              )}
+              <p>
+                <strong>Total: ${order.totalAmount.toFixed(2)}</strong>
+              </p>
             </div>
           </div>
         </div>

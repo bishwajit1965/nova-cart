@@ -15,7 +15,7 @@ export default function Modal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <div
         className={cn(
-          "bg-base-100 lg:p-6 p-2 py-4 rounded-xl shadow-xl lg:w-[90%] w-[96%] max-w-lg relative lg:text-lg text-xs",
+          "bg-base-100 lg:p-4 p-2 py- rounded-xl shadow-xl lg:w-[90%] w-[96%] max-w-lg relative lg:text-lg text-xs flex flex-col",
           className
         )}
       >
@@ -28,7 +28,7 @@ export default function Modal({
           </button>
         )}
         {title && (
-          <h2 className="lg:text-xl font-bold mb-2 pb-2 border-b border-base-content/20">
+          <h2 className="lg:text-xl font-bold mb-2 pb-1 border-b border-base-content/20">
             {title}
           </h2>
         )}

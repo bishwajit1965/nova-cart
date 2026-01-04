@@ -22,7 +22,7 @@ router.post("/", requireFeature("wishlist"), featureGuard(), addToWishList);
 
 // Remove product from wish list
 router.delete(
-  "/:productId",
+  "/:productId/:variantId",
   requireFeature("wishlist"),
   featureGuard(),
   removeFromWishList

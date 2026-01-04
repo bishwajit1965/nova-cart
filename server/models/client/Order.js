@@ -13,8 +13,15 @@ const orderItemSchema = new mongoose.Schema({
     ref: "Product",
     required: true,
   },
+  // ✅ VARIANT SNAPSHOT
+  variantId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: false,
+  },
   name: { type: String, required: true },
   price: { type: Number, required: true },
+  color: { type: String },
+  size: { type: String },
   image: { type: String },
   quantity: {
     type: Number,

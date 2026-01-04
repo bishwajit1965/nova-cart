@@ -112,7 +112,9 @@ const SuperAdminProductListTable = ({
                         {product?.image ? (
                           <img
                             src={
-                              product?.image ? product.image : product.images[0]
+                              product?.item.image
+                                ? product.item.image
+                                : product.images[0]
                             }
                             alt={product?.name}
                             className="w-12 h-12 object-contain"

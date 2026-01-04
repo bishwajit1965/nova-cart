@@ -15,7 +15,9 @@ import {
   CheckCircle2Icon,
   CheckLineIcon,
   ChevronDown,
+  ChevronsDown,
   ChevronUp,
+  ChevronsUp,
   CircleCheck,
   CircleCheckBig,
   CircleDollarSign,
@@ -77,6 +79,8 @@ import {
   UserRoundPen,
   Users,
   X,
+  HeartPlus,
+  HeartPlusIcon,
 } from "lucide-react";
 
 // Central registry
@@ -95,6 +99,8 @@ export const LucideIcon = {
   CheckCircle2,
   CheckCircle,
   ChevronDown,
+  ChevronsUp,
+  ChevronsDown,
   ChevronUp,
   CalendarClock,
   CircleCheck,
@@ -122,6 +128,8 @@ export const LucideIcon = {
   Home,
   Heart,
   HeartCrack,
+  HeartPlus,
+  HeartPlusIcon,
   HeartCrackIcon,
   List,
   ListCheck,

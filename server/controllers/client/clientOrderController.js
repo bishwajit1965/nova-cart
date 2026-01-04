@@ -5,9 +5,8 @@ import Product from "../../models/Product.js";
 import User from "../../models/User.js";
 import generateInvoice from "../../utils/invoiceGenerator.js";
 import { v4 as uuidv4 } from "uuid";
-
-import { sendOrderConfirmationEmail } from "../../utils/clientEmailService.js";
 import Cart from "../../models/Cart.js";
+import { sendOrderConfirmationEmail } from "../../utils/clientEmailService.js";
 
 const generateCoupon = () => {
   const timestamp = Date.now().toString().slice(-5);
@@ -36,21 +35,32 @@ export const createOrder = async (req, res) => {
     const orderItems = await Promise.all(
       items.map(async (item) => {
         const product = await Product.findById(item.product).select(
-          "name price images variants"
+          "name images variants price quantity"
         );
         if (!product) throw new Error(`Product not found: ${item.product}`);
+        let price = product.price;
+        let color = null;
+        let size = null;
 
-        let unitPrice = product.price ?? 0;
-        if (item.variantId && Array.isArray(product.variants)) {
+        if (item.variantId) {
           const variant = product.variants.find(
             (v) => String(v._id) === String(item.variantId)
           );
-          if (variant) {
-            unitPrice =
-              typeof variant.discountPrice === "number"
-                ? variant.discountPrice
-                : variant.price ?? unitPrice;
+
+          if (!variant) {
+            throw new Error("Invalid variant selected");
           }
+
+          price =
+            typeof variant.price === "number" ? variant.price : variant.price;
+          color = variant.color;
+          size = variant.size;
+        } else {
+          price = product.price;
+        }
+
+        if (typeof price !== "number") {
+          throw new Error("Price resolution failed");
         }
 
         const image =
@@ -60,10 +70,12 @@ export const createOrder = async (req, res) => {
         return {
           product: product._id,
           name: product.name,
-          price: unitPrice,
-          image,
+          price,
           quantity: Number(item.quantity) || 1,
-          variant: item.variantId || null,
+          variantId: item.variantId || null,
+          color,
+          size,
+          image,
         };
       })
     );
@@ -95,10 +107,10 @@ export const createOrder = async (req, res) => {
           .status(400)
           .json({ message: "Coupon is not valid at this time." });
 
-      // if (couponDoc.usedBy.includes(req.user._id))
-      //   return res
-      //     .status(400)
-      //     .json( { message: "You have already used this coupon." } );
+      // if (couponDoc.usedBy.includes(req.user._id)) {
+      //   return res.status(400).json({ message: "Coupon already used." });
+      // }
+
       if (
         couponDoc.usedBy.length > 0 &&
         String(couponDoc.usedBy[0]) !== String(req.user._id)
@@ -222,7 +234,8 @@ export const createOrder = async (req, res) => {
 export const downloadInvoice = async (req, res) => {
   try {
     const { orderId } = req.params;
-    const order = await Order.findOne({ orderId }).populate("items.product");
+    const order = await Order.findOne({ orderId }).lean();
+    // const order = await Order.findOne({ orderId }).populate("items.product");
 
     if (!order) {
       return res.status(404).json({ message: "Order not found" });

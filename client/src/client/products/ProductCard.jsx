@@ -3,11 +3,13 @@ import { Link } from "react-router-dom";
 import { LucideIcon } from "../../common/lib/LucideIcons";
 import StarRating from "../../common/components/ui/StartRating";
 import textShortener from "../../utils/textShortener";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { injectJsonLd } from "../../common/utils/injectJsonLd/injectJsonLd.js";
 import { motion } from "framer-motion";
 
 const ProductCard = ({ product }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [productId, setProductId] = useState(null);
   const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
   const rating = [5, 4, 3, 4.5];
 
@@ -31,6 +33,12 @@ const ProductCard = ({ product }) => {
       },
     });
   }, [product]);
+
+  /*** ------> Toggle read more and read less ------> */
+  const handleToggleView = (product) => {
+    setIsExpanded((prev) => !prev);
+    setProductId(product._id);
+  };
 
   return (
     <motion.div
@@ -77,12 +85,30 @@ const ProductCard = ({ product }) => {
       {/* Info */}
       <div className="p-4 space-y-2">
         <h4 className="font-bold text-lg">{product.name}</h4>
-        <p className="text-sm text-base-content/70">
-          {textShortener(product.description, 80)}
+
+        <p className="text-sm text-gray-500 max-h-18 overflow-y-auto">
+          {isExpanded && productId === product._id
+            ? product.description
+            : textShortener(product.description, 112)}
+
+          <button
+            onClick={() => handleToggleView(product)}
+            className="text-sm text-indigo-500 font-bold link ml-1"
+          >
+            {isExpanded && productId === product._id
+              ? "Read Less"
+              : "Read More"}
+          </button>
         </p>
 
         <div className="flex items-center justify-between">
-          <p className="font-bold text-lg">${product.price.toFixed(2)}</p>
+          <p className="font-bold text-lg">
+            $
+            {product.price.toLocaleString(undefined, {
+              maximumFractionPoints: 2,
+              minimumFractionPoints: 2,
+            })}
+          </p>
           <div className="text-sm">{StarRating(rating)}</div>
         </div>
 
@@ -104,85 +130,3 @@ const ProductCard = ({ product }) => {
 };
 
 export default ProductCard;
-
-// import Button from "../../common/components/ui/Button";
-// import { Link } from "react-router-dom";
-// import { LucideIcon } from "../../common/lib/LucideIcons";
-// import StarRating from "../../common/components/ui/StartRating";
-// import textShortener from "../../utils/textShortener";
-// import { useEffect } from "react";
-// import { injectJsonLd } from "../../common/utils/injectJsonLd/injectJsonLd.js";
-
-// const ProductCard = ({ product }) => {
-//   const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-//   const rating = [5, 4, 3, 4.5];
-
-//   // ✅ Inject JSON-LD for SEO
-//   useEffect(() => {
-//     if (!product) return;
-
-//     injectJsonLd({
-//       "@context": "https://schema.org",
-//       "@type": "Product",
-//       name: product.name,
-//       image: product.images || [product.image],
-//       description: product.description,
-//       sku: product._id,
-//       brand: "Nova-Cart",
-//       offers: {
-//         "@type": "Offer",
-//         priceCurrency: "USD",
-//         price: product.price,
-//         availability: "https://schema.org/InStock",
-//         url: `${window.location.origin}/product-details/${product._id}`,
-//       },
-//     });
-//   }, [product]);
-
-//   return (
-//     <div className="lg:col-span-4 col-span-12 shadow rounded-xl lg:space-y-4 space-y-2 border border-base-content/10 bg-base-100">
-//       <div className="bg-base-300 rounded-t-xl pb-4">
-//         {product?.image ? (
-//           <img
-//             src={product?.image ? product.image : product.images[0]}
-//             alt={product?.name}
-//             className="h-36 object-contain rounded-t-xl w-full"
-//           />
-//         ) : (
-//           product.images[0] && (
-//             <img
-//               src={`${apiURL}${product.images[0].startsWith("/") ? "" : "/"}${
-//                 product.images[0]
-//               }`}
-//               alt={product.name || ""}
-//               className="h-36 object-contain rounded-t-xl w-full"
-//             />
-//           )
-//         )}
-//       </div>
-
-//       <div className="lg:space-y-3 lg:p-4 p-2 space-y-2 bg-base-100/25">
-//         <h4 className="lg:text-xl font-bold">{product?.name}</h4>
-//         <p>{textShortener(product?.description, 85)}</p>
-//         <div className="flex items-center justify-between">
-//           <p className="lg:text-xl font-bold">$ {product?.price.toFixed(2)}</p>
-//           <div className="text-xl">{StarRating(rating)}</div>
-//         </div>
-//         <div className="lg:flex lg:space-x-4 space-x-2">
-//           <Link to={`/product-details/${product._id}`}>
-//             <Button icon={LucideIcon.Eye} variant="base" className=" ">
-//               View Details
-//             </Button>
-//           </Link>
-//           <Link to="/client-cart-management">
-//             <Button variant="base" icon={LucideIcon.ShoppingCart} className=" ">
-//               Start Shopping
-//             </Button>
-//           </Link>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ProductCard;

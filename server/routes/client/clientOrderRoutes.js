@@ -27,7 +27,6 @@ router.get("/", getClientOrders);
 
 // Create a new order
 router.post("/", authorizeRole("super-admin", "admin", "user"), createOrder);
-router;
 
 // Download Invoice PDF
 router.get(

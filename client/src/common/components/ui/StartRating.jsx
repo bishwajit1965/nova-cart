@@ -4,7 +4,7 @@ const StarRating = ({ rating }) => {
     .map((_, i) => (
       <span
         key={i}
-        className={`text-yellow-500 ${
+        className={`text-yellow-500 text-2xl ${
           i < rating ? "opacity-100" : "opacity-30"
         }`}
       >

@@ -7,6 +7,8 @@ export const authenticationMiddleware = async (req, res, next) => {
   try {
     console.log("📨 All headers:", req.headers);
 
+    console.log("🔐 Auth middleware hit");
+
     // 1️⃣ Check Authorization header
     let token;
     const authHeader = req.headers?.authorization;

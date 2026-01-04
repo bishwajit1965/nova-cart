@@ -8,12 +8,14 @@ import { useState } from "react";
 const CheckOutSummaryPanel = ({
   items,
   handleOrderConfirmation,
+  couponCode,
   setCouponCode,
   applyCouponHandler,
   isApplyingCoupon,
   appliedCoupon,
   discountAmount,
   coupons,
+  loader,
 }) => {
   const [coupon, setCoupon] = useState("");
 
@@ -24,6 +26,7 @@ const CheckOutSummaryPanel = ({
   }, [coupons]);
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+
   const subtotal = items.reduce((sum, item) => {
     // Prefer variant price stored in cart; fallback to product price
     const price = item.price ?? item.product?.price ?? 0;
@@ -47,13 +50,13 @@ const CheckOutSummaryPanel = ({
         <input
           type="text"
           placeholder="Enter coupon code"
-          value={coupon}
+          value={couponCode}
           onChange={(e) => setCouponCode(e.target.value)}
           className="input input-bordered w-full text-base-content animate-pulse text-xl font-bold rounded-b-none rounded-t-lg"
         />
-        {coupon && (
+        {couponCode && (
           <div className="flex justify-between mb-2 text-green-600 font-medium">
-            <span>Coupon ({coupon}):</span>
+            <span>Coupon ({couponCode}):</span>
             <span> - ${discountAmount.toFixed(2)}</span>
           </div>
         )}
@@ -62,7 +65,7 @@ const CheckOutSummaryPanel = ({
           variant="primary"
           className="w-full rounded-b-lg rounded-t-none border-b-none border-r-none border-r-none border-none hover:text-gray-300"
           onClick={applyCouponHandler}
-          disabled={isApplyingCoupon || !coupon}
+          disabled={isApplyingCoupon || !couponCode}
         >
           {isApplyingCoupon ? (
             <Loader className="animate-spin" />
@@ -93,12 +96,15 @@ const CheckOutSummaryPanel = ({
           <p className="lg:text-xl font-bold">
             Total: $ {finalTotal.toFixed(2)}
           </p>
+
           <div className="">
             <Button
               onClick={handleOrderConfirmation}
+              disabled={loader}
               variant="success"
               className="w-full rounded-b-lg rounded-t-none border-b-none border-r-none border-r-none border-none hover:text-gray-300"
             >
+              {loader && <Loader className="animate-spin" />}
               <LucideIcon.CreditCard size={25} className="" /> Proceed to
               Checkout
             </Button>

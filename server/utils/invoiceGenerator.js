@@ -81,14 +81,15 @@ const generateInvoice = (order, res) => {
   const colProduct = 50;
   const colQty = 300;
   const colPrice = 370;
-  const colTotal = 460;
+  const colTotal = 430;
+  const totalColWidth = 120;
 
   // Header
   doc.fontSize(12).font("Helvetica-Bold");
   doc.text("Product", colProduct, tableTop);
   doc.text("Qty", colQty, tableTop);
   doc.text("Price", colPrice, tableTop);
-  doc.text("Total", colTotal, tableTop);
+  doc.text("Sub-tot * Disc * Total", colTotal, tableTop);
   doc.moveDown(0.5);
 
   // Divider
@@ -99,14 +100,46 @@ const generateInvoice = (order, res) => {
   doc.font("Helvetica");
   order.items.forEach((item, i) => {
     const y = doc.y + 5; // small spacing
-    const total = (item.product.price * item.quantity).toFixed(2);
+    const name = item.name;
+    const price = Number(item.price) || 0;
+    const qty = Number(item.quantity) || 1;
+    const total = (item.price * item.quantity).toFixed(2);
 
-    doc.text(item.product.name, colProduct, y, { width: 200 });
-    doc.text(item.quantity.toString(), colQty, y);
-    doc.text(`$${item.product.price}`, colPrice, y);
-    doc.text(`$${total}`, colTotal, y);
+    doc.text(name.toString(), colProduct, y, { width: 200 });
+    doc.text(qty.toString(), colQty, y);
+    doc.text(`$${price}`, colPrice, y);
+    doc.text(`$${total}`, colTotal, y, {
+      width: totalColWidth,
+      align: "right",
+    });
     doc.moveDown(0.5);
   });
+
+  // ========== SUB-TOTAL ==========
+  doc.moveDown(0.5);
+  doc.moveTo(50, doc.y).lineTo(550, doc.y).stroke();
+  doc.moveDown(0.5);
+
+  doc
+    .fontSize(12)
+    .font("Helvetica")
+    .text(`Sub-total Amount: $${Number(order.subtotal).toFixed(2) || 0}`, {
+      width: totalColWidth,
+      align: "right",
+    });
+
+  // ========== DISCOUNT =========
+  doc.moveDown(0.5);
+  doc.moveTo(50, doc.y).lineTo(550, doc.y).stroke();
+  doc.moveDown(0.5);
+
+  doc
+    .fontSize(12)
+    .font("Helvetica")
+    .text(`- Discount Amount: $${order.discountAmount.toFixed(2) || 0}`, {
+      width: totalColWidth,
+      align: "right",
+    });
 
   // ========== TOTAL ==========
   doc.moveDown(0.5);
@@ -116,9 +149,15 @@ const generateInvoice = (order, res) => {
   doc
     .fontSize(14)
     .font("Helvetica-Bold")
-    .text(`Total Amount: $${order.totalAmount.toFixed(2)}`, {
-      align: "left",
-    });
+    .text(
+      `Total Amount: $${
+        order.totalAmount.toFixed(2) || order.finalAmount.toFixed(2) || 0
+      }`,
+      {
+        width: totalColWidth,
+        align: "right",
+      }
+    );
 
   // ========== FOOTER ==========
   // doc.moveDown(0.5);
