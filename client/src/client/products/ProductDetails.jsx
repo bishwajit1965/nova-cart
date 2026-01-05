@@ -65,8 +65,6 @@ const ProductDetails = () => {
     handleRemoveCartItem,
   } = useGlobalContext();
 
-  console.log("Product Data", productData);
-
   /*** ========> API USE-QUERIES ========> */
 
   //DB based
@@ -99,9 +97,6 @@ const ProductDetails = () => {
       refetchOnReconnect: true,
     },
   });
-
-  console.log("Related Products Data", relatedProducts);
-  console.log("Viewed Products Data", viewedProducts);
 
   /*** ------> Helper to build image URL safely ------> */
   const buildUrl = (src) => {
@@ -805,7 +800,7 @@ const ProductDetails = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex items-center gap-4 flex-wrap justify-between">
+              <div className="flex items-center gap-2 flex-wrap justify-between">
                 <div
                   className={`${
                     loadingCartId === product?.data?._id
@@ -815,16 +810,14 @@ const ProductDetails = () => {
                 >
                   <Button
                     variant="indigo"
-                    // icon={LucideIcon.ShoppingCart}
                     className="btn lg:btn-md btn-sm"
                     onClick={onAddToCart}
                     disabled={loadingCartId === product?.data?._id}
-                    // disabled={selectedVariant?.stock <= 0}
                   >
                     {loadingCartId === product?.data?._id ? (
-                      <Loader className="animate-spin" />
+                      <Loader className="animate-spin" size={16} />
                     ) : (
-                      <LucideIcon.ShoppingCart size={20} />
+                      <LucideIcon.ShoppingCart size={16} />
                     )}
 
                     {loadingCartId ? "Processing..." : "Add to Cart"}
@@ -840,29 +833,25 @@ const ProductDetails = () => {
                 >
                   <Button
                     variant="primary"
-                    // icon={LucideIcon.Heart}
                     disabled={loadingWishListId === product?.data?._id}
                     className="btn lg:btn-md btn-sm"
                     onClick={onAddToWishList}
                   >
                     {loadingWishListId === product?.data?._id ? (
-                      <Loader className="animate-spin" />
+                      <Loader className="animate-spin" size={16} />
                     ) : (
-                      <LucideIcon.Heart size={17} />
+                      <LucideIcon.Heart size={16} />
                     )}
                     {loadingWishListId ? "Processing..." : "Add to Wishlist"}
                   </Button>
                 </div>
-
-                <Link to="/client-product-wishlist">
-                  <Button
-                    variant="success"
-                    // icon={LucideIcon.Heart}
-                    className="btn lg:btn-md btn-sm"
-                  >
-                    <LucideIcon.Heart size={17} /> Go to Wish List
-                  </Button>
-                </Link>
+                <div className="">
+                  <Link to="/client-product-wishlist">
+                    <Button variant="success" className="btn lg:btn-md btn-sm">
+                      <LucideIcon.Heart size={16} /> Go to Wish List
+                    </Button>
+                  </Link>
+                </div>
                 <div className="lg:w-full">
                   <Link to="/" className="w-full">
                     <Button

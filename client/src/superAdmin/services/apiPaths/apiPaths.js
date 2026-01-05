@@ -159,6 +159,12 @@ const API_PATHS = {
     KEY: ["users"],
   },
 
+  /***------> SUPER-ADMIN TESTIMONIAL API PATHS ------>*/
+  SUPER_ADMIN_TESTIMONIAL: {
+    SUPER_ADMIN_TESTIMONIAL_ENDPOINT: "superAdmin/testimonials",
+    SUPER_ADMIN_TESTIMONIAL_KEY: ["testimonials"],
+  },
+
   /***------> ADMIN RELATED API PATHS ------>*/
   ADMIN_ANALYTICS: {
     USERS_ANALYTICS_ENDPOINT: "admin/analytics",

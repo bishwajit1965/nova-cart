@@ -19,6 +19,16 @@ const testimonialSchema = new mongoose.Schema(
       trim: true,
     },
     rating: { type: Number, default: 5, min: 1, max: 5 },
+    // 🔽 ADD THESE
+    status: {
+      type: String,
+      enum: ["pending", "approved", "hidden"],
+      default: "pending",
+    },
+    isFeatured: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

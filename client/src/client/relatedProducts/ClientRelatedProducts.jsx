@@ -145,7 +145,7 @@ const ClientRelatedProducts = ({ relatedProducts }) => {
                     {loadingCartId === p._id ? (
                       <Loader className="animate-spin" />
                     ) : (
-                      <LucideIcon.ShoppingCart size={20} />
+                      <LucideIcon.ShoppingCart size={15} />
                     )}
                     {inCart
                       ? "In Cart"
@@ -177,9 +177,9 @@ const ClientRelatedProducts = ({ relatedProducts }) => {
                   {loadingWishListId === p._id ? (
                     <Loader className="animate-spin" size={16} />
                   ) : inWishlist ? (
-                    <LucideIcon.HeartPlus size={16} />
+                    <LucideIcon.HeartPlus size={15} />
                   ) : (
-                    <LucideIcon.Heart size={16} />
+                    <LucideIcon.Heart size={15} />
                   )}
                   {inWishlist
                     ? "In Wishlist"

@@ -68,6 +68,7 @@ import siteMapRoutes from "./routes/sitemapRoutes.js";
 import clientRecentlyViewedProductsRoutes from "./routes/client/clientRecentlyViewedProductsRoutes.js";
 import useActivityRoutes from "./routes/client/userActivityRoutes.js";
 import clientRelatedProductsRoutes from "./routes/client/clientRelatedProductsRoutes.js";
+import supAdminTestimonialRoutes from "./routes/superAdmin/supAdminTestimonialRoutes.js";
 
 /**==========================================
  * Essential configurations section
@@ -143,6 +144,7 @@ app.use("/api/superAdmin/sub-categories", subCategoryRoutes);
 app.use("/api/superAdmin/audit-logs", supAdminAuditLogRoutes);
 app.use("/api/superAdmin/reports", supAdminReportsRoutes);
 app.use("/api/superAdmin/summary", supAdmSummaryRoutes);
+app.use("/api/superAdmin/testimonials", supAdminTestimonialRoutes);
 app.use("/api/superAdmin/analytics", supAdmAnalyticsRoutes);
 app.use("/api/superAdmin/users-moderation", supAdminUsersRoutes);
 app.use("/api/superAdmin/features", supAdminFeatureRoutes);

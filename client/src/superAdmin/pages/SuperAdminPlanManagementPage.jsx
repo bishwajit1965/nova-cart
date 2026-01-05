@@ -184,6 +184,13 @@ const SuperAdminPlanManagementPage = () => {
       onError: (error) => {},
     });
   };
+
+  const handleFeatureToggle = (id) => {
+    setSelectedFeatures((prev) =>
+      prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]
+    );
+  };
+
   /** -------- Use Fetched Data Status Handler -------- */
   const featuresDataStatus = useFetchedDataStatusHandler({
     isLoading: isLoadingFeatures,
@@ -199,12 +206,6 @@ const SuperAdminPlanManagementPage = () => {
     error: errorPlans,
     label: "Plans",
   });
-
-  const handleFeatureToggle = (id) => {
-    setSelectedFeatures((prev) =>
-      prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]
-    );
-  };
 
   return (
     <>

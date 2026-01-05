@@ -34,7 +34,6 @@ const RecentlyViewedProducts = ({ viewedProducts }) => {
   const { user } = useAuth();
   const { id: productId } = useParams();
   const [ids, setIds] = useState(getFromLocalStorage());
-  // const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalProductId, setModalProductId] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const scrollRef = useRef(null);
@@ -163,14 +162,16 @@ const RecentlyViewedProducts = ({ viewedProducts }) => {
 
                 {/* Buttons */}
                 <div className="flex flex-row justify-between p-2">
-                  <Button
-                    onClick={() => handleModalToggleView(p._id)}
-                    variant="success"
-                    icon={LucideIcon.Eye}
-                    className="btn btn-sm"
-                  >
-                    Details
-                  </Button>
+                  <div className="">
+                    <Button
+                      onClick={() => handleModalToggleView(p._id)}
+                      variant="success"
+                      icon={LucideIcon.Eye}
+                      className="btn btn-sm"
+                    >
+                      Details
+                    </Button>
+                  </div>
 
                   <div
                     className={`${
@@ -190,9 +191,9 @@ const RecentlyViewedProducts = ({ viewedProducts }) => {
                       }`}
                     >
                       {loadingCartId === p._id ? (
-                        <Loader className="animate-spin" />
+                        <Loader className="animate-spin" size={15} />
                       ) : (
-                        <LucideIcon.ShoppingCart size={20} />
+                        <LucideIcon.ShoppingCart size={15} />
                       )}
                       {inCart
                         ? "In Cart"
@@ -227,9 +228,9 @@ const RecentlyViewedProducts = ({ viewedProducts }) => {
                     {loadingWishListId === p._id ? (
                       <Loader className="animate-spin" size={16} />
                     ) : inWishlist ? (
-                      <LucideIcon.HeartPlus size={16} />
+                      <LucideIcon.HeartPlus size={15} />
                     ) : (
-                      <LucideIcon.Heart size={16} />
+                      <LucideIcon.Heart size={15} />
                     )}
                     {inWishlist
                       ? "In Wishlist"

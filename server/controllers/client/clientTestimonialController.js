@@ -12,6 +12,7 @@ export const createTestimonial = async (req, res) => {
       feedback,
       avatar,
       rating,
+      status: "pending",
     });
     const savedTestimonial = await newTestimonial.save();
     res.status(201).json({
@@ -34,7 +35,9 @@ export const createTestimonial = async (req, res) => {
 // @access  Public
 export const getAllTestimonials = async (req, res) => {
   try {
-    const testimonials = await Testimonial.find().sort({ createdAt: -1 });
+    const testimonials = await Testimonial.find({ status: "approved" }).sort({
+      createdAt: -1,
+    });
     res.status(200).json({
       status: "success",
       results: testimonials.length,

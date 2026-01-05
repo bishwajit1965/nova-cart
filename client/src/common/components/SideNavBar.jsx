@@ -155,6 +155,11 @@ const SideNavBar = ({ role }) => {
         label: "Project Management",
         icon: <Package size={size} />,
       },
+      {
+        path: "/super-admin/testimonials",
+        label: "Testimonial Management",
+        icon: <Package size={size} />,
+      },
 
       // ...more
     ],

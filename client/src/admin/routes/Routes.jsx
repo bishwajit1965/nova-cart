@@ -66,6 +66,7 @@ import api from "../../common/lib/api";
 import { createBrowserRouter } from "react-router-dom";
 import SuperAdminPublicPortfolioViewPage from "../../client/supAdmPortfolio/SuperAdminPublicPortfolioViewPage";
 import SuperAdminProjectManagementPage from "../../superAdmin/pages/SuperAdminProjectManagementPage";
+import SuperAdminTestimonialManagement from "../../superAdmin/pages/SuperAdminTestimonialManagement";
 
 const router = createBrowserRouter([
   // Root Layout
@@ -419,6 +420,10 @@ const router = createBrowserRouter([
       {
         path: "project-management",
         element: <SuperAdminProjectManagementPage />,
+      },
+      {
+        path: "testimonials",
+        element: <SuperAdminTestimonialManagement />,
       },
     ],
   },
