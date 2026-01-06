@@ -219,6 +219,8 @@ npm run dev
 Bishwajit Paul
 Full-stack Developer | GitHub
 
+## Project Story
+
 Nova-Cart is a full-stack e-commerce platform I built to understand real-world order flows, variant-based cart logic, and role-based dashboards. I focused heavily on data integrity, clean architecture, and realistic admin workflows rather than demo features.
 
 ## A live demo link for recruiters or clients
