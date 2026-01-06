@@ -1,5 +1,11 @@
 # Nova-Cart
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/bishwajit1965/nova-cart?style=social)](https://github.com/bishwajit1965/nova-cart/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/bishwajit1965/nova-cart)](https://github.com/bishwajit1965/nova-cart/issues)
+[![GitHub forks](https://img.shields.io/github/forks/bishwajit1965/nova-cart?style=social)](https://github.com/bishwajit1965/nova-cart/network)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-blueviolet)](https://your-demo-link.com)
+
 **Nova-Cart** is a full-stack, feature-rich e-commerce platform demonstrating modern web development skills with a complete shopping experience, including authentication, cart, checkout, and admin management.
 
 ---
@@ -207,6 +213,11 @@ npm run dev
 - Stripe payments & coupon logic
 
 - JWT + OAuth authentication
+
+## Author
+
+Bishwajit Paul
+Full-stack Developer | GitHub
 
 ## A live demo link for recruiters or clients
 
