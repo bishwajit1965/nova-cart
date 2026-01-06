@@ -102,7 +102,6 @@ export const updateTestimonialStatus = async (req, res) => {
 };
 
 export const hideTestimonial = async (req, res) => {
-  console.log("🎯 Hide testimonials method is hit");
   const testimonial = await Testimonial.findById(req.params.id);
   if (!testimonial)
     return res.status(404).json({ message: "Testimonial not found" });
@@ -115,13 +114,12 @@ export const hideTestimonial = async (req, res) => {
 };
 
 export const toggleFeaturedTestimonial = async (req, res) => {
-  console.log("🎯 Toggle Featured testimonials method is hit");
   const testimonial = await Testimonial.findById(req.params.id);
   if (!testimonial)
     return res.status(404).json({ message: "Testimonial not found" });
 
-    testimonial.isFeatured = !testimonial.isFeatured;
-    
+  testimonial.isFeatured = !testimonial.isFeatured;
+
   await testimonial.save();
 
   res.status(200).json({
@@ -132,9 +130,8 @@ export const toggleFeaturedTestimonial = async (req, res) => {
 };
 
 export const deleteTestimonial = async (req, res) => {
-  console.log("🎯 Delete testimonials method is hit");
   // const testimonial = await Testimonial.findById( req.params.id );
-  await Testimonial.findByIdAndDelete(req.params.id);
+  const testimonial = await Testimonial.findByIdAndDelete(req.params.id);
   if (!testimonial)
     return res.status(404).json({ message: "Testimonial not found" });
 

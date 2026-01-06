@@ -76,6 +76,7 @@ const SuperAdminSubcategoryManagement = () => {
   });
 
   const [paginatedData, setPaginatedData] = useState(subCategories || []);
+
   // To display total permissions in pagination
   const dataLength = categories?.length;
 

@@ -5,6 +5,9 @@ import { useApiQuery } from "../services/hooks/useApiQuery";
 import Button from "../../common/components/ui/Button";
 import Badge from "../../common/components/ui/Badge";
 import { useApiMutation } from "../services/hooks/useApiMutation";
+import { useState } from "react";
+import Pagination from "../../common/pagination/Pagination";
+// import { Pagination } from "swiper/modules";
 
 export const SuperAdminTestimonialManagement = () => {
   /*** =======> QUERY APIS =======> */
@@ -59,6 +62,11 @@ export const SuperAdminTestimonialManagement = () => {
       `${API_PATHS.SUPER_ADMIN_TESTIMONIAL.SUPER_ADMIN_TESTIMONIAL_ENDPOINT}/${payload.id}`,
     key: API_PATHS.SUPER_ADMIN_TESTIMONIAL.SUPER_ADMIN_TESTIMONIAL_KEY,
   });
+
+  const [paginatedData, setPaginatedData] = useState(testimonials || []);
+
+  // To display total permissions in pagination
+  const dataLength = testimonials?.length;
 
   console.log("Testimonials", testimonials);
 
@@ -142,7 +150,7 @@ export const SuperAdminTestimonialManagement = () => {
             </thead>
 
             <tbody>
-              {testimonials?.map((t) => (
+              {paginatedData?.map((t) => (
                 <tr key={t._id} className="">
                   <td>{t.name}</td>
                   <td className="text-sm text-gray-500">{t.email}</td>
@@ -235,6 +243,12 @@ export const SuperAdminTestimonialManagement = () => {
               ))}
             </tbody>
           </table>
+          {/* pagination begins*/}
+          <Pagination
+            items={testimonials}
+            dataLength={dataLength}
+            onPaginatedDataChange={setPaginatedData}
+          />
         </div>
       )}
     </div>
