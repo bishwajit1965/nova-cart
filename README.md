@@ -107,8 +107,8 @@ EMAIL_PASS=<email_password>
 ## 4. Start development servers:
 
 cd server
-npm run dev
-cd ../client
+nodemon index.js
+cd client
 npm run dev
 
 ## 5. Access the app: http://localhost:5173
