@@ -224,8 +224,6 @@ Full-stack Developer | GitHub
 
 Nova-Cart is a full-stack e-commerce platform I built to understand real-world order flows, variant-based cart logic, and role-based dashboards. I focused heavily on data integrity, clean architecture, and realistic admin workflows rather than demo features.
 
-🚧
-
 ## Features Under Consideration
 
 The following features are planned for future iterations of the project to enhance traceability, reliability, and administrative control. These are intentionally deferred and architecturally anticipated.
