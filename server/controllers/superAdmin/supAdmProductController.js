@@ -7,7 +7,7 @@ import { nanoid } from "nanoid";
 import path from "path";
 import slugify from "slugify";
 
-/** ------->helper: regenerate tags & Update Products -------> */
+/** ------->Helper: regenerate tags & Update Products -------> */
 const generateTags = ({ name, brand, categoryName, subCategoryName }) => {
   let tags = [];
 

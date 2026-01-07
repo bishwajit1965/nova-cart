@@ -226,7 +226,7 @@ const PermissionManagement = () => {
                         <td>{perm.description}</td>
                         <td className="space-x-2 flex justify-end">
                           <MiniIconButton
-                            variant="primary"
+                            variant="indigo"
                             onClick={() => handleEdit(perm)}
                           />
                           <MiniIconButton

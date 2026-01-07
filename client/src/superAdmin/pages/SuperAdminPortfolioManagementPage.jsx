@@ -409,6 +409,7 @@ const SuperAdminPortfolioManagementPage = () => {
             onClose={handleCloseFormModal}
             errors={errors}
             editPortfolio={editPortfolio}
+            isSaving={isSaving}
           />
         </Modal>
       )}

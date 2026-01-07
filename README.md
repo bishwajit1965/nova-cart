@@ -223,6 +223,68 @@ Full-stack Developer | GitHub
 
 Nova-Cart is a full-stack e-commerce platform I built to understand real-world order flows, variant-based cart logic, and role-based dashboards. I focused heavily on data integrity, clean architecture, and realistic admin workflows rather than demo features.
 
+## 🚧 Features Under Consideration (Planned Enhancements)
+
+The following features are planned for future iterations of the project to enhance traceability, reliability, and administrative control. These are intentionally deferred and architecturally anticipated.
+
+### 1. Order Audit Log (Admin / Super Admin)
+
+- Track all order-related actions and state changes
+- Log order status transitions (e.g., Pending → Shipped → Delivered)
+- Record admin/system/user actions with timestamps
+- Immutable, append-only audit history
+- Useful for debugging, compliance, and dispute resolution
+
+### 2. Product Audit Log
+
+- Track price changes
+- Track stock updates
+- Log product visibility/status changes
+- Record admin attribution for each action
+
+### 3. User Activity Log
+
+- Login and logout history
+- Password reset events
+- Role or plan changes
+- Basis for future security monitoring
+
+### 4. Order Versioning
+
+- Snapshot order data at key lifecycle stages
+- Prevent historical data drift when product or variant data changes
+- Ensure invoice and refund consistency
+
+### 5. Advanced Invoice System
+
+- Multiple invoice versions per order
+- Support for refunds and credit notes
+- Invoice download history tracking
+
+### 6. Global Admin Action Log
+
+- Centralized log for all admin CRUD operations
+- Covers products, categories, vendors, plans, and settings
+- Improves accountability and traceability
+
+### 7. Event-Based Notification System
+
+- Notifications triggered by audit log events
+- Admin alerts for critical system changes
+- User notifications for order lifecycle updates
+
+### 8. Soft Delete and Restore System
+
+- Soft delete support for orders, products, and users
+- Restore functionality with audit tracking
+- Prevents accidental permanent data loss
+
+### 9. Reporting and Analytics Layer
+
+- Order lifecycle analytics
+- Admin activity insights
+- Revenue and order-change correlation reports
+
 ## A live demo link for recruiters or clients
 
 Feature complete – Version 1.0.0

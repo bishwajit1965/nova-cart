@@ -2,7 +2,6 @@ import { Eye } from "lucide-react";
 
 import API_PATHS from "../services/apiPaths/apiPaths";
 import Badge from "../../common/components/ui/Badge";
-import Button from "../../common/components/ui/Button";
 import { MiniIconButton } from "../../common/components/ui/MiniIconButton";
 import Modal from "../../common/components/ui/Modal";
 import NoDataFound from "../../common/components/ui/NoDataFound";
@@ -16,8 +15,6 @@ import { useApiQuery } from "../services/hooks/useApiQuery";
 import { useEffect } from "react";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import { useState } from "react";
-import { LucideIcon } from "../../common/lib/LucideIcons";
-import { FaFilePdf } from "react-icons/fa";
 
 const STATUSES = ["pending", "processing", "shipped", "delivered"];
 
@@ -300,7 +297,7 @@ const SuperAdminOrdersOverviewManagement = () => {
                                 tooltip="Download PDF"
                                 icon="pdf"
                                 disabled={loadingInvoice}
-                                variant="success"
+                                variant="green"
                               ></MiniIconButton>
                             </div>
                           </span>

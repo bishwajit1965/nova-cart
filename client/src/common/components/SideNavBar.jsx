@@ -77,7 +77,7 @@ const SideNavBar = ({ role }) => {
       },
       {
         path: "/super-admin/security-audit-log-management",
-        label: "Sec Aud Log Management",
+        label: "Aud Log Management",
         icon: <AppWindowIcon size={size} />,
       },
       {

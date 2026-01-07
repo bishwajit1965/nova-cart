@@ -17,6 +17,7 @@ const SuperAdminPortfolioForm = ({
   onClose,
   editPortfolio,
   errors,
+  isSaving,
 }) => {
   const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -93,7 +94,7 @@ const SuperAdminPortfolioForm = ({
         {errors?.location && (
           <p className="text-red-600 text-xs">{errors?.location}</p>
         )}
-        location
+
         {/* Skills */}
         <div>
           <h3 className="font-bold">Skills</h3>

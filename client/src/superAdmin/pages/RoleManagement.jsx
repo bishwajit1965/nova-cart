@@ -1,4 +1,4 @@
-import { Edit2, Loader, PlusCircle } from "lucide-react";
+import { Loader, PlusCircle } from "lucide-react";
 
 import API_PATHS from "../services/apiPaths/apiPaths";
 import Button from "../../common/components/ui/Button";
@@ -444,7 +444,7 @@ const RoleManagement = () => {
                           <td className="flex justify-end space-x-2 text-right py-2">
                             <MiniIconButton
                               variant="indigo"
-                              icon="defaultEdit"
+                              icon="edit"
                               onClick={() => handleUserSelect(user)}
                             />
                             <MiniIconButton
@@ -519,8 +519,8 @@ const RoleManagement = () => {
                         {!selectedUser && (
                           <td className="flex justify-end space-x-2 py-2">
                             <MiniIconButton
-                              icon="defaultEdit"
-                              variant="default"
+                              icon="edit"
+                              variant="indigo"
                               onClick={() => handleEdit(role)}
                             />
                             <MiniIconButton

@@ -46,7 +46,7 @@ const Button = ({
     outline:
       "border border-gray-300 text-gray-800 hover:text-gray-800 hover:bg-gray-100 shadow-md ring-2 ring-offset-2 ring-slate-700 ring-2 outline-2 shadow-md rounded-md",
     warning:
-      "bg-yellow-600 border border-yellow-600 text-base-100 hover:text-gray-200 hover:bg-yellow-700 shadow-md rounded-md",
+      "bg-yellow-600 border border-yellow-600 text-white hover:text-gray-200 hover:bg-yellow-700 shadow-md rounded-md",
     muted:
       "bg-gray-100 text-gray-500 hover:text-gray-800 hover:bg-gray-100 shadow-md rounded-md", // 👈 Add this
     base: "bg-base-content/5 border border-base-content/25 text-base-content/70 hover:text-base-content/80 hover:bg-base-200 shadow-sm rounded-md",

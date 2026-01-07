@@ -118,17 +118,20 @@ export const orderDetails = async (req, res) => {
 };
 
 export const downloadInvoice = async (req, res) => {
+  console.log("🎯 Download Invoice method is hit");
   try {
     const { orderId } = req.params;
+    console.log("Order Id", orderId);
     const order = await Order.findOne({ orderId }).populate("items.product");
     const userId = req.user._id; // From auth middleware
+    console.log("User Id", userId);
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
 
     // 🔏 Ownership check
     if (
-      order.user.toString() !== userId.toString &&
+      order.user.toString() !== userId.toString() &&
       order.user.role !== "super-admin"
     ) {
       return res

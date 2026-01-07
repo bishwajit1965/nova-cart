@@ -70,7 +70,7 @@ const SuperAdminPortfolioTable = ({ portfolios, onEdit, onPdf, onDelete }) => {
                     />
                     <MiniIconButton
                       onClick={() => onPdf(portfolio._id)}
-                      variant="indigo"
+                      variant="green"
                       icon="file"
                       className="btn btn-xs"
                     />

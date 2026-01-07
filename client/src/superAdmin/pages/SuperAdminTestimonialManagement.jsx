@@ -243,6 +243,7 @@ export const SuperAdminTestimonialManagement = () => {
               ))}
             </tbody>
           </table>
+
           {/* pagination begins*/}
           <Pagination
             items={testimonials}

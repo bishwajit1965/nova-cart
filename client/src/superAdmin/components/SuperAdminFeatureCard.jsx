@@ -10,7 +10,7 @@ const SuperAdminFeatureCard = ({ feature, onEdit, onDelete }) => {
         <div className="flex gap-2 mt-2">
           <MiniIconButton
             variant="indigo"
-            icon="defaultEdit"
+            icon="edit"
             label="Edit"
             className=""
             onClick={onEdit}

@@ -4,6 +4,7 @@ import NoDataFound from "../../common/components/ui/NoDataFound";
 
 const SuperAdminProjectTable = ({ projects, onEdit, setConfirmDelete }) => {
   const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+  console.log("Projects", projects);
   return (
     <div>
       <div className="overflow-x-auto">
@@ -19,7 +20,7 @@ const SuperAdminProjectTable = ({ projects, onEdit, setConfirmDelete }) => {
             </tr>
           </thead>
           <tbody>
-            {projects.length === 0 ? (
+            {projects?.length === 0 ? (
               <tr>
                 <td colSpan={4}>
                   <NoDataFound label="Projects" />
@@ -27,14 +28,14 @@ const SuperAdminProjectTable = ({ projects, onEdit, setConfirmDelete }) => {
               </tr>
             ) : (
               projects?.map((project, idx) => (
-                <tr key={project._id}>
+                <tr key={project?._id}>
                   <td>{idx + 1}</td>
                   <td>
                     <div className="flex items-center gap-3">
                       <div className="avatar">
                         <div className="mask mask-squircle h-12 w-12">
                           <img
-                            src={`${apiURL}${project.projectImage}`}
+                            src={`${apiURL}${project?.projectImage}`}
                             alt="Project Image"
                           />
                         </div>
@@ -64,20 +65,22 @@ const SuperAdminProjectTable = ({ projects, onEdit, setConfirmDelete }) => {
                       </span>
                     ))}
                   </td>
-                  <th className="space-y-2">
+                  <th className="space-x-2 flex items-center">
                     <Button
                       onClick={() => onEdit(project)}
                       variant="indigo"
-                      className="btn btn-sm w-20"
+                      className="btn btn-sm tooltip"
+                      data-tip="Edit"
                     >
-                      <Edit size={20} /> Edit
+                      <Edit size={16} />
                     </Button>
                     <Button
                       onClick={() => setConfirmDelete(project)}
                       variant="danger"
-                      className="btn w btn-sm w-20"
+                      className="btn w btn-sm tooltip"
+                      data-tip="Delete"
                     >
-                      <Trash2 size={20} /> Delete
+                      <Trash2 size={16} />
                     </Button>
                   </th>
                 </tr>

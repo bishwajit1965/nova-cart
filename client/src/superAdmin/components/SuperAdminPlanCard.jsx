@@ -16,7 +16,7 @@ const SuperAdminPlanCard = ({ plan, onEdit, onDelete, isCurrent }) => {
         <div className="flex gap-2 mt-2">
           <MiniIconButton
             variant="indigo"
-            icon="defaultEdit"
+            icon="edit"
             label="Edit"
             onClick={onEdit}
           />

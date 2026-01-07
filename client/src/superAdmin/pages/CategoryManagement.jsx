@@ -321,7 +321,8 @@ const CategoryManagement = () => {
 
                         <td className="space-x-2 flex justify-end py-2">
                           <MiniIconButton
-                            variant="default"
+                            variant="indigo"
+                            name="edit"
                             onClick={() => handleEdit(cat)}
                           />
                           <MiniIconButton

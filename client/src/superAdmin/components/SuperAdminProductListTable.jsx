@@ -171,7 +171,7 @@ const SuperAdminProductListTable = ({
                           <MiniIconButton
                             onClick={() => setViewProduct(product)}
                             icon="view"
-                            variant="success"
+                            variant="green"
                           />
                           <MiniIconButton
                             onClick={() => onConfirmDelete(product)}

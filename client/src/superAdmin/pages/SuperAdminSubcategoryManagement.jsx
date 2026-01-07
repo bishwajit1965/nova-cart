@@ -328,8 +328,8 @@ const SuperAdminSubcategoryManagement = () => {
                         <td className="flex space-x-2 my-2">
                           <MiniIconButton
                             onClick={() => handleUpdateSubCategory(subCat)}
-                            variant="primary"
-                            name="edit"
+                            variant="indigo"
+                            icon="edit"
                           />
                           <MiniIconButton
                             onClick={() => setConfirmDelete(subCat)}
