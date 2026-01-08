@@ -38,8 +38,6 @@ screenshots/
 **Home Page**
 ![Home Page](screenshots/home.png)
 
-<!-- ![Home Page](client/public/gifs/Nova-Cart-home.gif) -->
-
 **Product Page**
 ![Product Page](screenshots/product.png)
 
@@ -56,8 +54,6 @@ GIFs for interaction
 Shows cart persistence, checkout flow, or admin CRUD operations.
 
 ## Cart Demo
-
-![Cart Demo](./videos/Cart.gif)
 
 ## Project Overview
 
