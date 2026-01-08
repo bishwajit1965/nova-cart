@@ -57,7 +57,7 @@ Shows cart persistence, checkout flow, or admin CRUD operations.
 
 ## Cart Demo
 
-![Cart Demo](cart-screenshots/Cart.gif)
+![Cart Demo](videos/Cart.gif)
 
 ## Project Overview
 
