@@ -5,6 +5,8 @@
 [![GitHub issues](https://img.shields.io/github/issues/bishwajit1965/nova-cart)](https://github.com/bishwajit1965/nova-cart/issues)
 [![GitHub forks](https://img.shields.io/github/forks/bishwajit1965/nova-cart?style=social)](https://github.com/bishwajit1965/nova-cart/network)
 [![Live Demo](https://img.shields.io/badge/Live-Demo-blueviolet)](https://your-demo-link.com)
+[![GitHub issues](https://img.shields.io/github/issues/bishwajit1965/nova-cart)](https://github.com/bishwajit1965/nova-cart/issues)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-blueviolet)](https://your-demo-link.com)
 
 **Nova-Cart** is a full-stack, feature-rich e-commerce platform demonstrating modern web development skills with a complete shopping experience, including authentication, cart, checkout, and admin management.
 
@@ -25,6 +27,37 @@
 - [Features Under Consideration](#features-under-consideration)
 
 ---
+
+screenshots/
+├─ home.png
+├─ product.png
+├─ cart.png
+├─ checkout.png
+└─ admin-dashboard.png
+
+### Screenshots
+
+**Home Page**
+![Home Page](screenshots/home.png)
+
+**Product Page**
+![Product Page](screenshots/product.png)
+
+**Cart Page**
+![Cart Page](screenshots/cart.png)
+
+**Admin Dashboard**
+![Admin Dashboard](screenshots/admin-dashboard.png)
+
+---
+
+GIFs for interaction
+
+Shows cart persistence, checkout flow, or admin CRUD operations.
+
+## Cart Demo
+
+![Cart Demo](cart-screenshots/cart-demo.gif)
 
 ## Project Overview
 
@@ -89,20 +122,17 @@ git clone https://github.com/bishwajit1965/nova-cart.git
 
 ```
 
-## 2.Install dependencies:
+## 2.Install dependencies':'
 
 cd client
 npm install
-cd ../server
+cd server
 npm install
 
-## 3. Set environment variables in .env (server):
+## 3. Set environment variables in .env (server)':'
 
-MONGO_URI=<your_mongo_uri>
-JWT_SECRET=<your_jwt_secret>
-STRIPE_KEY=<your_stripe_test_key>
-EMAIL_USER=<email>
-EMAIL_PASS=<email_password>
+cp .env.example .env # Linux / Mac
+copy .env.example .env # Windows
 
 ## 4. Start development servers:
 
@@ -122,6 +152,20 @@ npm run dev
 - Google & Facebook OAuth
 
 - Role-based access (Client, Admin, Super Admin)
+
+- PDF invoice generation
+
+- Auto coupon code generation & on demand auto coupon reduction calculation
+
+- Order verification page
+
+- Order details page
+
+- Order status timeline
+
+- Auto email sent after order is placed
+
+- On final delivery auto confirmation email is sent to the client
 
 ## Product & Cart
 
@@ -167,7 +211,7 @@ npm run dev
 
 ## Screenshots / GIFs
 
-- Add screenshots or GIFs of:
+- Added screenshots or GIFs of:
 
 - Home Page
 
@@ -181,13 +225,13 @@ npm run dev
 
 - Newsletter popup
 
+## Cart Screen Shots
+
 ## Future Enhancements
 
 - Inventory management with low-stock notifications
 
 - Vendor management (multi-seller)
-
-- PDF invoice generation
 
 - Enhanced analytics dashboard for Admin
 
