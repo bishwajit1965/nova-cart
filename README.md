@@ -1,6 +1,6 @@
 # Nova-Cart
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.txt)
 [![GitHub stars](https://img.shields.io/github/stars/bishwajit1965/nova-cart?style=social)](https://github.com/bishwajit1965/nova-cart/stargazers)
 [![GitHub issues](https://img.shields.io/github/issues/bishwajit1965/nova-cart)](https://github.com/bishwajit1965/nova-cart/issues)
 [![GitHub forks](https://img.shields.io/github/forks/bishwajit1965/nova-cart?style=social)](https://github.com/bishwajit1965/nova-cart/network)
