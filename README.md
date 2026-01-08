@@ -36,9 +36,9 @@ screenshots/
 ### Screenshots
 
 **Home Page**
-![Home Page](screenshots/home.png)
-
 ![Home Page Demo](client/public/gifs/Nova-Cart-home.gif)
+
+<!-- ![Home Page](screenshots/home.png) -->
 
 **Product Page**
 ![Product Page](screenshots/product.png)
