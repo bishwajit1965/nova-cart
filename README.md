@@ -36,9 +36,9 @@ screenshots/
 ### Screenshots
 
 **Home Page**
-![Home Page](client/public/gifs/Nova-Cart-home.gif)
+![Home Page](screenshots/home.png)
 
-<!-- ![Home Page](screenshots/home.png) -->
+<!-- ![Home Page](client/public/gifs/Nova-Cart-home.gif) -->
 
 **Product Page**
 ![Product Page](screenshots/product.png)
@@ -134,7 +134,7 @@ npm install
 cp .env.example .env # Linux / Mac
 copy .env.example .env # Windows
 
-## 4. Start development servers:
+## 4. Start development servers':'
 
 cd server
 nodemon index.js
