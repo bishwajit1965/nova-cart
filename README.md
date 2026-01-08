@@ -225,7 +225,7 @@ npm run dev
 
 - Newsletter popup
 
-<video src="videos/Cart.mp4" controls autoplay loop muted></video>
+<video src="videos/Cart.gif" controls autoplay loop muted></video>
 
 ## Cart Screen Shots
 
