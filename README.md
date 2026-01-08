@@ -225,6 +225,8 @@ npm run dev
 
 - Newsletter popup
 
+<video src="videos/Nova-Cart-home-page.mp4" controls autoplay loop muted></video>
+
 ## Cart Screen Shots
 
 ## Future Enhancements
