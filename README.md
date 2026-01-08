@@ -38,6 +38,8 @@ screenshots/
 **Home Page**
 ![Home Page](screenshots/home.png)
 
+![Home Page](gifs/Nova-cart-home.gif)
+
 **Product Page**
 ![Product Page](screenshots/product.png)
 
