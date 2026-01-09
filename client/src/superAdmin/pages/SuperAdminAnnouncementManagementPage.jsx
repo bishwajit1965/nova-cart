@@ -1,4 +1,4 @@
-import { Edit, Megaphone, PlusCircleIcon, Trash2 } from "lucide-react";
+import { Edit, Edit2, Megaphone, PlusCircleIcon, Trash2 } from "lucide-react";
 
 import API_PATHS from "../services/apiPaths/apiPaths";
 import Button from "../../common/components/ui/Button";
@@ -10,11 +10,13 @@ import { useApiQuery } from "../services/hooks/useApiQuery";
 import { useEffect } from "react";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import { useState } from "react";
+import ConfirmDialog from "../../common/components/ui/ConfirmDialog";
 
 const SuperAdminAnnouncementManagementPage = () => {
   const [announcements, setAnnouncements] = useState([]);
   const [editingAnnouncement, setEditingAnnouncement] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
   const toggleForm = () => setIsFormOpen(!isFormOpen);
 
@@ -64,11 +66,17 @@ const SuperAdminAnnouncementManagementPage = () => {
     await announcementMutation.mutateAsync(formData);
   };
 
+  const handleToggleConfirmDialogue = (announcement) => {
+    setConfirmDelete(announcement);
+  };
+
   /** <-------- Delete Handler <-------- */
-  const handleDelete = (id) => {
-    if (confirm("Are you sure to delete this announcement?")) {
-      deleteAnnouncementMutation.mutate(id);
-    }
+  const handleDeleteAnnouncement = (id) => {
+    deleteAnnouncementMutation.mutate(id, {
+      onSuccess: () => {
+        setConfirmDelete(null);
+      },
+    });
   };
 
   /** --------> Use Fetched Data Status Handler --------> */
@@ -85,11 +93,22 @@ const SuperAdminAnnouncementManagementPage = () => {
 
   return (
     <div>
-      <div className="lg:p-6 p-2 bg-base-200 rounded-lg shadow-lg lg:max-w-6xl mx-auto">
-        <h2 className="lg:text-2xl font-bold mb-4 flex items-center gap-2">
-          <Megaphone />
-          Announcement Management
-        </h2>
+      <div className="lg:p-4 p-2 bg-base-200 rounded-lg shadow-lg lg:max-w-7xl mx-auto lg:space-y-4 space-y-2">
+        <div className="lg:flex grid items-center gap-2">
+          <Button
+            variant="primary"
+            onClick={() => {
+              setEditingAnnouncement(null);
+              toggleForm();
+            }}
+          >
+            <PlusCircleIcon size={20} /> Add New Announcement
+          </Button>
+          <h2 className="lg:text-2xl text-lg font-bold flex items-center gap-2 ">
+            <Megaphone size={20} />
+            Announcement List
+          </h2>
+        </div>
 
         <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
           {announcements?.length === 0 && <p>No announcements yet.</p>}
@@ -118,7 +137,7 @@ const SuperAdminAnnouncementManagementPage = () => {
                 </Button>
                 <Button
                   variant="danger"
-                  onClick={() => handleDelete(a._id)}
+                  onClick={() => handleToggleConfirmDialogue(a)}
                   className="btn btn-sm"
                 >
                   <Trash2 size={20} /> Delete
@@ -128,20 +147,14 @@ const SuperAdminAnnouncementManagementPage = () => {
           ))}
         </div>
 
-        <div className="mt-6">
-          <Button
-            variant="primary"
-            onClick={() => {
-              setEditingAnnouncement(null);
-              toggleForm();
-            }}
-          >
-            <PlusCircleIcon /> Add New Announcement
-          </Button>
-        </div>
-
         {isFormOpen && (
-          <Modal isOpen={toggleForm} onClose={toggleForm} title="Announcement">
+          <Modal
+            isOpen={toggleForm}
+            onClose={toggleForm}
+            title={`${
+              editingAnnouncement ? "Edit Announcement" : "Create Announcement"
+            }`}
+          >
             <SuperAdminAnnouncementForm
               initialData={editingAnnouncement}
               onSubmit={handleSubmit}
@@ -149,6 +162,15 @@ const SuperAdminAnnouncementManagementPage = () => {
               editingAnnouncement={editingAnnouncement}
             />
           </Modal>
+        )}
+
+        {/* Confirm delete dialogue box */}
+        {confirmDelete && (
+          <ConfirmDialog
+            isOpen={confirmDelete}
+            onClose={() => setConfirmDelete(null)}
+            onConfirm={() => handleDeleteAnnouncement(confirmDelete._id)}
+          />
         )}
       </div>
     </div>

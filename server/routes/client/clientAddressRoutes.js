@@ -18,7 +18,9 @@ const router = express.Router();
 router.use(authenticationMiddleware);
 
 router.get("/", authorizeRole("super-admin", "admin", "user"), getAddresses);
+
 router.post("/", authorizeRole("super-admin", "admin", "user"), createAddress);
+
 router.patch(
   "/:addressId",
   authorizeRole("super-admin", "admin", "user"),

@@ -23,10 +23,11 @@ import Image from "../../assets/bishwajit-1.jpg";
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
 
-const size = 15;
+const size = 16;
 
 const SideNavBar = ({ role }) => {
   const [open, setOpen] = useState(false);
+  const [activePath, setActivePath] = useState(null);
 
   const links = {
     "super-admin": [
@@ -87,7 +88,7 @@ const SideNavBar = ({ role }) => {
       },
       {
         path: "/super-admin/sub-category-management",
-        label: "Sub-category Management",
+        label: "Sub-cate Management",
         icon: <ArrowDownZAIcon size={size} />,
       },
       {
@@ -236,7 +237,10 @@ const SideNavBar = ({ role }) => {
                       ? "font-semibold text-base-content border-l-4 border-l-base-content border-b-base-content/25 block border border-t-0 border-r-0 transition-all ease-in duration-300 pl-1 m-0 py-1 text-sm shadow-xs rounded-xs"
                       : "text-base-content hover:text-blue-500 pl-2 m-0 p-0 flex items-center hover:bg-base-300 hover:py-1 hover-border hover:border-base-content/15 justify-between space-x-1 text-sm rounded-xs py-1"
                   }
-                  onClick={() => setOpen(false)}
+                  onClick={() => {
+                    setActivePath(link.path);
+                    setOpen(false);
+                  }}
                 >
                   <span className="flex items-center space-x-2 justify-between w-full">
                     <span className="flex items-center space-x-2">
@@ -244,7 +248,13 @@ const SideNavBar = ({ role }) => {
                     </span>
 
                     <span>
-                      <ChevronRight size={size} />
+                      <ChevronRight
+                        size={size}
+                        className={`
+    transition-transform duration-300 ease-in-out
+    ${activePath === link.path ? "rotate-90" : "rotate-0"}
+  `}
+                      />
                     </span>
                   </span>
                 </NavLink>

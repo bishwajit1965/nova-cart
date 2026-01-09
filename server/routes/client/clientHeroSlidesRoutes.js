@@ -9,14 +9,15 @@ import {
   updateHeroSlide,
 } from "../../controllers/client/clientHeroSlidesController.js";
 
-import express from "express";
 // import { upload } from "../../middlewares/upload.js";
+
+import express from "express";
 
 const router = express.Router();
 
-// router.use(authenticationMiddleware);
+router.use(authenticationMiddleware);
 
-// router.use(authorizeRole("super-admin", "admin"));
+router.use(authorizeRole("super-admin", "admin"));
 
 router.get("/", getAllHeroSlides);
 

@@ -12,28 +12,47 @@ export const getAllHeroSlides = async (req, res) => {
 };
 
 export const createHeroSlide = async (req, res) => {
+  console.log("🎯🎯Hero slide create method is hit");
   try {
-    const { type, title, subtitle, ctaLink, secondaryLink } = req.body;
-    const image = req.file ? req.file.filename : null;
+    const {
+      type,
+      title,
+      subtitle,
+      ctaLink,
+      ctaLabel,
+      secondaryLink,
+      hoverText,
+    } = req.body;
 
+    const image = req.file ? req.file.filename : null;
+    console.log("REQ>BODY", req.body);
+    console.log("Image", image);
     if (!image)
       return res
         .status(400)
         .json({ success: false, message: "Image is required" });
 
     const slide = await HeroSlide.create({
+      type,
       title,
       subtitle,
-      image,
       ctaLink,
       ctaLabel,
       secondaryLink,
       hoverText,
-      type,
+      image,
     });
-    res.status(201).json({ success: true, data: slide });
+    res.status(201).json({
+      success: true,
+      message: "Data created successfully!",
+      data: slide,
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error!",
+      error: error.message,
+    });
   }
 };
 

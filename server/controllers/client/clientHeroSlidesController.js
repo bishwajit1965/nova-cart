@@ -13,6 +13,7 @@ export const getAllHeroSlides = async (req, res) => {
 
 export const createHeroSlide = async (req, res) => {
   try {
+    console.log("🎯🎯Create hero slide method is hit");
     const { type, title, subtitle, ctaLink, secondaryLink } = req.body;
     const image = req.file ? req.file.filename : null;
 

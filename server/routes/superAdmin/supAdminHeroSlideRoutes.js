@@ -9,8 +9,9 @@ import {
   updateHeroSlide,
 } from "../../controllers/superAdmin/supAdminHeroSlideController.js";
 
-import express from "express";
 import { upload } from "../../middlewares/upload.js";
+
+import express from "express";
 
 const router = express.Router();
 

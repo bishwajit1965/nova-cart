@@ -24,7 +24,7 @@ const SuperAdminLayout = () => {
   return (
     <div className="min-h-screen">
       <div className="grid grid-cols-12 lg:max-w-full mx-auto">
-        <div className="lg:col-span-2 col-span-12 bg-base-200 text-base-content sticky top-0 lg:max-h-[calc(100vh-0px)] z-50">
+        <div className="lg:col-span-2 col-span-12 bg-base-300 text-base-content sticky top-0 lg:max-h-[calc(100vh-0px)] z-50">
           <SideNavBar role="super-admin" />
         </div>
         <main className="lg:col-span-10 col-span-12 lg:border-l-[4px] lg:border-base-content/5">
@@ -38,7 +38,7 @@ const SuperAdminLayout = () => {
               location={page}
             />
           </div>
-          <div className="lg:min-h-[calc(100vh-150px)] lg:p-6 p-4 bg-base-200">
+          <div className="lg:min-h-[calc(100vh-150px)] lg:p-4 p-2 bg-base-200 shadow">
             <Outlet />
           </div>
           <div className="text-base-content">

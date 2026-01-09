@@ -36,7 +36,7 @@ export default function ConfirmDialog({
           </button>
           <button
             onClick={onConfirm}
-            className="btn btn-sm text-base-100 bg-red-500 shadow-md hover:bg-red-600"
+            className="btn btn-sm text-base-100 bg-red-500 shadow-md hover:bg-red-600 cursor-pointer"
           >
             <Trash2Icon size={15} className="text-base-100" /> {confirmText}
           </button>

@@ -1,4 +1,4 @@
-import { Edit, PlusCircleIcon, Trash, Trash2 } from "lucide-react";
+import { Edit, PlusCircleIcon, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import API_PATHS from "../services/apiPaths/apiPaths";
@@ -9,13 +9,15 @@ import toast from "react-hot-toast";
 import { useApiMutation } from "../services/hooks/useApiMutation";
 import { useApiQuery } from "../services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
-
+import ConfirmDialog from "../../common/components/ui/ConfirmDialog";
+import buildUrl from "../../common/hooks/useBuildUrl";
 const apuURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 const SuperAdminHeroSlidePage = () => {
   const [editingSlideBanner, setEditingSlideBanner] = useState(null);
   const [slidesBanner, setSlidesBanner] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
   const toggleForm = () => {
     setIsFormOpen(!isFormOpen);
@@ -69,7 +71,10 @@ const SuperAdminHeroSlidePage = () => {
     key: API_PATHS.SUP_ADMIN_HERO_SLIDES_BANNER
       .SUP_ADMIN_HERO_SLIDES_BANNER_KEY,
     onSuccess: () => {
-      toast.success("Slide deleted successfully");
+      setConfirmDelete(null);
+    },
+    onError: (error) => {
+      toast.error("Error in deleting slider banner", error);
     },
   });
 
@@ -79,10 +84,12 @@ const SuperAdminHeroSlidePage = () => {
     toggleForm();
   };
 
+  const handleToggleConfirmDialogue = (slide) => {
+    setConfirmDelete(slide);
+  };
+
   const handleDelete = async (id) => {
-    if (confirm("Are you sure you want to delete this slide?")) {
-      deleteSlidesBannerMutation.mutateAsync(id);
-    }
+    deleteSlidesBannerMutation.mutateAsync(id);
   };
 
   /** --------> Use Fetched Data Status Handler --------> */
@@ -96,8 +103,15 @@ const SuperAdminHeroSlidePage = () => {
   if (slidesDataStatus.status !== "success") return slidesDataStatus.content;
 
   return (
-    <div className="p-6 bg-base-200 rounded-lg shadow-lg max-w-6xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Hero & Banner Slides</h2>
+    <div className="lg:p-6 p-2 bg-base-200 rounded-lg shadow-lg max-w-7xl mx-auto lg:space-y-6 space-y-4">
+      <div className="lg:flex grid items-center lg:gap-6 gap-2">
+        <Button variant="primary" onClick={toggleForm}>
+          <PlusCircleIcon size={20} /> Add New Slide
+        </Button>
+        <h2 className="lg:text-2xl text-lg font-extrabold text-base-content/70">
+          Hero & Banner Slides
+        </h2>
+      </div>
 
       <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
         {slidesBanner?.length === 0 && <p>No slides available.</p>}
@@ -108,12 +122,8 @@ const SuperAdminHeroSlidePage = () => {
             className="border border-base-content/15 rounded-lg overflow-hidden shadow hover:shadow-lg transition"
           >
             <img
-              src={
-                slide.image
-                  ? `${apuURL}/uploads/${slide.image}`
-                  : "/placeholder.png"
-              }
-              alt={slide.title}
+              src={buildUrl(`${slide?.image}`)}
+              alt={slide?.title}
               className="w-full h-48 object-cover"
             />
             <div className="p-4">
@@ -145,7 +155,7 @@ const SuperAdminHeroSlidePage = () => {
                 </Button>
                 <Button
                   variant="danger"
-                  onClick={() => handleDelete(slide._id)}
+                  onClick={() => handleToggleConfirmDialogue(slide)}
                   className="btn btn-sm"
                 >
                   <Trash2 size={20} /> Delete
@@ -154,12 +164,6 @@ const SuperAdminHeroSlidePage = () => {
             </div>
           </div>
         ))}
-      </div>
-
-      <div className="mt-6">
-        <Button variant="primary" onClick={toggleForm}>
-          <PlusCircleIcon /> Add New Slide
-        </Button>
       </div>
 
       {/* Toggle form open  */}
@@ -178,6 +182,16 @@ const SuperAdminHeroSlidePage = () => {
             setEditingSlideBanner={setEditingSlideBanner}
           />
         </Modal>
+      )}
+
+      {/* Confirm delete dialogue box */}
+      {confirmDelete && (
+        <ConfirmDialog
+          title={`${confirmDelete.title}`}
+          isOpen={confirmDelete}
+          onClose={() => setConfirmDelete(null)}
+          onConfirm={() => handleDelete(confirmDelete._id)}
+        />
       )}
     </div>
   );
