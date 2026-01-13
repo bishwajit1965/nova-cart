@@ -26,54 +26,55 @@ const FeaturedCategoriesSection = () => {
 
   return (
     <motion.section
-      className="lg:py-16 py-6 bg-base-200 rounded-md shadow border border-base-content/15"
+      variants={containerVariants}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: false }}
-      variants={containerVariants}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.8, // total animation time
+        ease: "easeInOut", // ease in and out
+      }}
+      className="lg:py-16 py-6 bg-base-200 rounded-md shadow border border-base-content/15"
     >
-      <div className="max-w-6xl mx-auto lg:px-6 px-2 text-center text-base-content/70">
+      <motion.div
+        variants={containerVariants}
+        className="max-w-6xl mx-auto lg:px-6 px-2 text-center text-base-content/70"
+      >
         <motion.h2
-          className="lg:text-3xl text-xl font-extrabold lg:mb-8 mb-4"
           variants={itemVariants}
+          className="lg:text-3xl text-xl font-extrabold lg:mb-8 mb-4"
         >
           🚀 Featured Categories
         </motion.h2>
-        <div className="grid lg:gap-6 gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-          {featuredCategories?.map((feature, idx) => (
-            <Link to={`product-categories?category=${feature.slug}`} key={idx}>
-              <motion.div
-                key={idx}
-                className="bg-base-100 text-base-content/70 rounded-2xl shadow hover:shadow-lg transition-all space-y-4"
-                variants={itemVariants}
+        <motion.div
+          variants={containerVariants}
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:gap-6 gap-4"
+        >
+          {featuredCategories?.map((feature) => (
+            <Link to={`product-categories?category=${feature.slug}`}>
+              <div
+                key={feature._id}
+                className="rounded-2xl overflow-hidden shadow hover:shadow-lg transition-all cursor-pointer"
               >
-                {feature.featuredImage && (
-                  <div className="">
-                    <LazyLoadImage
-                      src={feature.featuredImage}
-                      alt={feature.name}
-                      effect="blur"
-                      threshold={100}
-                      delayTime={300}
-                      wrapperProps={{
-                        style: { transitionDelay: "1s" },
-                      }}
-                      className="h-40 object-cover w-full rounded-t-2xl"
-                    />
-                  </div>
+                {feature?.featuredImage && (
+                  <LazyLoadImage
+                    src={feature.featuredImage}
+                    alt={feature.name}
+                    effect="opacity"
+                    loading="lazy"
+                    className="min-h-44"
+                  />
                 )}
-                <motion.div
-                  className="text-base-content/70 space-y-2 p-4"
-                  variants={itemVariants}
-                >
+                <div className="text-base-content/70 space-y-2 p-4">
                   <h2 className="text-xl font-bold">{feature.name}</h2>
                   <p>{feature.description}</p>
-                </motion.div>
-              </motion.div>
+                </div>
+              </div>
             </Link>
           ))}
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </motion.section>
   );
 };

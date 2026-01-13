@@ -57,7 +57,7 @@ const ClientCartManagementPage = () => {
   console.log("Added to wishlist", addedToWishList);
 
   const CART_LIMIT = 10;
-  const WISH_LIST_LIMIT = 10;
+  const WISHLIST_LIMIT = 10;
 
   const buildUrl = (src) => {
     if (!src) return "";
@@ -186,7 +186,7 @@ const ClientCartManagementPage = () => {
                     {addedToWishList.length}
                   </span>
                 </h2>
-                {addedToWishList.length >= WISH_LIST_LIMIT && (
+                {addedToWishList.length >= WISHLIST_LIMIT && (
                   <p className="text-xl text-red-500 flex justify-center items-center gap-1 font-bold">
                     <AlertCircle /> Wishlist full!
                   </p>
@@ -299,7 +299,7 @@ const ClientCartManagementPage = () => {
                       </p>
                     </div>
 
-                    <div className="flex items-center justify-between mt- w-full left-0">
+                    <div className="flex items-center justify-between w-full left-0">
                       <div className="">
                         <Button
                           variant="success"
@@ -357,6 +357,8 @@ const ClientCartManagementPage = () => {
                       className={`${
                         inWishlist
                           ? "cursor-not-allowed bg-pink-500 rounded-b-md opacity-50"
+                          : wishList?.length >= WISHLIST_LIMIT
+                          ? "cursor-not-allowed bg-base-300 rounded-b-md opacity-80"
                           : ""
                       } absolute bottom-0 left-0 right-0 w-full`}
                     >
@@ -365,20 +367,27 @@ const ClientCartManagementPage = () => {
                           handleAddToWishList({ product: product, variant })
                         }
                         variant="base"
-                        disabled={inWishlist}
-                        size="sm"
-                        className={`btn btn-sm w-full mt-1 border-none ${
-                          inWishlist ? "opacity-50 bg-red-500 text-white" : ""
+                        disabled={
+                          inWishlist || wishList.length >= WISHLIST_LIMIT
+                        }
+                        className={`btn btn-sm w-full border-none text-gray-600 rounded-t-none ${
+                          inWishlist
+                            ? "opacity-50 bg-red-600 text-white"
+                            : "text-gray-600"
                         }`}
                       >
                         {loadingWishListId === product._id ? (
                           <Loader className="animate-spin" size={16} />
                         ) : inWishlist ? (
-                          <LucideIcon.HeartPlus size={16} />
+                          <LucideIcon.HeartPlus size={15} />
                         ) : (
-                          <LucideIcon.Heart size={16} />
+                          <LucideIcon.Heart size={15} />
                         )}
-                        {inWishlist ? "In Wishlist" : "Add to Wishlist"}
+                        {inWishlist
+                          ? "In Wishlist"
+                          : wishList.length >= WISHLIST_LIMIT
+                          ? "Wishlist Full"
+                          : "Add to Wishlist"}
                       </Button>
                     </div>
                   </div>
@@ -390,7 +399,7 @@ const ClientCartManagementPage = () => {
 
         {/* ==========> RIGHT PANEL ==========> */}
         <div className="lg:col-span-3 col-span-12">
-          <div className="sticky top-18">
+          <div className="sticky top-20">
             <CartSummaryPanel
               cart={cart}
               handleGenerateCouponCode={onGenerateCouponCode}

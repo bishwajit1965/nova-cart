@@ -10,12 +10,10 @@ import slugify from "slugify";
 /** ------->Helper: regenerate tags & Update Products -------> */
 const generateTags = ({ name, brand, categoryName, subCategoryName }) => {
   let tags = [];
-
   if (name) tags.push(...name.split(" "));
   if (brand) tags.push(...brand.split(" "));
   if (categoryName) tags.push(...categoryName.split(" "));
   if (subCategoryName) tags.push(...subCategoryName.split(" "));
-
   // lowercase + unique
   return [...new Set(tags.map((t) => t.toLowerCase().trim()))];
 };
@@ -32,10 +30,156 @@ async function generateUniqueSlug(name) {
 }
 
 /** -------> Create Product -------> */
+// export const createProduct = async (req, res) => {
+//   try {
+//     // 1️⃣ Parse JSON payload
+//     // const bodyData = JSON.parse( req?.body?.data );
+//     if (!req?.body?.data) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "No product data provided",
+//       });
+//     }
+
+//     let bodyData = {};
+
+//     if (req?.body?.data && typeof req?.body?.data === "string") {
+//       bodyData = JSON.parse(req?.body?.data);
+//     } else {
+//       bodyData = req.body;
+//     }
+
+//     const {
+//       name,
+//       description,
+//       price,
+//       category,
+//       subCategory,
+//       variants,
+//       stock,
+//       brand,
+//       tags,
+//       status,
+//     } = bodyData;
+
+//     console.log("Body data", bodyData);
+//     console.log("User Id", req.user._id);
+
+//     // 2️⃣ Validate category exists
+//     const cat = await Category.findById(category);
+//     if (!cat)
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "Category not found" });
+
+//     // 3️⃣ Validate subCategory belongs to category
+//     if (subCategory) {
+//       const subCat = await SubCategory.findById(subCategory);
+//       if (!subCat || subCat.category.toString() !== category.toString())
+//         return res
+//           .status(400)
+//           .json({ success: false, message: "Invalid subCategory" });
+//     }
+
+//     // 4️⃣ Separate product images and variant images
+//     const productImages = [];
+//     const variantImagesMap = {};
+
+//     if (req.files && req.files.length > 0) {
+//       req.files.forEach((file) => {
+//         if (file.originalname.startsWith("product-")) {
+//           // Example: product-0-main.png
+//           productImages.push(`/uploads/${file.filename}`);
+//         } else if (file.originalname.startsWith("variant-")) {
+//           // Example: variant-1-0-red.png
+//           const parts = file.originalname.split("-");
+//           const variantIndex = Number(parts[1]); // variant-1-...
+//           if (!variantImagesMap[variantIndex]) {
+//             variantImagesMap[variantIndex] = [];
+//           }
+//           variantImagesMap[variantIndex].push(`/uploads/${file.filename}`);
+//         }
+//       });
+//     }
+
+//     const normalizedVariants = (variants || []).map((v, i) => ({
+//       color: v?.color || "",
+//       size: v?.size || "",
+//       price: Number(v?.price) || 0,
+//       discountPrice: Number(v?.discountPrice) || 0,
+//       SKU: v?.SKU || nanoid(8),
+//       stock: Number(v?.stock) || 0,
+//       images: variantImagesMap[i] || [],
+//     }));
+
+//     // 6️⃣ Calculate global stock
+//     const globalStock =
+//       normalizedVariants.length > 0
+//         ? normalizedVariants.reduce((sum, v) => sum + v.stock, 0)
+//         : stock || 0;
+
+//     // Slug uniqueness
+//     const slug = await generateUniqueSlug(name);
+
+//     // 7️⃣ Create product instance
+//     const product = new Product({
+//       name,
+//       description,
+//       price: Number(price) || 0,
+//       category,
+//       subCategory,
+//       variants: normalizedVariants,
+//       stock: globalStock,
+//       images: productImages,
+//       brand,
+//       slug: slug,
+//       createdBy: req?.user?._id,
+//       status: status || "active",
+//       tags: tags || [],
+//     });
+
+//     // 8️⃣ Save product
+//     const savedProduct = await product.save();
+
+//     // 9️⃣ Log action
+//     await logAction({
+//       userId: req.user._id,
+//       action: "CREATE_PRODUCT",
+//       entity: "Product",
+//       entityId: savedProduct._id,
+//       description: `Created product ${savedProduct.name}`,
+//       ipAddress: req.ip,
+//     });
+
+//     // 10️⃣ Return success
+//     res.status(201).json({
+//       success: true,
+//       message: "Product created successfully!",
+//       data: savedProduct,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Internal server error",
+//       error: error.message,
+//     });
+//   }
+// };
+
 export const createProduct = async (req, res) => {
   try {
-    // 1️⃣ Parse JSON payload
-    const bodyData = JSON.parse(req.body.data);
+    // 1️⃣ Parse body (supports multipart/form-data)
+    if (!req?.body?.data) {
+      return res.status(400).json({
+        success: false,
+        message: "No product data provided",
+      });
+    }
+
+    const bodyData =
+      typeof req.body.data === "string" ? JSON.parse(req.body.data) : req.body;
+
     const {
       name,
       description,
@@ -46,87 +190,118 @@ export const createProduct = async (req, res) => {
       stock,
       brand,
       tags,
+      status,
     } = bodyData;
 
-    // 2️⃣ Validate category exists
-    const cat = await Category.findById(category);
-    if (!cat)
-      return res
-        .status(400)
-        .json({ success: false, message: "Category not found" });
-
-    // 3️⃣ Validate subCategory belongs to category
-    if (subCategory) {
-      const subCat = await SubCategory.findById(subCategory);
-      if (!subCat || subCat.category.toString() !== category)
-        return res
-          .status(400)
-          .json({ success: false, message: "Invalid subCategory" });
+    // 2️⃣ Basic required checks
+    if (!name || !category || price == null) {
+      return res.status(400).json({
+        success: false,
+        message: "Name, category and price are required",
+      });
     }
 
-    // 4️⃣ Separate product images and variant images
+    // 3️⃣ Category validation
+    const cat = await Category.findById(category);
+    if (!cat) {
+      return res.status(400).json({
+        success: false,
+        message: "Category not found",
+      });
+    }
+
+    // 4️⃣ SubCategory validation
+    if (subCategory) {
+      const subCat = await SubCategory.findById(subCategory);
+      if (!subCat) {
+        return res.status(400).json({
+          success: false,
+          message: "SubCategory not found",
+        });
+      }
+      if (subCat.category.toString() !== category.toString()) {
+        return res.status(400).json({
+          success: false,
+          message: "SubCategory does not belong to selected category",
+        });
+      }
+    }
+
+    // 5️⃣ Variant rule decision
+    const hasVariants = Array.isArray(variants) && variants.length > 0;
+
+    if (!hasVariants && (stock === undefined || stock === null)) {
+      return res.status(400).json({
+        success: false,
+        message: "Quantity is required for products without variants",
+      });
+    }
+
+    // 6️⃣ Image separation
     const productImages = [];
     const variantImagesMap = {};
 
-    if (req.files && req.files.length > 0) {
+    if (req.files?.length) {
       req.files.forEach((file) => {
         if (file.originalname.startsWith("product-")) {
-          // Example: product-0-main.png
           productImages.push(`/uploads/${file.filename}`);
-        } else if (file.originalname.startsWith("variant-")) {
-          // Example: variant-1-0-red.png
+        }
+
+        if (file.originalname.startsWith("variant-")) {
           const parts = file.originalname.split("-");
-          const variantIndex = Number(parts[1]); // variant-1-...
+          const variantIndex = Number(parts[1]);
 
-          if (!variantImagesMap[variantIndex]) {
-            variantImagesMap[variantIndex] = [];
+          if (!Number.isNaN(variantIndex)) {
+            variantImagesMap[variantIndex] ??= [];
+            variantImagesMap[variantIndex].push(`/uploads/${file.filename}`);
           }
-
-          variantImagesMap[variantIndex].push(`/uploads/${file.filename}`);
         }
       });
     }
 
-    const normalizedVariants = (variants || []).map((v, i) => ({
-      color: v.color || "",
-      size: v.size || "",
-      price: Number(v.price) || 0,
-      discountPrice: Number(v.discountPrice) || 0,
-      SKU: v.SKU || nanoid(8),
-      stock: Number(v.stock) || 0,
-      images: variantImagesMap[i] || [],
-    }));
+    // 7️⃣ Normalize variants (only if they exist)
+    const normalizedVariants = hasVariants
+      ? variants.map((v, i) => ({
+          color: v?.color || "",
+          size: v?.size || "",
+          price: Number(v?.price) || Number(price) || 0,
+          discountPrice: Number(v?.discountPrice) || 0,
+          SKU: v?.SKU || nanoid(8),
+          stock: Number(v?.stock),
+          images: variantImagesMap[i] || [],
+        }))
+      : [];
 
-    // 6️⃣ Calculate global stock
-    const globalStock =
-      normalizedVariants.length > 0
-        ? normalizedVariants.reduce((sum, v) => sum + v.stock, 0)
-        : stock || 0;
+    // 8️⃣ Global stock calculation
+    const globalStock = hasVariants
+      ? normalizedVariants.reduce((sum, v) => sum + v.stock, 0)
+      : Number(stock);
 
-    // Slug uniqueness
+    // 9️⃣ Slug
     const slug = await generateUniqueSlug(name);
 
-    // 7️⃣ Create product instance
+    // 🔟 Create product
     const product = new Product({
       name,
       description,
-      price: Number(price) || 0,
+      price: Number(price),
       category,
       subCategory,
       variants: normalizedVariants,
       stock: globalStock,
       images: productImages,
       brand,
-      slug: slug,
+      slug,
       createdBy: req.user._id,
-      status: "active",
+      status: status || "active",
       tags: tags || [],
     });
 
-    // 8️⃣ Save product
+    // 1️⃣1️⃣ Validate + save
+    await product.validate();
     const savedProduct = await product.save();
 
-    // 9️⃣ Log action
+    // 1️⃣2️⃣ Log
     await logAction({
       userId: req.user._id,
       action: "CREATE_PRODUCT",
@@ -136,10 +311,10 @@ export const createProduct = async (req, res) => {
       ipAddress: req.ip,
     });
 
-    // 10️⃣ Return success
+    // 1️⃣3️⃣ Response
     res.status(201).json({
       success: true,
-      message: "Product created successfully!",
+      message: "Product created successfully",
       data: savedProduct,
     });
   } catch (error) {
@@ -275,7 +450,6 @@ export const updateProduct = async (req, res) => {
       if (!newImages || newImages.length === 0) {
         return oldImages;
       }
-
       // If new files exist → merge them
       return [...oldImages, ...newImages];
     };
@@ -307,23 +481,28 @@ export const updateProduct = async (req, res) => {
     }
 
     const variantFilesMap = {};
-    req.files.forEach((file) => {
-      if (file.fieldname.startsWith("variant-")) {
-        const index = Number(file.fieldname.split("-")[1]);
-        if (!variantFilesMap[index]) variantFilesMap[index] = [];
-        variantFilesMap[index].push(`/uploads/${file.filename}`);
-      }
-    });
 
-    product.variants = variants.map((variant, i) => {
-      const oldVariant = product.variants[i] || {};
-      const newImages = variantFilesMap[i] || [];
-      return {
-        ...oldVariant,
-        ...variant,
-        images: [...(oldVariant.images || []), ...newImages],
-      };
-    });
+    if (req.files && req.files.length > 0) {
+      req?.files?.forEach((file) => {
+        if (file.fieldname.startsWith("variant-")) {
+          const index = Number(file.fieldname.split("-")[1]);
+          if (!variantFilesMap[index]) variantFilesMap[index] = [];
+          variantFilesMap[index].push(`/uploads/${file.filename}`);
+        }
+      });
+    }
+
+    if (product.variants && product.variants.length > 0) {
+      product.variants = product.variants.map((variant, i) => {
+        const oldVariant = product.variants[i] || {};
+        const newImages = variantFilesMap[i] || [];
+        return {
+          ...oldVariant,
+          ...variant,
+          images: [...(oldVariant.images || []), ...newImages],
+        };
+      });
+    }
 
     // If no global stock provided, compute from variants
     if (stock !== undefined) {
@@ -333,8 +512,11 @@ export const updateProduct = async (req, res) => {
     }
 
     product.brand = brand || product.brand;
-    if (status) product.status = status;
 
+    // if (status) product.status = status;
+    if (status === "active" || status === "inactive") {
+      product.status = status;
+    }
     // 7️⃣ Tags (optimized: use populated names if available, no extra DB calls unless needed)
     if (tags && tags.length > 0) {
       product.tags = [...new Set(tags.map((t) => t.toLowerCase().trim()))];

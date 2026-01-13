@@ -160,9 +160,9 @@ const ClientRelatedProducts = ({ relatedProducts }) => {
                   inWishlist
                     ? "cursor-not-allowed bg-pink-500 rounded-b-md opacity-50"
                     : wishList?.length >= WISHLIST_LIMIT
-                    ? "cursor-not-allowed bg-gray-600 rounded-b-md opacity-50"
+                    ? "cursor-not-allowed bg-base-300 rounded-b-md opacity-80"
                     : ""
-                } absolute bottom-0 w-full `}
+                } absolute bottom-0 left-0 right-0 w-full`}
               >
                 <Button
                   onClick={() =>
@@ -170,8 +170,10 @@ const ClientRelatedProducts = ({ relatedProducts }) => {
                   }
                   disabled={inWishlist || wishList.length >= WISHLIST_LIMIT}
                   variant="base"
-                  className={`btn btn-sm w-full border-none rounded-b-md rounded-t-none ${
-                    inWishlist ? "opacity-50 bg-red-500 text-white" : ""
+                  className={`btn btn-sm w-full border-none rounded-b-md rounded-t-none text-gray-600 ${
+                    inWishlist
+                      ? "opacity-50 bg-red-600 text-white"
+                      : "text-gray-600"
                   }`}
                 >
                   {loadingWishListId === p._id ? (

@@ -11,34 +11,6 @@ import useFetchedDataStatusHandler from "../../utils/hooks/useFetchedDataStatusH
 import { useState } from "react";
 import { FaQuestion } from "react-icons/fa";
 
-// const faqs = [
-//   {
-//     question: "What is Nova-Cart?",
-//     answer:
-//       "Nova-Cart is a fully-featured e-commerce platform designed to provide seamless online shopping experiences.",
-//   },
-//   {
-//     question: "How do I track my orders?",
-//     answer:
-//       "Once you place an order, you can track it in your account dashboard under 'My Orders'. You will also receive email updates.",
-//   },
-//   {
-//     question: "What payment methods are accepted?",
-//     answer:
-//       "We accept Bkash, Rocket, credit/debit cards, and all popular online payment methods supported in Bangladesh.",
-//   },
-//   {
-//     question: "Can I return or exchange products?",
-//     answer:
-//       "Yes! Products can be returned or exchanged within 7 days of delivery. Please check our Return Policy for more details.",
-//   },
-//   {
-//     question: "How can I contact customer support?",
-//     answer:
-//       "You can reach our support team via email at support@nova-cart.com or through the live chat on the website.",
-//   },
-// ];
-
 const FAQSection = () => {
   /*** ------> Faq data fetched ------> */
   const {

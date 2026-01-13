@@ -68,8 +68,11 @@ const SuperAdminProductListTable = ({
   return (
     <div className="lg:space-y-4 space-y-2">
       <div className="">
-        <h2 className="lg:text-2xl text-xl font-bold">
+        <h2 className="lg:text-2xl text-xl font-bold flex items-center gap-2">
           Super Admin Product List Table
+          <span className="lg:w-7 lg:h-7 w-6 h-6 shadow-sm rounded-full bg-indigo-600 text-white border-2 border-base-100 text-sm p-1 flex items-center justify-center">
+            {products ? products.length : 0}
+          </span>
         </h2>
       </div>
       {/* Search Input */}
@@ -100,7 +103,7 @@ const SuperAdminProductListTable = ({
                     <th>Brand</th>
                     <th>Stock</th>
                     <th>Status</th>
-                    <th className="text-center">Actions</th>
+                    <th className="flex justify-end">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -217,7 +220,7 @@ const SuperAdminProductListTable = ({
                 <div className="">
                   <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-6 gap-4 justify-between">
                     <div className="lg:col-span-6 col-span-12">
-                      <div className="">
+                      <div className="flex flex-wrap">
                         {viewProduct.images
                           ? viewProduct.images.map(
                               (imgSrc, index) => (
@@ -229,7 +232,7 @@ const SuperAdminProductListTable = ({
                                       imgSrc.startsWith("/") ? "" : "/uploads/"
                                     }${imgSrc}`}
                                     alt={viewProduct.name}
-                                    className="object-contain mb-2 max-h-60 w-full"
+                                    className="w-20 object-contain mb-2 max-h-60"
                                   />
                                 )
                               )
@@ -253,14 +256,14 @@ const SuperAdminProductListTable = ({
                       <p>
                         {/* <strong>Category:</strong> {viewProduct.categoryName} */}
                       </p>
-                      <p>
+                      <p className="max-h-36 overflow-y-auto my-4">
                         <strong>Description:</strong>
                         {isExpanded
                           ? viewProduct?.description
-                          : textShortener(viewProduct?.description, 300)}
+                          : textShortener(viewProduct?.description, 100)}
 
                         {viewProduct?.description &&
-                        viewProduct.description.length > 300 ? (
+                        viewProduct.description.length > 100 ? (
                           <button
                             onClick={() => setIsExpanded(!isExpanded)}
                             className="text-indigo-500 link ml-1 text-sm font-semibold"
@@ -271,6 +274,8 @@ const SuperAdminProductListTable = ({
                       </p>
                     </div>
                   </div>
+
+                  <div className="divider">PRODUCT VARIANTS</div>
 
                   {/* Variants */}
                   <div className="w-full lg:my-6 my-4">
@@ -286,7 +291,7 @@ const SuperAdminProductListTable = ({
                             variantImgSrc.images.map((img, imgIdx) => (
                               <div
                                 key={imgIdx}
-                                className="lg:col-span-4 col-span-12 flex flex-col items-center border border-base-content/15 shadow p-2 rounded-lg w-full hover:shadow-2xl transition-shadow duration-300"
+                                className="lg:col-span-3 col-span-12 flex flex-col items-center border border-base-content/15 shadow p-2 rounded-lg w-full hover:shadow-2xl transition-shadow duration-300"
                               >
                                 <img
                                   key={`${index}-${imgIdx}`}
@@ -294,10 +299,10 @@ const SuperAdminProductListTable = ({
                                     img.startsWith("/") ? "" : "/uploads/"
                                   }${img}`}
                                   alt={viewProduct.variants.name}
-                                  className="w-full object-cover mb-2 max-h-32"
+                                  className="w-20 object-cover mb-2 max-h-32"
                                 />
                                 <ul key={imgIdx} className="">
-                                  <li className="text-sm space-x-1 capitalize">
+                                  <li className="text-xs space-x-1 capitalize">
                                     <span>Color: {variantImgSrc.color},</span>
                                     <span>
                                       Size: {variantImgSrc.size}, Price: $

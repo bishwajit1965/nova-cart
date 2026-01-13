@@ -210,7 +210,7 @@ const ProductDetails = () => {
     handleAddToCart({
       product: product?.data,
       variant: selectedVariant,
-      quantity: 1,
+      quantity,
     });
   };
 
@@ -278,14 +278,14 @@ const ProductDetails = () => {
         pageTitle={pageTitle}
       />
 
-      <div className="lg:flex grid items-center justify-self-start lg:space-y-0 space-y-2 space-x-10 w-full">
-        <div className="flex justify-start lg:min-w-[14.70rem] min-w-full space-x-2">
+      <div className="lg:flex grid items-center justify-center lg:space-y-0 space-y-2 space-x-10 w-full">
+        <div className="flex justify-start lg:min-w-[10rem] min-w-full space-x-2">
           <Button
             onClick={handleViewPanelToggler}
-            variant={openViewPanel ? "success" : "indigo"}
+            variant={openViewPanel ? "successRounded" : "indigoRounded"}
             className={`${
               openViewPanel ? "bg-green-800" : "bg-info-800 text-base-100"
-            } flex items-center gap-2 lg:text-[16px] text-sm lg:min-w-[14.70rem] min-w-full`}
+            } flex items-center gap-2 lg:text-[16px] text-sm lg:min-w-[10rem] min-w-full`}
           >
             <motion.span
               animate={{ rotate: openViewPanel ? 180 : 0 }}
@@ -305,23 +305,25 @@ const ProductDetails = () => {
                 : "View Recently Viewed Products"}
             </span>
 
-            <span className="lg:w-8 lg:h-8 w-6 h-6 rounded-full bg-amber-600 flex items-center justify-center border-2 text-md shadow">
+            <span className="lg:w-7 lg:h-7 w-6 h-6 rounded-full bg-amber-600 flex items-center justify-center border-2 text-md shadow">
               {viewedProducts?.length}
             </span>
 
-            <span>{openViewPanel && <ArrowDownAZ />}</span>
+            <span className={openViewPanel ? "block" : "hidden"}>
+              {openViewPanel && <ArrowDownAZ />}
+            </span>
           </Button>
         </div>
 
-        <div className="flex justify-start lg:min-w-[14.70rem] min-w-full space-x-4">
+        <div className="flex justify-start lg:min-w-[10rem] min-w-full space-x-4">
           <Button
             onClick={handleRelatedProductsToggler}
-            variant={isOpenRelatedProducts ? "primary" : "purple"}
+            variant={isOpenRelatedProducts ? "primaryRounded" : "purpleRounded"}
             className={`${
               isOpenRelatedProducts
                 ? "bg-primary-800"
                 : "bg-info-800 text-base-100"
-            } flex items-center gap-2 lg:text-[16px] text-sm lg:min-w-[14.70rem] min-w-full`}
+            } flex items-center gap-2 lg:text-[16px] text-sm lg:min-w-[10rem] min-w-full`}
           >
             <motion.span
               animate={{ rotate: isOpenRelatedProducts ? 180 : 0 }}
@@ -341,11 +343,13 @@ const ProductDetails = () => {
                 : "View Related Products"}
             </span>
 
-            <span className="lg:w-8 lg:h-8 w-6 h-6 rounded-full bg-amber-600 flex items-center justify-center border-2 text-md shadow">
+            <span className="lg:w-7 lg:h-7 w-6 h-6 rounded-full bg-amber-600 flex items-center justify-center border-2 text-md shadow">
               {relatedProducts?.length}
             </span>
 
-            <span>{isOpenRelatedProducts && <ArrowDownAZ />}</span>
+            <span className={isOpenRelatedProducts ? "block" : "hidden"}>
+              {isOpenRelatedProducts && <ArrowDownAZ />}
+            </span>
           </Button>
         </div>
       </div>

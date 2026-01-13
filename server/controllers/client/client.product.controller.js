@@ -3,30 +3,8 @@ import Order from "../../models/client/Order.js";
 import Product from "../../models/Product.js";
 import SubCategory from "../../models/SubCategory.js";
 
-export const createProduct = async (req, res) => {
-  try {
-    const product = await Product.create({
-      ...req.body,
-      createdBy: req.user._id,
-    });
-    res.status(201).json({
-      success: true,
-      message: "Product created successfully!",
-      data: product,
-    });
-  } catch (error) {
-    console.error("Error in creating product", error);
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: error.message,
-    });
-  }
-};
-
 export const getProducts = async (req, res) => {
   try {
-    // console.log("➡️ Get products method is hit");
     const {
       category: categorySlug,
       subCategory: subCategorySlug,
@@ -35,7 +13,7 @@ export const getProducts = async (req, res) => {
       brand,
     } = req.query;
 
-    let filter = {};
+    let filter = { status: "active" };
 
     // Category filter
     if (categorySlug) {
@@ -100,7 +78,7 @@ export const getBestSellers = async (req, res) => {
         },
       },
       { $sort: { totalSold: -1 } },
-      { $limit: limit },
+
       {
         $lookup: {
           from: "products",
@@ -110,6 +88,13 @@ export const getBestSellers = async (req, res) => {
         },
       },
       { $unwind: "$product" },
+
+      // ✅ STATUS FILTER GOES HERE
+      { $match: { "product.status": "active" } },
+
+      // ✅ LIMIT LAST
+      { $limit: limit },
+
       {
         $project: {
           _id: 0,
@@ -144,7 +129,7 @@ export const getBestSellers = async (req, res) => {
 
 export const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find({})
+    const products = await Product.find({ status: "active" })
       .populate("category", "slug name")
       .populate("subCategory", "slug name");
     if (!products)
@@ -169,7 +154,10 @@ export const getAllProducts = async (req, res) => {
 export const getRandomProducts = async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 8;
-    const products = await Product.aggregate([{ $sample: { size: limit } }]);
+    const products = await Product.aggregate([
+      { $match: { status: "active" } },
+      { $sample: { size: limit } },
+    ]);
     if (!products)
       return res
         .status(404)
@@ -192,7 +180,7 @@ export const getRandomProducts = async (req, res) => {
 export const getProductById = async (req, res) => {
   try {
     const { id } = req.params;
-    const product = await Product.findById(id);
+    const product = await Product.findById({ _id: id, status: "active" });
     if (!product)
       return res
         .status(404)
@@ -210,102 +198,10 @@ export const getProductById = async (req, res) => {
   }
 };
 
-export const updateProduct = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const product = await Product.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
-    if (!product)
-      return res
-        .status(404)
-        .json({ success: false, message: "Product not found" });
-    res.status(201).json({
-      success: true,
-      message: "Product updated successfully!",
-      data: product,
-    });
-  } catch (error) {
-    console.error("Error in updating product", error);
-    res
-      .status(500)
-      .json({ success: false, message: "Internal server error", error });
-  }
-};
-
-export const deleteProduct = async (req, rs) => {
-  try {
-    const { id } = req.params;
-    const deletedProduct = await Product.findByIdAndDelete(id);
-    if (!deletedProduct)
-      return res
-        .status(404)
-        .json({ success: false, message: "Product not found!" });
-    res
-      .status(201)
-      .json({ success: true, message: "Product deleted successfully!" });
-  } catch (error) {
-    console.error("Error in deleting product", error);
-    res
-      .status(500)
-      .json({ success: false, message: "Internal server error", error });
-  }
-};
-
-export const seedProducts = async (req, res) => {
-  try {
-    const products = [
-      {
-        name: "Classic Tee",
-        description: "Comfortable cotton t-shirt for everyday wear",
-        price: 29.99,
-        stock: 50,
-        image: "https://example.com/images/classic-tee.jpg",
-        createdBy: mongoose.Types.ObjectId(), // or your admin user ID
-      },
-      {
-        name: "Running Shoes",
-        description: "Lightweight running shoes for daily workouts",
-        price: 79.99,
-        stock: 30,
-        image: "https://example.com/images/running-shoes.jpg",
-        createdBy: mongoose.Types.ObjectId(),
-      },
-      {
-        name: "Leather Jacket",
-        description: "Stylish genuine leather jacket",
-        price: 199.99,
-        stock: 15,
-        image: "https://example.com/images/leather-jacket.jpg",
-        createdBy: mongoose.Types.ObjectId(),
-      },
-    ];
-    let createdCount = 0;
-
-    for (const prod of products) {
-      const exists = await Product.findOne({ name: "Classic Tree" });
-      if (!exists) {
-        await Product.create(prod);
-        createdCount++;
-      }
-    }
-
-    res.json({
-      message: `Seeder completed. ${createdCount} new products added.`,
-    });
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
-};
-
 export default {
-  createProduct,
   getProducts,
   getRandomProducts,
   getBestSellers,
   getAllProducts,
   getProductById,
-  updateProduct,
-  deleteProduct,
-  seedProducts,
 };

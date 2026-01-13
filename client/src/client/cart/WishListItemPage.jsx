@@ -412,7 +412,7 @@ const WishListItemPage = () => {
                         return (
                           <div
                             key={item.product._id}
-                            className="lg:col-span-4 col-span-12 border border-base-content/15 rounded-xl shadow-md bg-base-100 hover:shadow-xl"
+                            className="lg:col-span-4 col-span-12 border border-base-content/15 rounded-xl shadow-md bg-base-100 hover:shadow-xl relative"
                           >
                             <div className=" mb-4">
                               <img
@@ -451,7 +451,7 @@ const WishListItemPage = () => {
                                 </button>
                               </p>
                             </div>
-                            <div className=" bottom-0 right-0 p-2 w-full flex justify-between items-center">
+                            <div className=" bottom-0 right-0 p-2 w-full flex justify-between items-center mb-8">
                               <Button
                                 className="text-red-500 btn btn-sm"
                                 variant="danger"
@@ -465,14 +465,14 @@ const WishListItemPage = () => {
                               >
                                 Remove
                               </Button>
-                              <Link to={`/product-details/${item.product._id}`}>
+                              {/* <Link to={`/product-details/${item.product._id}`}>
                                 <Button
                                   variant="primary"
                                   className="btn btn-sm"
                                 >
                                   <LucideIcon.Eye />
                                 </Button>
-                              </Link>
+                              </Link> */}
                               <Button
                                 className="btn btn-sm"
                                 variant="indigo"
@@ -492,6 +492,16 @@ const WishListItemPage = () => {
                               >
                                 Add to Cart
                               </Button>
+                            </div>
+                            <div className="absolute bottom-0 left-0 right-0 w-full rounded-b-md">
+                              <Link to={`/product-details/${item.product._id}`}>
+                                <Button
+                                  variant="base"
+                                  className="btn btn-sm w-full rounded-t-none rounded-b-lg border-none"
+                                >
+                                  <LucideIcon.Eye /> View Details
+                                </Button>
+                              </Link>
                             </div>
                           </div>
                         );

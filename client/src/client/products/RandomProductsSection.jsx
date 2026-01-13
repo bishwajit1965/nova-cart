@@ -46,7 +46,6 @@ const RandomProductsSection = () => {
       whileInView="visible"
       viewport={{ once: false }}
       variants={containerVariants}
-      // initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{
         duration: 0.8, // total animation time
@@ -58,19 +57,21 @@ const RandomProductsSection = () => {
         randomProductsDataStatus.content
       ) : (
         <motion.div
+          variants={containerVariants}
           className="max-w-6xl mx-auto lg:px-6 px-2 text-center text-base-content/70"
-          variants={itemVariants}
         >
           <motion.h2
-            className="lg:text-3xl text-xl font-extrabold text-center lg:mb-8 mb-4"
             variants={itemVariants}
+            className="lg:text-3xl text-lg font-extrabold items-center lg:mb-8 mb-4 flex justify-center gap-2"
           >
             ✨ Discover Something New{" "}
-            {randomProducts?.length > 0 ? randomProducts?.length : "0"}
+            <span className="lg:w-8 lg:h-8 w-6 h-6 rounded-full bg-indigo-600 text-sm text-white p-1 flex items-center justify-center border-2 shadow-sm border-base-100">
+              {randomProducts?.length > 0 ? randomProducts?.length : "0"}
+            </span>
           </motion.h2>
           <motion.div
+            variants={containerVariants}
             className="grid lg:grid-cols-12 grid-cols-1 md:grid-cols-4 lg:gap-6 gap-4 justify-between"
-            variants={itemVariants}
           >
             {randomProductsData?.map((p) => (
               <div

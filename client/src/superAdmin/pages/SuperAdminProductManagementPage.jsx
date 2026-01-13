@@ -9,6 +9,7 @@ import { useApiQuery } from "../services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import { useState } from "react";
 import useSubmitDelayedValue from "../services/hooks/useSubmitDelayedValue";
+import useSupAdmProductFormValidator from "../../common/hooks/useSupAdmProductFormValidator";
 
 const SuperAdminProductManagementPage = () => {
   const [editingProduct, setEditingProduct] = useState(null);
@@ -27,6 +28,48 @@ const SuperAdminProductManagementPage = () => {
       { color: "", size: "", price: 0, discountPrice: 0, SKU: "", stock: 0 },
     ],
   });
+
+  const validationRules = {
+    name: { required: { message: "Product name is required" } },
+    description: { required: { message: "Description is required" } },
+    price: {
+      required: { message: "Price is required" },
+      pattern: { value: /^\d+(\.\d{1,2})?$/, message: "Invalid price" },
+    },
+    category: { required: { message: "Category is required" } },
+    brand: { required: { message: "Brand is required" } },
+    // stock: { required: { message: "Stock is required" } },
+    // Add more rules for variants if needed
+
+    stock: {
+      custom: (value, formData) => {
+        const hasVariants = formData?.variants?.length > 0;
+        if (!hasVariants && (!value || value <= 0)) {
+          return "Stock is required for non variant products!";
+        }
+        return null;
+      },
+    },
+
+    variants: {
+      custom: (_, formData) => {
+        const variants = formData.variants || [];
+        if (variants.length === 0) return null;
+        for (let i = 0; i < variants.length; i++) {
+          const v = variants[i];
+          if (!v.price || v.price < 0) {
+            return `Variant ${i + 1} price is required`;
+          }
+          if (!v.stock || v.stock <= 0) {
+            return `VAriant ${i + 1} stock is required`;
+          }
+        }
+        return null;
+      },
+    },
+  };
+
+  const { errors, validate } = useSupAdmProductFormValidator(validationRules);
 
   /*** ------> Category fetch ------> */
   const {
@@ -58,9 +101,6 @@ const SuperAdminProductManagementPage = () => {
       : API_PATHS.PRODUCTS.ENDPOINT,
     key: API_PATHS.PRODUCTS.KEY,
     onSuccess: () => {
-      toast.success(
-        `Product ${editingProduct ? "updated" : "created"} successfully!`
-      );
       setFormData({
         name: "",
         description: "",
@@ -103,9 +143,12 @@ const SuperAdminProductManagementPage = () => {
   );
 
   /*** ------> Submit handler ------> */
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Run validation
+    const isValid = await validate(formData);
+    if (!isValid) return; // Stop submit if there are errors
     // 1️⃣ Generate tags
     const tags = generateTags({
       name: formData.name,
@@ -139,7 +182,7 @@ const SuperAdminProductManagementPage = () => {
       category: formData.category,
       subCategory: formData.subCategory,
       variants: normalizedVariants,
-      stock: globalStock,
+      stock: globalStock || formData.stock,
       brand: formData.brand,
       tags,
     };
@@ -187,7 +230,7 @@ const SuperAdminProductManagementPage = () => {
 
     const payloadToSubmit = editingProduct
       ? {
-          _id: editingProduct._id,
+          _id: editingProduct?._id,
           data: fd,
         }
       : {
@@ -195,7 +238,7 @@ const SuperAdminProductManagementPage = () => {
         };
 
     // 7️⃣ Send FormData directly to React Query mutation
-    productMutation.mutate(payloadToSubmit);
+    await productMutation.mutateAsync(payloadToSubmit);
   };
 
   /*** ------> Delete handler ------> */
@@ -235,6 +278,7 @@ const SuperAdminProductManagementPage = () => {
           setEditingProduct={setEditingProduct}
           onDelay={delayedIsSubmitting}
           onMutation={productMutation}
+          errors={errors}
         />
       </div>
       <div className="lg:col-span-7 col-span-12 bg-base-100 lg:p-4 p-2 rounded-xl border border-base-content/15 shadow-sm">

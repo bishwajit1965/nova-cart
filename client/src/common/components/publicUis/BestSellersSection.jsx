@@ -59,34 +59,27 @@ const BestSellersSection = () => {
         className="max-w-6xl mx-auto lg:px-6 px-2 text-center text-base-content/70"
         variants={itemVariants}
       >
-        <motion.h2
+        <h2
           className="lg:text-3xl text-xl font-extrabold lg:mb-8 mb-4"
           variants={itemVariants}
         >
           🛒 Best Sellers
-        </motion.h2>
+        </h2>
         {bestSellersDataStatus.status !== "success" ? (
           bestSellersDataStatus.content
         ) : bestSellers.length === 0 ? (
           <NoDataFound label="Best-sellers" />
         ) : (
-          <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:gap-6 gap-4"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: false }}
-            variants={containerVariants}
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:gap-6 gap-4">
             {bestSellers.length > 0 ? (
               bestSellers?.map((product) => (
                 <Link
                   to={`/product-details/${product.productId}`}
                   key={product.productId}
                 >
-                  <motion.div
+                  <div
                     key={product.productId}
                     className="bg-base-100 rounded-2xl shadow hover:shadow-lg transition-all"
-                    variants={itemVariants}
                   >
                     {product?.image ? (
                       <motion.img
@@ -107,7 +100,7 @@ const BestSellersSection = () => {
                         />
                       )
                     )}
-                    <motion.div className="p-4" variants={itemVariants}>
+                    <div className="p-4">
                       <h3 className="text-xl font-semibold mb-2">
                         {product.name}
                       </h3>
@@ -120,14 +113,14 @@ const BestSellersSection = () => {
                       <p className="text-primary font-bold">
                         $ {product.price}
                       </p>
-                    </motion.div>
-                  </motion.div>
+                    </div>
+                  </div>
                 </Link>
               ))
             ) : (
               <NoDataFound label={"Best sellers data"} />
             )}
-          </motion.div>
+          </div>
         )}
       </motion.div>
     </motion.section>

@@ -38,6 +38,8 @@ const Button = ({
       "bg-green-500 text-white hover:text-gray-200 hover:bg-green-800 shadow-md rounded-full lg:px-4 px-2 py-2",
     purple:
       "bg-purple-600 text-white hover:text-base-100 hover:bg-purple-700 shadow-md outline-none border-none rounded-md",
+    purpleRounded:
+      "bg-purple-600 text-white hover:text-base-100 hover:bg-purple-700 shadow-md outline-none border-none rounded-full lg:px-4 px-2",
     ghost:
       "text-gray-600 hover:text-gray-800 hover:text-black hover:bg-gray-100 border border-gray-200 shadow-md rounded-md",
 

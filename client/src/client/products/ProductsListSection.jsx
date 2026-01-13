@@ -33,13 +33,14 @@ const ProductsListSection = () => {
       p.description?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const visibleFilteredProducts = filteredProducts.slice(
+  const visibleFilteredProducts = filteredProducts?.slice(
     0,
     visibleProductsCount
   );
 
   const handleLoadMoreProducts = () =>
     setVisibleProductsCount((prev) => prev + 9);
+
   const handleLoadLessProducts = () =>
     setVisibleProductsCount((prev) => prev - 9);
 
@@ -54,8 +55,11 @@ const ProductsListSection = () => {
     <div className="bg-base-200 text-base-content/70 lg:p-15 p-2 shadow border border-base-content/15 rounded-lg">
       <div className="bg-base-300 rounded-lg lg:p-8 p-4 lg:mb-12 mb-6 shadow">
         <div className="lg:pb-8 pb-4">
-          <h2 className="lg:text-3xl font-extrabold text-center">
-            🚙 Our Products
+          <h2 className="lg:text-3xl text-lg font-extrabold justify-center flex items-center gap-2">
+            🚙 Our Products{" "}
+            <span className="w-10 h-10 rounded-full bg-indigo-600 border-2 border-base-100 text-[18px] font-bold p-1 text-white flex items-center justify-center shadow-sm">
+              {products ? products?.length : 0}
+            </span>
           </h2>
         </div>
 
@@ -106,7 +110,7 @@ const ProductsListSection = () => {
 
       {/* Load More / Less Buttons */}
       <div className="flex w-full justify-center mt-10 gap-4">
-        {visibleProductsCount < filteredProducts.length && (
+        {visibleProductsCount < filteredProducts?.length && (
           <Button
             onClick={handleLoadMoreProducts}
             icon={LucideIcon.ChevronDown}

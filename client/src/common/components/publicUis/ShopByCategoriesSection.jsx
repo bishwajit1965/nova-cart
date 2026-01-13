@@ -16,7 +16,6 @@ import { useApiQuery } from "../../../superAdmin/services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../utils/hooks/useFetchedDataStatusHandler";
 
 const ShopByCategoriesSection = () => {
-  const [categoriesData, setCategoriesData] = useState([]);
   const [visibleCount, setVisibleCount] = useState(4); // show first 8
 
   const {
@@ -28,10 +27,6 @@ const ShopByCategoriesSection = () => {
     url: API_PATHS.CLIENT_CATEGORIES.NON_FEATURED,
     queryKey: API_PATHS.CLIENT_CATEGORIES.NON_FEATURED_KEY,
   });
-
-  useEffect(() => {
-    if (categories.length > 0) setCategoriesData(categories);
-  }, [categories]);
 
   const handleLoadMore = () => {
     setVisibleCount((prev) => prev + 4);
@@ -47,48 +42,48 @@ const ShopByCategoriesSection = () => {
 
   return (
     <motion.section
-      className="lg:py-16 py-6 bg-base-200 rounded-md shadow border border-base-content/15"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: false }}
       variants={containerVariants}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.8, // total animation time
+        ease: "easeInOut", // ease in and out
+      }}
+      className="lg:py-16 py-6 bg-base-200 rounded-md shadow border border-base-content/15"
     >
       <div className="max-w-6xl mx-auto lg:px-6 px-2 text-center text-base-content/70">
-        <h2 className="lg:text-3xl text-xl font-extrabold lg:mb-8 mb-4">
+        <motion.h2
+          variants={itemVariants}
+          className="lg:text-3xl text-xl font-extrabold lg:mb-8 mb-4"
+        >
           🏪 Shop by Category
-        </h2>
-        <motion.div className="" variants={itemVariants}>
+        </motion.h2>
+        <motion.div variants={containerVariants}>
           {categoryDataStatus.status !== "success" ? (
             categoryDataStatus.content
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:gap-6 gap-4">
-              {categoriesData.length > 0 ? (
-                categoriesData.slice(0, visibleCount).map((category, idx) => (
-                  <Link
-                    to={`product-categories?category=${category.slug}`}
-                    key={idx}
-                  >
-                    <motion.div
-                      key={idx}
+              {categories.length > 0 ? (
+                categories?.slice(0, visibleCount).map((category) => (
+                  <Link to={`product-categories?category=${category.slug}`}>
+                    <div
+                      key={category._id}
                       className="rounded-2xl overflow-hidden shadow hover:shadow-lg transition-all cursor-pointer"
-                      variants={itemVariants}
                     >
                       <LazyLoadImage
                         src={category.featuredImage}
                         alt={category.name}
-                        effect="blur"
-                        threshold={100}
-                        delayTime={300}
-                        wrapperProps={{
-                          // If you need to, you can tweak the effect transition using the wrapper style.
-                          style: { transitionDelay: "1s" },
-                        }}
+                        effect="opacity"
+                        loading="lazy"
+                        className="min-h-44"
                       />
 
                       <div className="p-4 bg-base-100">
-                        <h3 className="text-lg font-medium">{category.name}</h3>
+                        <h2 className="text-xl font-bold">{category.name}</h2>
                       </div>
-                    </motion.div>
+                    </div>
                   </Link>
                 ))
               ) : (
@@ -97,15 +92,12 @@ const ShopByCategoriesSection = () => {
             </div>
           )}
         </motion.div>
-        {visibleCount < categoriesData?.length && (
-          <motion.div
-            className="lg:mt-8 mt-4 text-center"
-            variants={itemVariants}
-          >
+        {visibleCount < categories?.length && (
+          <div className="lg:mt-8 mt-4 text-center" variants={itemVariants}>
             <Button onClick={handleLoadMore} variant="outline" className="mt-4">
               Load More
             </Button>
-          </motion.div>
+          </div>
         )}
       </div>
     </motion.section>
