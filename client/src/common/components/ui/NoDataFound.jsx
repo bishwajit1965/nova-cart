@@ -2,7 +2,7 @@ import { AlertTriangleIcon } from "lucide-react";
 
 const NoDataFound = ({ label }) => {
   return (
-    <div className="flex justify-center lg:py-6 py-4 bg-base-200/70 rounded-lg border border-base-content/10 shadow-xs hover:shadow-md">
+    <div className="flex justify-center lg:py-6 py-4 px-2 bg-base-100 rounded-lg border border-base-content/10 shadow-xs hover:shadow-md">
       <div className="flex items-center">
         <div className="">
           <div className="flex justify-center items-center">

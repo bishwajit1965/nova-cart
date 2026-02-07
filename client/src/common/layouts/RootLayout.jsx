@@ -9,7 +9,7 @@ const RootLayout = () => {
         <PublicNavBar />
       </div>
 
-      <main className="lg:min-h-[calc(100vh-80px)] lg:py-12 py-6 lg:max-w-7xl mx-auto lg:px-2 px-2 text-base-content/70">
+      <main className="lg:min-h-[calc(100vh-80px)] lg:py-6 py-3 text-base-content/70 lg:px-0 px-2">
         <Outlet />
       </main>
 

@@ -35,7 +35,7 @@ const LandingPage = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const toggleForm = () => setIsFormOpen(!isFormOpen);
   return (
-    <div className="lg:max-w-7xl mx-auto lg:space-y-16 space-y-6">
+    <div className="lg:space-y-16 space-y-6">
       {/* -----> Page Meta -----> */}
       <PageMeta
         title="Home Page || Nova-Cart"
@@ -45,73 +45,75 @@ const LandingPage = () => {
       {/* Top hero Section */}
       <TopHeroSection />
 
-      {/* Announcement Bar */}
-      <AnnouncementBar />
+      <div className="lg:max-w-7xl mx-auto lg:space-y-12 space-y-6">
+        {/* Announcement Bar */}
+        <AnnouncementBar />
 
-      {/*Hero section*/}
-      <HeroSection />
+        {/*Hero section*/}
+        <HeroSection />
 
-      {/* Products List Section */}
-      <ProductsListSection />
+        {/* Products List Section */}
+        <ProductsListSection />
 
-      {/* banner Section */}
-      <BannerSection />
+        {/* banner Section */}
+        <BannerSection />
 
-      {/* 🔥 Random Products Section (New) */}
-      <RandomProductsSection />
+        {/* 🔥 Random Products Section (New) */}
+        <RandomProductsSection />
 
-      {/*Why Choose Us Section*/}
-      <WhyChooseUsSection />
+        {/*Why Choose Us Section*/}
+        <WhyChooseUsSection />
 
-      {/*Featured Categories Section*/}
-      <FeaturedCategoriesSection />
+        {/*Featured Categories Section*/}
+        <FeaturedCategoriesSection />
 
-      {/* Categories section */}
-      <ShopByCategoriesSection />
+        {/* Categories section */}
+        <ShopByCategoriesSection />
 
-      {/*Best Selling Products Section*/}
-      <BestSellersSection />
+        {/*Best Selling Products Section*/}
+        <BestSellersSection />
 
-      {/*Seasonal & Promotional Section*/}
-      <PromoSection />
+        {/*Seasonal & Promotional Section*/}
+        <PromoSection />
 
-      {/*Customer Testimonial Section*/}
-      <TestimonialsSection />
+        {/*Customer Testimonial Section*/}
+        <TestimonialsSection />
 
-      {/* FAQ section */}
-      <FAQSection />
+        {/* FAQ section */}
+        <FAQSection />
 
-      {/*News letter Subscription Section*/}
-      <NewsLetterSection />
+        {/*News letter Subscription Section*/}
+        <NewsLetterSection />
 
-      {/* Testimonial Form Section */}
-      {isFormOpen && <TestimonialFormSection />}
+        {/* Testimonial Form Section */}
+        {isFormOpen && <TestimonialFormSection />}
 
-      <motion.div
-        className="max-w-xl mx-auto text-center mb-4"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: false }}
-        variants={containerVariants}
-      >
-        <Button
-          variant=" rounded-full"
-          onClick={toggleForm}
-          className="bg-primary text-white btn-lg rounded-full px-4 py-2 shadow-lg hover:bg-primary/90"
+        <motion.div
+          className="max-w-xl mx-auto text-center mb-4"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false }}
+          variants={containerVariants}
         >
-          <MessageCircle />{" "}
-          {!isFormOpen ? "Share Your Experience" : "Close Form"}
-        </Button>
-      </motion.div>
+          <Button
+            variant=" rounded-full"
+            onClick={toggleForm}
+            className="bg-primary text-white btn-lg rounded-full px-4 py-2 shadow-lg hover:bg-primary/90"
+          >
+            <MessageCircle />{" "}
+            {!isFormOpen ? "Share Your Experience" : "Close Form"}
+          </Button>
+        </motion.div>
 
-      {/* Welcome subscription modal */}
-      {<WelcomeSubscriptionModal />}
+        {/* Welcome subscription modal */}
+        {<WelcomeSubscriptionModal />}
 
-      {/* Scroll to top button */}
-      <ScrollTopButton />
+        {/* Scroll to top button */}
+        <ScrollTopButton />
 
-      {/* Scroll progress bar */}
-      <ScrollProgressBar />
+        {/* Scroll progress bar */}
+        <ScrollProgressBar />
+      </div>
     </div>
   );
 };

@@ -135,7 +135,7 @@ const SuperAdminPublicPortfolioViewPage = () => {
   // Show actual data
   return (
     <div className="min-h-screen bg-base-100 text-base-content-/70 lg:py-10 py-5 lg:px-4 px-2">
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         {portfolios?.map((pf) => (
           <section key={pf._id} className="lg:space-y-6 space-y-4">
             {/* HERO */}

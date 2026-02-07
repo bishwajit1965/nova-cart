@@ -66,7 +66,7 @@ const WishListItemPage = () => {
           onError: (error) => {
             console.error(error);
           },
-        }
+        },
       );
     } catch (error) {
       toast.error("Failed to delete wishlist product!");
@@ -169,13 +169,13 @@ const WishListItemPage = () => {
 
           setAddedToCart((prev) => {
             const existing = prev.find(
-              (item) => item._id === productId && item.variantId === variantId
+              (item) => item._id === productId && item.variantId === variantId,
             );
             if (existing) {
               return prev.map((item) =>
                 item._id === productId && item.variantId === variantId
                   ? { ...item, quantity: item.quantity + 1 }
-                  : item
+                  : item,
               );
             } else {
               return [
@@ -200,14 +200,14 @@ const WishListItemPage = () => {
               onError: (error) => {
                 toast.error("Failed to remove from wishlist", error);
               },
-            }
+            },
           );
         },
         onError: (err) => {
           console.error("Failed to move item to cart:", err);
           toast.error("Failed to move product to cart");
         },
-      }
+      },
     );
   };
 
@@ -245,7 +245,7 @@ const WishListItemPage = () => {
   });
 
   return (
-    <>
+    <div className="lg:max-w-7xl mx-auto">
       {/* --------> Meta Data --------> */}
       <PageMeta
         title="Wish List || Nova-Cart"
@@ -258,7 +258,7 @@ const WishListItemPage = () => {
 
       {/*** --------> Wish list section --------> */}
 
-      <div className="lg:p-">
+      <div className="">
         <div className="lg:space-y- space-y-2">
           <div className="">
             <div className="bg-base-200 lg:py-10 py-4 rounded-lg shadow">
@@ -405,7 +405,7 @@ const WishListItemPage = () => {
                         const variant =
                           item.variantId && item.product?.variants
                             ? item.product.variants.find(
-                                (v) => v._id === item.variantId
+                                (v) => v._id === item.variantId,
                               )
                             : null;
 
@@ -459,7 +459,7 @@ const WishListItemPage = () => {
                                 onClick={() =>
                                   handleDeleteClick(
                                     item.product,
-                                    item.variantId
+                                    item.variantId,
                                   )
                                 }
                               >
@@ -513,7 +513,7 @@ const WishListItemPage = () => {
 
               {/* ========> RIGHT SIDEBAR ->  Cart summary panel ========>  */}
               {viewCart && (
-                <div className="lg:col-span-3 col-span-12 max-h-[26.5rem] sticky top-20 lg:mb-10 mb-10 lg:order-last order-first">
+                <div className="lg:col-span-3 col-span-12 lg:max-h-[34rem] sticky top-20 lg:order-last order-first">
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -534,6 +534,7 @@ const WishListItemPage = () => {
               )}
             </div>
           </div>
+
           {/* Delete Modal Toggler -> Delete wishlist data */}
           {deleteModalOpen && (
             <ConfirmDeleteModal
@@ -547,7 +548,7 @@ const WishListItemPage = () => {
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

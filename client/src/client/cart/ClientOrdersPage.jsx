@@ -147,14 +147,14 @@ const ClientOrdersPage = () => {
                 order.status === "delivered"
                   ? "text-green-600 bg-sky-100 px-2 py-1 rounded-md border border-base-content/15"
                   : order.status === "pending"
-                  ? "text-yellow-600 bg-indigo-100 px-2 py-1 rounded-md border border-base-content/15"
-                  : order.status === "cancelled"
-                  ? "text-white bg-red-500 px-2 py-1 rounded-md border-yellow border-base-content/15 animate-pulse"
-                  : order.status === "processing"
-                  ? "text-green-600 bg-blue-100 px-2 py-1 rounded-md border border-base-content/15"
-                  : order.status === "shipped"
-                  ? "text-red-600 bg-purple-100 px-2 py-1 rounded-md border border-base-content/15"
-                  : "text-blue-600 bg-sky-300 px-2 py-1 rounded-md border border-base-content/15"
+                    ? "text-yellow-600 bg-indigo-100 px-2 py-1 rounded-md border border-base-content/15"
+                    : order.status === "cancelled"
+                      ? "text-white bg-red-500 px-2 py-1 rounded-md border-yellow border-base-content/15 animate-pulse"
+                      : order.status === "processing"
+                        ? "text-green-600 bg-blue-100 px-2 py-1 rounded-md border border-base-content/15"
+                        : order.status === "shipped"
+                          ? "text-red-600 bg-purple-100 px-2 py-1 rounded-md border border-base-content/15"
+                          : "text-blue-600 bg-sky-300 px-2 py-1 rounded-md border border-base-content/15"
               } font-medium`}
             >
               {order.status}
@@ -217,7 +217,7 @@ const ClientOrdersPage = () => {
   );
 
   return (
-    <>
+    <div className="lg:max-w-7xl mx-auto">
       {/* ------> Page meta ------> */}
       <PageMeta
         title="Client Orders Page || Nova-cart"
@@ -264,7 +264,7 @@ const ClientOrdersPage = () => {
           )}
         </div>
       )}
-    </>
+    </div>
   );
 };
 

@@ -81,7 +81,17 @@ import {
   X,
   HeartPlus,
   HeartPlusIcon,
+  Layers,
+  Layers2Icon,
+  Layers3,
+  Layers3Icon,
+  Book,
+  BookAIcon,
+  BookCopyIcon,
+  BookOpen,
+  UserCircle,
 } from "lucide-react";
+import { Layer } from "recharts";
 
 // Central registry
 export const LucideIcon = {
@@ -92,6 +102,10 @@ export const LucideIcon = {
   ArrowBigLeft,
   ArrowBigLeft,
   AlertCircle,
+  Book,
+  BookAIcon,
+  BookCopyIcon,
+  BookOpen,
   Check,
   CheckCircle2Icon,
   CheckCheckIcon,
@@ -131,6 +145,11 @@ export const LucideIcon = {
   HeartPlus,
   HeartPlusIcon,
   HeartCrackIcon,
+  Layer,
+  Layers,
+  Layers2Icon,
+  Layers3,
+  Layers3Icon,
   List,
   ListCheck,
   Lock,
@@ -166,6 +185,10 @@ export const LucideIcon = {
   Upload,
   UploadCloud,
   UploadIcon,
+  User,
+  UserRoundPen,
+  UserCircle,
+  User,
   X,
   // Continue adding here
 };

@@ -129,7 +129,7 @@ const ProductDetails = () => {
   const [mainImage, setMainImage] = useState(product?.data?.images[0]) || "";
   const [selectedColor, setSelectedColor] = useState(colors[0]) || "";
   const [selectedVariant, setSelectedVariant] = useState(
-    product.data.variants.find((v) => v.color === colors[0] || null)
+    product.data.variants.find((v) => v.color === colors[0] || null),
   );
 
   // Variant sizes
@@ -144,7 +144,7 @@ const ProductDetails = () => {
   const handleSizeSelect = (size) => {
     setSelectedSize(size);
     const variant = product.data.variants.find(
-      (v) => v.color === selectedColor && v.size === size
+      (v) => v.color === selectedColor && v.size === size,
     );
     setSelectedVariant(variant);
   };
@@ -199,8 +199,8 @@ const ProductDetails = () => {
     setSelectedSize(newSizes[0] || "");
     setSelectedVariant(
       product.data.variants.find(
-        (v) => v.color === selectedColor && v.size === newSizes[0]
-      ) || null
+        (v) => v.color === selectedColor && v.size === newSizes[0],
+      ) || null,
     );
   }, [selectedColor]);
 
@@ -272,7 +272,7 @@ const ProductDetails = () => {
   });
 
   return (
-    <div className="lg:space-y-8 space-y-0.5">
+    <div className="lg:max-w-7xl mx-auto lg:space-y-8 space-y-0.5">
       <DynamicPageTitle
         icon={<LucideIcon.Package size={25} />}
         pageTitle={pageTitle}
@@ -293,19 +293,17 @@ const ProductDetails = () => {
               className="flex items-center justify-center lg:h-7 lg:w-7 h-6 w-6 rounded-full bg-green-600 border-2 shadow"
             >
               {openViewPanel ? (
-                <LucideIcon.ChevronsUp />
+                <LucideIcon.ChevronsUp size={18} />
               ) : (
-                <LucideIcon.ChevronsDown />
+                <LucideIcon.ChevronsDown size={18} />
               )}
             </motion.span>
 
             <span className="lg:text-[16px] text-[11px]">
-              {openViewPanel
-                ? "Close Recently Viewed Products"
-                : "View Recently Viewed Products"}
+              {openViewPanel ? "Close Viewed Products" : "Viewed Products"}
             </span>
 
-            <span className="lg:w-7 lg:h-7 w-6 h-6 rounded-full bg-amber-600 flex items-center justify-center border-2 text-md shadow">
+            <span className="lg:w-7 lg:h-7 w-6 h-6 rounded-full bg-amber-600 flex items-center justify-center border-2 text-sm shadow">
               {viewedProducts?.length}
             </span>
 
@@ -331,19 +329,19 @@ const ProductDetails = () => {
               className="flex items-center justify-center lg:h-7 lg:w-7 h-6 w-6 rounded-full bg-green-600 border-2 shadow"
             >
               {isOpenRelatedProducts ? (
-                <LucideIcon.ChevronsUp />
+                <LucideIcon.ChevronsUp size={18} />
               ) : (
-                <LucideIcon.ChevronsDown />
+                <LucideIcon.ChevronsDown size={18} />
               )}
             </motion.span>
 
             <span className="lg:text-[16px] text-[11px]">
               {isOpenRelatedProducts
                 ? "Close Related Products"
-                : "View Related Products"}
+                : "Related Products"}
             </span>
 
-            <span className="lg:w-7 lg:h-7 w-6 h-6 rounded-full bg-amber-600 flex items-center justify-center border-2 text-md shadow">
+            <span className="lg:w-7 lg:h-7 w-6 h-6 rounded-full bg-amber-600 flex items-center justify-center border-2 text-sm shadow">
               {relatedProducts?.length}
             </span>
 
@@ -762,7 +760,7 @@ const ProductDetails = () => {
                     }
                     onClick={() =>
                       setQuantity((q) =>
-                        Math.min(selectedVariant.stock || 1, q + 1)
+                        Math.min(selectedVariant.stock || 1, q + 1),
                       )
                     }
                     disabled={quantity >= (selectedVariant?.stock || 1)}

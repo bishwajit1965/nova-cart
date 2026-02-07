@@ -93,7 +93,7 @@ const ClientCartManagementPage = () => {
   };
 
   return (
-    <>
+    <div className="lg:max-w-7xl mx-auto">
       <PageMeta
         title="Cart Management Page || Nova-Cart"
         description="Manage your cart and wishlist"
@@ -262,7 +262,7 @@ const ClientCartManagementPage = () => {
                       <img
                         onClick={() => handleItemClick(product)}
                         src={buildUrl(
-                          variant?.images?.[0] || product?.images?.[0]
+                          variant?.images?.[0] || product?.images?.[0],
                         )}
                         // src={product?.images?.[0]}
 
@@ -316,8 +316,8 @@ const ClientCartManagementPage = () => {
                           inCart
                             ? "cursor-not-allowed bg-pink-500 rounded-md opacity-50"
                             : cart?.length >= CART_LIMIT
-                            ? "cursor-not-allowed bg-gray-600 rounded-b-md opacity-50"
-                            : ""
+                              ? "cursor-not-allowed bg-gray-600 rounded-b-md opacity-50"
+                              : ""
                         }`}
                       >
                         <Button
@@ -347,8 +347,8 @@ const ClientCartManagementPage = () => {
                           {inCart
                             ? "In Cart"
                             : cart?.length >= CART_LIMIT
-                            ? "Cart Full"
-                            : "Add to Cart"}
+                              ? "Cart Full"
+                              : "Add to Cart"}
                         </Button>
                       </div>
                     </div>
@@ -358,8 +358,8 @@ const ClientCartManagementPage = () => {
                         inWishlist
                           ? "cursor-not-allowed bg-pink-500 rounded-b-md opacity-50"
                           : wishList?.length >= WISHLIST_LIMIT
-                          ? "cursor-not-allowed bg-base-300 rounded-b-md opacity-80"
-                          : ""
+                            ? "cursor-not-allowed bg-base-300 rounded-b-md opacity-80"
+                            : ""
                       } absolute bottom-0 left-0 right-0 w-full`}
                     >
                       <Button
@@ -386,8 +386,8 @@ const ClientCartManagementPage = () => {
                         {inWishlist
                           ? "In Wishlist"
                           : wishList.length >= WISHLIST_LIMIT
-                          ? "Wishlist Full"
-                          : "Add to Wishlist"}
+                            ? "Wishlist Full"
+                            : "Add to Wishlist"}
                       </Button>
                     </div>
                   </div>
@@ -469,7 +469,7 @@ const ClientCartManagementPage = () => {
           </Modal>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

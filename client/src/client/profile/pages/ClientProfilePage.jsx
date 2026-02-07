@@ -71,7 +71,7 @@ const ClientProfilePage = () => {
     key: API_PATHS.CLIENT_USER.CLIENT_PLANS_KEY,
     onSuccess: () => {
       queryClient.invalidateQueries(
-        API_PATHS.CLIENT_PAN_HISTORY.CLIENT_HISTORY_KEY
+        API_PATHS.CLIENT_PAN_HISTORY.CLIENT_HISTORY_KEY,
       );
     },
     onError: (err) => {
@@ -89,7 +89,7 @@ const ClientProfilePage = () => {
     key: API_PATHS.CLIENT_USER.CLIENT_PLANS_KEY,
     onSuccess: () => {
       queryClient.invalidateQueries(
-        API_PATHS.CLIENT_PAN_HISTORY.CLIENT_HISTORY_KEY
+        API_PATHS.CLIENT_PAN_HISTORY.CLIENT_HISTORY_KEY,
       );
     },
     onError: (err) => {
@@ -105,7 +105,7 @@ const ClientProfilePage = () => {
     key: API_PATHS.CLIENT_USER.CLIENT_USER_KEY,
     onSuccess: () => {
       queryClient.invalidateQueries(
-        API_PATHS.CLIENT_PAN_HISTORY.CLIENT_HISTORY_KEY
+        API_PATHS.CLIENT_PAN_HISTORY.CLIENT_HISTORY_KEY,
       );
     },
     onError: (err) => {
@@ -184,10 +184,10 @@ const ClientProfilePage = () => {
 
   const filteredHistory = planHistory
     ?.filter((h) =>
-      h.planId?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+      h.planId?.name?.toLowerCase().includes(searchTerm.toLowerCase()),
     )
     ?.filter((h) =>
-      filterAction ? h.action.toLowerCase() === filterAction : true
+      filterAction ? h.action.toLowerCase() === filterAction : true,
     );
   console.log("Filter history", filteredHistory);
   const resetFilterHistory = () => {
@@ -275,7 +275,7 @@ const ClientProfilePage = () => {
   });
 
   return (
-    <>
+    <div className="lg:max-w-7xl mx-auto">
       <PageMeta
         title="My Profile Page || Nova-Cart"
         description="You can know about yourself from here in details."
@@ -532,7 +532,7 @@ const ClientProfilePage = () => {
 
                           {(() => {
                             const activePlan = planHistory.find(
-                              (h) => h.isActive
+                              (h) => h.isActive,
                             );
                             if (!activePlan)
                               return (
@@ -561,7 +561,7 @@ const ClientProfilePage = () => {
                                   <span>
                                     📅 Started:{" "}
                                     {new Date(
-                                      activePlan?.startedAt
+                                      activePlan?.startedAt,
                                     ).toLocaleDateString("en-US")}
                                   </span>
                                 </div>
@@ -570,7 +570,7 @@ const ClientProfilePage = () => {
                                     <p className="text-sm text-gray-500 mt-1">
                                       ⏳ Expires:{" "}
                                       {new Date(
-                                        activePlan.endedAt
+                                        activePlan.endedAt,
                                       ).toLocaleDateString("en-US")}
                                     </p>
                                   ) : activePlan.duration === "lifetime" ? (
@@ -623,7 +623,7 @@ const ClientProfilePage = () => {
                                                   handlePlanChange(
                                                     "upgrade",
                                                     userData?._id,
-                                                    p?._id
+                                                    p?._id,
                                                   )
                                                 }
                                                 variant="success"
@@ -647,7 +647,7 @@ const ClientProfilePage = () => {
                                                   handlePlanChange(
                                                     "downgrade",
                                                     userData?._id,
-                                                    p?._id
+                                                    p?._id,
                                                   )
                                                 }
                                                 variant="warning"
@@ -683,10 +683,10 @@ const ClientProfilePage = () => {
                                                                 handlePlanChange(
                                                                   "cancel",
                                                                   userData?._id,
-                                                                  p._id
+                                                                  p._id,
                                                                 );
                                                                 toast.dismiss(
-                                                                  t.id
+                                                                  t.id,
                                                                 );
                                                               }}
                                                               className="btn btn-sm text-sm"
@@ -697,7 +697,7 @@ const ClientProfilePage = () => {
                                                               variant="secondary"
                                                               onClick={() =>
                                                                 toast.dismiss(
-                                                                  t.id
+                                                                  t.id,
                                                                 )
                                                               }
                                                               className="btn btn-sm text-sm"
@@ -707,7 +707,7 @@ const ClientProfilePage = () => {
                                                           </div>
                                                         </div>
                                                       ),
-                                                      { duration: 5000 }
+                                                      { duration: 5000 },
                                                     );
                                                   }}
                                                   variant="danger"
@@ -835,7 +835,7 @@ const ClientProfilePage = () => {
                                           planHistory.filter(
                                             (h) =>
                                               h.action.toLowerCase() ===
-                                              stat.key
+                                              stat.key,
                                           ).length
                                         }
                                       </p>
@@ -857,7 +857,7 @@ const ClientProfilePage = () => {
                                     ? planHistory.length
                                     : planHistory.filter(
                                         (h) =>
-                                          h.action.toLowerCase() === stat.key
+                                          h.action.toLowerCase() === stat.key,
                                       ).length}
                                 </p>
                                 <p className=" text-indigo-600 font-extrabold">
@@ -927,10 +927,10 @@ const ClientProfilePage = () => {
                                   history.action === "upgrade"
                                     ? "bg-green-100 text-green-700"
                                     : history.action === "downgrade"
-                                    ? "bg-yellow-100 text-yellow-700"
-                                    : history.action === "cancel"
-                                    ? "bg-red-100 text-red-700"
-                                    : "bg-blue-100 text-blue-700"
+                                      ? "bg-yellow-100 text-yellow-700"
+                                      : history.action === "cancel"
+                                        ? "bg-red-100 text-red-700"
+                                        : "bg-blue-100 text-blue-700"
                                 }`}
                               >
                                 {history.action.charAt(0).toUpperCase() +
@@ -956,7 +956,7 @@ const ClientProfilePage = () => {
                                     year: "numeric",
                                     month: "short",
                                     day: "numeric",
-                                  }
+                                  },
                                 )}
                               </span>
                             </div>
@@ -971,7 +971,7 @@ const ClientProfilePage = () => {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

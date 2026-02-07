@@ -11,6 +11,7 @@ import useFetchedDataStatusHandler from "../utils/hooks/useFetchedDataStatusHand
 import usePageTitle from "../../superAdmin/services/hooks/usePageTitle";
 import useSEO from "../hooks/useSeo.js";
 import { SEO_TEMPLATES } from "../../utils/seoTemplate.js";
+import { LucideIcon } from "../lib/LucideIcons.js";
 
 const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 const skills = [
@@ -87,12 +88,12 @@ const AboutUs = () => {
     return aboutContentDataStatus.content;
 
   return (
-    <>
+    <div className="lg:max-w-7xl mx-auto ">
       <PageMeta
         title="About Us || Nova-Cart"
         description="You can know about us from here in details."
       />
-      <DynamicPageTitle pageTitle={pageTitle} />
+      <DynamicPageTitle pageTitle={pageTitle} icon={<LucideIcon.BookOpen />} />
 
       <div className="min-h-screen lg:py-16 py-4 lg:px-6 px-2 bg-base-200 rounded-2xl ">
         <div className="max-w-6xl mx-auto lg:space-y-16 space-y-4">
@@ -274,7 +275,7 @@ const AboutUs = () => {
           </motion.div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -112,12 +112,12 @@ const ContactPage = () => {
   };
 
   return (
-    <section className="text-base-content">
+    <div className="lg:max-w-7xl mx-auto text-base-content">
       <PageMeta
         title="Contact Us || Nova-Cart"
         description="You can contact us for any need 24/7"
       />
-      <DynamicPageTitle pageTitle={pageTitle} />
+      <DynamicPageTitle pageTitle={pageTitle} icon={<LucideIcon.Mail />} />
       <div className="max-w-7xl mx-auto lg:space-y-16 space-y-6">
         <div className="bg-base-200 shadow rounded-xl lg:space-y-8 space-y-4 lg:p-12 p-2">
           {/* Hero */}
@@ -343,7 +343,7 @@ const ContactPage = () => {
           </p>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

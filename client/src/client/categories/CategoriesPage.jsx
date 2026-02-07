@@ -13,6 +13,8 @@ import { useEffect } from "react";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import usePageTitle from "../../superAdmin/services/hooks/usePageTitle";
 import { useState } from "react";
+import { FaBars, FaTimes } from "react-icons/fa";
+import { LucidePackageCheck } from "lucide-react";
 
 const CategoriesPage = () => {
   const pageTile = usePageTitle();
@@ -21,6 +23,7 @@ const CategoriesPage = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [addedToCart, setAddedToCart] = useState([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 });
   const [selectedBrand, setSelectedBrand] = useState("All Brands");
   const apiURL = import.meta.env.VITE_API_URL || "http:localhost:3000";
@@ -109,13 +112,13 @@ const CategoriesPage = () => {
     // Subcategory filter
     if (subCategorySlug) {
       filtered = filtered.filter(
-        (p) => p.subCategory?.slug === subCategorySlug
+        (p) => p.subCategory?.slug === subCategorySlug,
       );
     }
 
     // Price filter
     filtered = filtered.filter(
-      (p) => p.price >= priceRange.min && p.price <= priceRange.max
+      (p) => p.price >= priceRange.min && p.price <= priceRange.max,
     );
 
     // Brand filter
@@ -203,7 +206,7 @@ const CategoriesPage = () => {
               return prev.map((item) =>
                 item._id === product._id
                   ? { ...item, quantity: item.quantity + 1 }
-                  : item
+                  : item,
               );
               // toast.error("Item already added! try new one!");
             } else {
@@ -221,8 +224,13 @@ const CategoriesPage = () => {
             }
           });
         },
-      }
+      },
     );
+  };
+
+  /*** -----> Sidebar toggler handler -----> */
+  const handleToggleSidebar = () => {
+    setIsSidebarOpen((prev) => !prev);
   };
 
   /*** -----> Use Fetched CATEGORY Data Status Handler -----> */
@@ -249,58 +257,127 @@ const CategoriesPage = () => {
   });
 
   return (
-    <div>
+    <div className="lg:max-w-7xl mx-auto">
       {/* --------> Page Meta --------> */}
       <PageMeta
         title="Category Page || Nova-Cart"
         description="Have a look on all categories in detail."
       />
 
-      <DynamicPageTitle pageTitle={pageTile} />
+      <DynamicPageTitle
+        pageTitle={pageTile}
+        icon={<LucideIcon.Layers3Icon />}
+      />
+
+      <div
+        className={`${isSidebarOpen ? "flex justify-end z-10" : "flex justify-start"} block lg:hidden mb-4 bg-base-300 p-2 rounded-t-md`}
+      >
+        {!isSidebarOpen ? (
+          <FaBars
+            size={22}
+            onClick={handleToggleSidebar}
+            className="border border-base-content/15 shadow-sm p-0.5 rounded-sm"
+          />
+        ) : (
+          <FaTimes
+            size={22}
+            onClick={handleToggleSidebar}
+            className="border border-base-content/15 shadow-sm p-0.5 rounded-sm"
+          />
+        )}
+        <span className="ml-2 font-bold"> Sidebar Toggler</span>
+      </div>
+
+      {/* Mobile overlay */}
+      {isSidebarOpen && (
+        <div
+          onClick={handleToggleSidebar}
+          className="fixed inset-0 bg-black/90 z-20 lg:hidden"
+        ></div>
+      )}
 
       <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-10 gap-4 justify-between">
         {/*** ------> Aside Categories section ----->  */}
         {categoriesStatus.status !== "success" ? (
           categoriesStatus.content
         ) : (
-          <aside className="lg:col-span-3 col-span-12 shadow rounded-lg sticky lg:top-20 lg:max-h-[calc(100vh-100px)]">
-            <div className="mb-4 text-sm text-gray-500 bg-base-300 p-2 lg:text-2xl font-bold border border-base-content/10 rounded-t-lg">
-              <h3 className="lg:text-2xl font-bold text-lg">Categories</h3>
+          <aside
+            className={`
+            bg-base-100 shadow
+            lg:col-span-3 col-span-12
+            fixed lg:static
+            top-0 left-0
+            h-screen lg:h-auto
+            w-80 lg:w-auto
+            lg:z-30
+            z-50
+            transform transition-transform duration-300
+            ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+            lg:translate-x-0
+            lg:max-h-[calc(100vh-6rem)] max-h-screen
+            lg:sticky lg:top-20
+            overflow-y-auto
+          `}
+          >
+            <div className="mb-4 text-sm text-gray-500 bg-base-300 lg:p-2 p-2 lg:text-2xl font-bold border border-base-content/10 lg:rounded-t-lg rounded-t-xs">
+              <h3
+                className={`lg:text-2xl text-lg font-bold flex items-center justify-between gap-2`}
+              >
+                <span className="flex items-center gap-2">
+                  <LucideIcon.ListCheck /> Categories
+                </span>
+                <span>
+                  {isSidebarOpen && (
+                    <FaTimes
+                      onClick={handleToggleSidebar}
+                      size={25}
+                      className="lg:hidden block border border-base-content/15 p-1 rounded-sm text-red-500"
+                    />
+                  )}
+                </span>
+              </h3>
             </div>
 
-            <div className="lg:px-4 px-2 lg:max-h-[calc(100vh-180px)] pb-4 overflow-y-auto">
+            <div className="lg:px-4 px-2 pb-4">
               <ul className="space-y-2 lg:mb-4 mb-2">
                 <li
                   className={`${
                     selectedCategory
                       ? "hover:bg-base-200"
                       : "bg-base-200 border-b border-base-content/15 text-indigo-500 font-semibold hover:bg-base-200"
-                  }`}
+                  } `}
                 >
-                  <Link to="/product-categories">All Products</Link>
+                  <Link
+                    to="/product-categories"
+                    className="flex items-center gap-2 font-bold"
+                  >
+                    {" "}
+                    <LucidePackageCheck size={20} /> All Products
+                  </Link>
                 </li>
 
                 {categories.map((cat) => (
                   <li key={cat._id}>
                     <button
-                      className={`block rounded hover:bg-base-100 cursor-pointer w-full text-left ${
+                      className={`rounded text-base-content/70 hover:bg-base-100 cursor-pointer w-full text-left flex items-center gap-2 font-bold ${
                         selectedCategory === cat.slug
                           ? "bg-base-200 border-base-content/15 text-indigo-500 font-semibold cursor-pointer w-full border-b"
                           : ""
                       }`}
                       onClick={() => handleCategoryClick(cat.slug)}
                     >
-                      {cat.name}
+                      <LucideIcon.List size={18} /> {cat.name}
                     </button>
 
                     {cat.subcategories?.length &&
                       cat.subcategories.length > 0 && (
-                        <ul className="pl-4 space-y-1 text-sm w-full block">
+                        <ul className="pl-4 space-y-1 text-sm w-full block text-base-content">
                           {cat.subcategories.map((sub) => (
                             <li key={sub._id}>
                               <button
-                                className={`block px-2 py-1 rounded hover:bg-gray-100 ${
-                                  selectedCategory === sub.slug
+                                className={`px-2 py-1 rounded hover:bg-gray-100 flex items-center gap-2 ${
+                                  subCategorySlug.toString() ===
+                                  sub.slug.toString()
                                     ? "bg-base-200 text-indigo-500 font-semibold px-2 block cursor-pointer w-full"
                                     : "cursor-pointer"
                                 }`}
@@ -308,7 +385,7 @@ const CategoriesPage = () => {
                                   handleSubCategoryClick(cat.slug, sub.slug)
                                 }
                               >
-                                {sub.name}
+                                <LucideIcon.CheckCircle size={14} /> {sub.name}
                               </button>
                             </li>
                           ))}
@@ -359,7 +436,7 @@ const CategoriesPage = () => {
                     onChange={(e) =>
                       handlePriceChange(
                         Math.min(Number(e.target.value), priceRange.max),
-                        priceRange.max
+                        priceRange.max,
                       )
                     }
                     className="absolute w-full h-6 bg-transparent appearance-none pointer-events-auto"
@@ -375,7 +452,7 @@ const CategoriesPage = () => {
                     onChange={(e) =>
                       handlePriceChange(
                         priceRange.min,
-                        Math.max(Number(e.target.value), priceRange.min)
+                        Math.max(Number(e.target.value), priceRange.min),
                       )
                     }
                     className="absolute w-full h-6 bg-transparent appearance-none pointer-events-auto"
@@ -433,11 +510,18 @@ const CategoriesPage = () => {
         ) : (
           <main className="lg:col-span-9 col-span-12 rounded-lg">
             {/* Breadcrumb */}
-            <div className="mb-4 text-sm text-gray-500 bg-base-300 p-2 rounded-t-lg border-t border-b border-base-content/10 flex items-center gap-2">
-              <Link to="/">
-                <h3 className="lg:text-2xl text-xl font-bold">Home</h3>
+            <div className="mb-4 text-sm text-gray-500 bg-base-300 lg:p-2 p-1 rounded-t-lg border-t border-b border-base-content/10 flex items-center gap-2">
+              <Link to="/" className="m-0 p-0 flex items-center">
+                <h3 className="lg:text-2xl text-lg font-bold flex items-center gap-2">
+                  <LucideIcon.Home />
+                  Home
+                </h3>
               </Link>
-              {selectedCategory && <>&gt; {selectedCategory}</>}
+              {selectedCategory && (
+                <div className="flex items-center pt-1">
+                  &gt;&gt; {selectedCategory}
+                </div>
+              )}
             </div>
 
             {/*Added product limit to cart pop-up*/}
@@ -524,7 +608,7 @@ const CategoriesPage = () => {
                           disabled={addedToCart.some(
                             (item) =>
                               item._id === p._id ||
-                              addedToCart.length >= CART_LIMIT
+                              addedToCart.length >= CART_LIMIT,
                           )}
                           type="submit"
                           variant={`${
@@ -554,8 +638,8 @@ const CategoriesPage = () => {
                           {addedToCart.some((item) => item._id === p._id)
                             ? "Added"
                             : addedToCart.length >= CART_LIMIT
-                            ? "Cart Full!"
-                            : "Add to Cart"}
+                              ? "Cart Full!"
+                              : "Add to Cart"}
                         </Button>
                       </div>
                     </div>

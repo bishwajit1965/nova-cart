@@ -4,6 +4,7 @@ import Button from "../../../common/components/ui/Button";
 import { Link } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
 import NoDataFound from "../../../common/components/ui/NoDataFound";
+import { LucideIcon } from "../../../common/lib/LucideIcons";
 
 const CartSummaryPanel = ({ cart, handleGenerateCouponCode }) => {
   const productsOnly = [];
@@ -36,7 +37,7 @@ const CartSummaryPanel = ({ cart, handleGenerateCouponCode }) => {
           </span>
         </h2>
       </div>
-      <div className="lg:space-y-4 space-y-2 lg:px-4 lg:py-4 p-2">
+      <div className="lg:space-y-4 space-y-2 lg:px-2 lg:py-4 p-2">
         {!cart || cart.length === 0 ? <NoDataFound label="Cart item" /> : null}
 
         <div className="flex flex-col gap-2 text-sm text-base-content">
@@ -45,9 +46,15 @@ const CartSummaryPanel = ({ cart, handleGenerateCouponCode }) => {
           </h3>
 
           {productsOnly?.map((item) => (
-            <div key={item?.product?._id} className="flex justify-between">
-              <span className="font-medium">
-                <span>🔯</span> {item?.product?.name} x {item.quantity}
+            <div
+              key={item?.product?._id}
+              className="flex items-center justify-between"
+            >
+              <span className="font-medium flex items-center">
+                <span>
+                  <LucideIcon.Check size={10} className="mr-1" />
+                </span>{" "}
+                {item?.product?.name} x {item.quantity}
               </span>
               <span className="font-semibold">
                 ${(item?.product?.price * item.quantity).toFixed(2)}
@@ -57,6 +64,7 @@ const CartSummaryPanel = ({ cart, handleGenerateCouponCode }) => {
           <h3 className="font-bold text-sm flex items-center border-b pb-1 border-base-content/20 gap-1 text-base-content my-2">
             <LucideCircleArrowDown size={20} /> Product (s) with variants
           </h3>
+
           {/* Products with variants */}
           {productWithVariants?.map((item) => (
             <div
@@ -64,7 +72,9 @@ const CartSummaryPanel = ({ cart, handleGenerateCouponCode }) => {
               className="flex justify-between"
             >
               <span className="text-sm flex items-center">
-                <span className="">🔯</span>
+                <span className="">
+                  <LucideIcon.Check size={10} className="mr-1" />
+                </span>
                 {item?.product?.name} ({item.color}, {item.size}) x{" "}
                 {item.quantity}
               </span>
@@ -84,7 +94,7 @@ const CartSummaryPanel = ({ cart, handleGenerateCouponCode }) => {
         <span>${subTotal.toFixed(2)}</span>
       </div>
 
-      <div className="w-full border-ts border-base-content/25">
+      <div className="w-full border-t border-base-content/25">
         <Link to="/client-cart-checkout" className="w-full">
           <Button
             onClick={handleGenerateCouponCode}

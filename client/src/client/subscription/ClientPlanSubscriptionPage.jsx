@@ -94,7 +94,7 @@ const ClientPlanSubscriptionPage = () => {
   }));
 
   return (
-    <div>
+    <div className="lg:max-w-7xl mx-auto">
       <PageMeta
         title="Client Plan Management || Nova-Cart"
         description="You can manage plans data in detail."
