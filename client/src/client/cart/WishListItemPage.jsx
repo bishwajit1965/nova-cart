@@ -15,7 +15,7 @@ import { useApiQuery } from "../../superAdmin/services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import usePageTitle from "../../superAdmin/services/hooks/usePageTitle";
 import useGlobalContext from "../../common/hooks/useGlobalContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CartItemList from "./components/CartItemList";
 import { motion } from "framer-motion";
 import CartSummaryPanel from "./components/CartSummaryPanel";
@@ -30,6 +30,7 @@ const WishListItemPage = () => {
   const [addedToCart, setAddedToCart] = useState([]);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [showSummary, setShowSummary] = useState(false);
   const navigate = useNavigate();
 
   const CART_LIMIT = 10;
@@ -50,6 +51,21 @@ const WishListItemPage = () => {
     handleRemoveCartItem,
     handleToggleViewCart,
   } = useGlobalContext();
+
+  // Esc btn hides cart summary panel
+  useEffect(() => {
+    const handler = (e) => e.key === "Escape" && setShowSummary(false);
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
+
+  // Disables page scroll
+  useEffect(() => {
+    document.body.style.overflow = showSummary ? "hidden" : "auto";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [showSummary]);
 
   const handleDeleteClick = (item) => {
     setItemToDelete(item);
@@ -255,7 +271,17 @@ const WishListItemPage = () => {
         icon={<LucideIcon.Heart size={30} />}
         pageTitle={pageTitle}
       />
-
+      {/* Mobile Summary Toggle */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-white dark:bg-slate-900 border-t">
+        <button
+          onClick={() => setShowSummary(true)}
+          className="w-full py-2 font-semibold bg-emerald-600 text-white rounded-sm"
+        >
+          <span className="flex items-center justify-center gap-2">
+            <LucideIcon.ShoppingCart /> View Order Summary
+          </span>
+        </button>
+      </div>
       {/*** --------> Wish list section --------> */}
 
       <div className="">
@@ -361,7 +387,10 @@ const WishListItemPage = () => {
               <div className="lg:col-span-9 col-span-12 lg:space-y-4 space-y-2">
                 {/* ------> CARTS LIST DATA DISPLAYED ------> */}
 
-                <div className="">
+                <div
+                  className={`${showSummary ? "hidden" : "block"} lg:my-3 rounded-lg lg:block`}
+                  // className="lg:my-3 rounded-lg"
+                >
                   {cartsDataStatus.status !== "success" ? (
                     cartsDataStatus.content
                   ) : (
@@ -512,8 +541,22 @@ const WishListItemPage = () => {
               </div>
 
               {/* ========> RIGHT SIDEBAR ->  Cart summary panel ========>  */}
-              {viewCart && (
-                <div className="lg:col-span-3 col-span-12 lg:max-h-[34rem] sticky top-20 lg:order-last order-first">
+              <div
+                className={`
+                    ${showSummary ? "translate-y-0" : "translate-y-full"}
+                    lg:translate-y-0
+                    lg:sticky top-20
+                    fixed
+                    bottom-0 left-0 right-0
+                    transition-transform duration-300
+                    bg-white dark:bg-slate-900
+                    lg:z-40 z-50
+                    lg:col-span-3 col-span-12 lg:max-h-[34rem]
+                    `}
+
+                // className="lg:col-span-3 col-span-12 lg:max-h-[34rem] sticky top-20 lg:order-last order-first"
+              >
+                {viewCart && (
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -530,8 +573,16 @@ const WishListItemPage = () => {
                       />
                     )}
                   </motion.div>
-                </div>
-              )}
+                )}
+
+                {/* Close button (mobile only) */}
+                <button
+                  onClick={() => setShowSummary(false)}
+                  className="lg:hidden w-full py-2 text-center text-base-100 bg-red-500 rounded-sm flex items-center justify-center gap-2"
+                >
+                  <LucideIcon.FaTimesCircle /> Close Summary
+                </button>
+              </div>
             </div>
           </div>
 
@@ -547,6 +598,14 @@ const WishListItemPage = () => {
             />
           )}
         </div>
+
+        {/* Mobile Overlay */}
+        {showSummary && (
+          <div
+            onClick={() => setShowSummary(false)}
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden"
+          />
+        )}
       </div>
     </div>
   );

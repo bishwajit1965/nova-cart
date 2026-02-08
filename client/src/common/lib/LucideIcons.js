@@ -91,6 +91,7 @@ import {
   BookOpen,
   UserCircle,
 } from "lucide-react";
+import { FaTimesCircle } from "react-icons/fa";
 import { Layer } from "recharts";
 
 // Central registry
@@ -171,6 +172,7 @@ export const LucideIcon = {
   Send,
   SquarePlus,
   Star,
+  FaTimesCircle,
   Trash2,
   User,
   Users,

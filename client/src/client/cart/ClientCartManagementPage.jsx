@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { AlertCircle, HeartPlus, Loader, ShoppingCart } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Button from "../../common/components/ui/Button";
 import CartItemList from "./components/CartItemList";
@@ -18,6 +18,7 @@ const ClientCartManagementPage = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(null);
   const [productId, setProductId] = useState(null);
+  const [showSummary, setShowSummary] = useState(false);
 
   // central global hooks
   const {
@@ -52,12 +53,24 @@ const ClientCartManagementPage = () => {
   } = useGlobalContext();
 
   const productItems = allProducts.map((item) => item.product);
-  console.log("Product Items", productItems);
-  console.log("Added to cart", addedToCart);
-  console.log("Added to wishlist", addedToWishList);
 
   const CART_LIMIT = 10;
   const WISHLIST_LIMIT = 10;
+
+  // Esc btn hides cart summary panel
+  useEffect(() => {
+    const handler = (e) => e.key === "Escape" && setShowSummary(false);
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
+
+  // Disables page scroll
+  useEffect(() => {
+    document.body.style.overflow = showSummary ? "hidden" : "auto";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [showSummary]);
 
   const buildUrl = (src) => {
     if (!src) return "";
@@ -102,6 +115,18 @@ const ClientCartManagementPage = () => {
         icon={<LucideIcon.ShoppingCart size={30} />}
         pageTitle="Cart Management"
       />
+
+      {/* Mobile Summary Toggle */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-white dark:bg-slate-900 border-t">
+        <button
+          onClick={() => setShowSummary(true)}
+          className="w-full py-2 font-semibold bg-emerald-600 text-white rounded-sm"
+        >
+          <span className="flex items-center justify-center gap-2">
+            <LucideIcon.ShoppingCart /> View Order Summary
+          </span>
+        </button>
+      </div>
 
       <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-8 gap-2 justify-between">
         {/* ==========> LEFT PANEL ==========> */}
@@ -222,8 +247,11 @@ const ClientCartManagementPage = () => {
           )}
 
           {/* Cart Item List */}
-          {cart?.length > 0 && (
-            <div className="lg:my-3 rounded-lg">
+          <div
+            className={`${showSummary ? "hidden" : "block"} lg:my-3 rounded-lg lg:block`}
+            // className="lg:my-3 rounded-lg"
+          >
+            {cart?.length > 0 && (
               <CartItemList
                 cart={cart}
                 handleIncreaseQuantity={handleIncreaseQuantity}
@@ -233,8 +261,8 @@ const ClientCartManagementPage = () => {
                 onDelete={handleRemoveCartItem}
                 setDeleteModalData={setDeleteModalData}
               />
-            </div>
-          )}
+            )}
+          </div>
 
           {/*-----> All Products-----> */}
           <div className="lg:space-y-2 space-y-2 lg:pt- mt-8">
@@ -399,11 +427,31 @@ const ClientCartManagementPage = () => {
 
         {/* ==========> RIGHT PANEL ==========> */}
         <div className="lg:col-span-3 col-span-12">
-          <div className="sticky top-20">
+          <div
+            className={`
+              ${showSummary ? "translate-y-0" : "translate-y-full"}
+              lg:translate-y-0
+              lg:sticky top-20
+              fixed
+              bottom-0 left-0 right-0
+              transition-transform duration-300
+              bg-white dark:bg-slate-900
+              lg:z-40 z-50
+            `}
+            // className="sticky top-20"
+          >
             <CartSummaryPanel
               cart={cart}
               handleGenerateCouponCode={onGenerateCouponCode}
             />
+
+            {/* Close button (mobile only) */}
+            <button
+              onClick={() => setShowSummary(false)}
+              className="lg:hidden w-full py-2 text-center text-base-100 bg-red-500 rounded-sm flex items-center justify-center gap-2"
+            >
+              <LucideIcon.FaTimesCircle /> Close Summary
+            </button>
           </div>
         </div>
 
@@ -467,6 +515,14 @@ const ClientCartManagementPage = () => {
               </div>
             </div>
           </Modal>
+        )}
+
+        {/* Mobile Overlay */}
+        {showSummary && (
+          <div
+            onClick={() => setShowSummary(false)}
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden"
+          />
         )}
       </div>
     </div>
