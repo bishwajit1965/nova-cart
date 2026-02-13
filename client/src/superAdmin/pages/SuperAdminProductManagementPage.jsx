@@ -139,7 +139,7 @@ const SuperAdminProductManagementPage = () => {
   /** --------> Delayed value for good UI experience --------> */
   const delayedIsSubmitting = useSubmitDelayedValue(
     productMutation.isPending,
-    300 // ms
+    300, // ms
   );
 
   /*** ------> Submit handler ------> */
@@ -171,6 +171,7 @@ const SuperAdminProductManagementPage = () => {
       })) || [];
 
     // 3️⃣ Global stock (optional: sum of variant stocks if formData.stock not provided)
+
     // Calculate global stock
     const globalStock = normalizedVariants.reduce((sum, v) => sum + v.stock, 0);
 
@@ -213,7 +214,7 @@ const SuperAdminProductManagementPage = () => {
               const renamed = new File(
                 [file],
                 `variant-${vIndex}-${imgIndex}-${file.name}`,
-                { type: file.type }
+                { type: file.type },
               );
               fd.append(`variant-${vIndex}`, renamed);
               // fd.append("images", renamed);

@@ -420,7 +420,7 @@ const ProductDetails = () => {
         </div>
 
         <motion.div
-          className="grid lg:grid-cols-12 grid-cols-1 lg:gap-8 gap-2 justify-between"
+          className="grid lg:grid-cols-12 grid-cols-1 lg:gap-4 gap-2 justify-between"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: false }}
@@ -500,7 +500,7 @@ const ProductDetails = () => {
                       <img
                         src={buildUrl(img)}
                         alt={`thumb-${idx}`}
-                        className="w-full h-full object-contain cursor-pointer transition-transform duration-300"
+                        className="w-full h-full object-cover cursor-pointer transition-transform duration-300"
                       />
                     </button>
                   ))}
@@ -879,7 +879,7 @@ const ProductDetails = () => {
                       showSticky ? "translate-y-0" : "translate-y-full"
                     }`}
                   >
-                    <div className="bg-white p-3 border-t border-base-content/10 flex items-center justify-between">
+                    <div className="bg-base-200 p-3 border-t border-base-content/15 flex items-center justify-between">
                       <div>
                         <div className="font-bold">
                           ${selectedVariant?.price ?? productDetail.price}
@@ -907,7 +907,7 @@ const ProductDetails = () => {
                           +
                         </button>
                         <button
-                          onClick={handleAddToCart}
+                          onClick={onAddToCart}
                           disabled={selectedVariant?.stock <= 0}
                           className="bg-black text-white px-2 py-2 rounded flex items-center gap-1"
                           aria-label="Add to cart sticky"

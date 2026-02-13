@@ -10,7 +10,7 @@ const sendEmail = async ({ to, subject, text }) => {
   });
 
   const mailOptions = {
-    from: `"Nova Dashboard" <${process.env.SMTP_EMAIL}>`,
+    from: `"Nova Cart" <${process.env.SMTP_EMAIL}>`,
     to,
     subject,
     text,

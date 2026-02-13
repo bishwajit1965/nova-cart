@@ -2,7 +2,6 @@ import Button from "../../common/components/ui/Button";
 import { Input } from "../../common/components/ui/Input";
 import { LucideIcon } from "../../common/lib/LucideIcons";
 import Textarea from "../../common/components/ui/Textarea";
-import { useState } from "react";
 import { LucidePlug2 } from "lucide-react";
 
 const SuperAdminProductInsertForm = ({
@@ -328,7 +327,7 @@ const SuperAdminProductInsertForm = ({
             </div>
           </div>
         ))}
-        <div className="flex items-center justify-between gap-2 py-2">
+        <div className="lg:flex grid items-center justify-between gap-2 py-2">
           <Button
             type="button"
             variant="indigo"
@@ -338,7 +337,7 @@ const SuperAdminProductInsertForm = ({
             <LucidePlug2 size={18} /> Add Variant
           </Button>
           {formData.variants.length !== 0 && (
-            <div className="border-2 rounded-md border-red-500/50 p-1 shadow">
+            <div className="border-2 rounded-md border-indigo-500/50 p-1 shadow">
               <p className="font-normal">No variant ? remove variant option.</p>
             </div>
           )}
@@ -358,8 +357,8 @@ const SuperAdminProductInsertForm = ({
               onDelay
                 ? LucideIcon.Check
                 : editingProduct
-                ? LucideIcon.Edit
-                : LucideIcon.Plus
+                  ? LucideIcon.Edit
+                  : LucideIcon.Plus
             }
           >
             {onDelay ? "Saving..." : editingProduct ? "Update" : "Create"}

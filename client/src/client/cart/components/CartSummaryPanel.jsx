@@ -54,7 +54,10 @@ const CartSummaryPanel = ({ cart, handleGenerateCouponCode }) => {
                 <span>
                   <LucideIcon.Check size={10} className="mr-1" />
                 </span>{" "}
-                {item?.product?.name} x {item.quantity}
+                <span className="flex items-center text-sm">
+                  {(item?.product?.name).slice(0, 23) + " ... "} x{" "}
+                  {item.quantity}
+                </span>
               </span>
               <span className="font-semibold">
                 ${(item?.product?.price * item.quantity).toFixed(2)}
@@ -75,8 +78,8 @@ const CartSummaryPanel = ({ cart, handleGenerateCouponCode }) => {
                 <span className="">
                   <LucideIcon.Check size={10} className="mr-1" />
                 </span>
-                {item?.product?.name} ({item.color}, {item.size}) x{" "}
-                {item.quantity}
+                {(item?.product?.name).slice(0, 23) + " ... "} ({item.color},{" "}
+                {item.size}) x {item.quantity}
               </span>
               <span className="font-semibold">
                 ${(item?.price * item?.quantity).toFixed(2)}

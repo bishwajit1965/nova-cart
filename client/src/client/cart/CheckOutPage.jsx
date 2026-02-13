@@ -165,7 +165,7 @@ const CheckOutPage = () => {
     ? coupons.reduce((latest, current) =>
         new Date(current.createdAt) > new Date(latest.createdAt)
           ? current
-          : latest
+          : latest,
       )
     : null;
 
@@ -215,7 +215,7 @@ const CheckOutPage = () => {
 
     if (!selectedAddress && !formData) {
       toast.error(
-        "Please select a saved address or fill in the shipping form!"
+        "Please select a saved address or fill in the shipping form!",
       );
       return;
     }
@@ -283,7 +283,7 @@ const CheckOutPage = () => {
         },
         onError: (err) =>
           toast.error(err?.response?.data?.message || "Error creating order"),
-      }
+      },
     );
   };
 
@@ -317,7 +317,7 @@ const CheckOutPage = () => {
   });
 
   return (
-    <>
+    <div className="lg:max-w-7xl mx-auto">
       <DynamicPageTitle pageTitle={pageTitle} />
 
       {cartsDataStatus.status !== "success" ? (
@@ -532,7 +532,7 @@ const CheckOutPage = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

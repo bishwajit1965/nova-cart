@@ -43,7 +43,7 @@ const SuperAdminProductListTable = ({
       (p) =>
         p.name.toLowerCase().includes(q) ||
         p.brand.toLowerCase().includes(q) ||
-        p.categoryName?.toLowerCase().includes(q)
+        p.categoryName?.toLowerCase().includes(q),
     );
   }, [products, searchQuery]);
 
@@ -120,7 +120,7 @@ const SuperAdminProductListTable = ({
                                 : product.images[0]
                             }
                             alt={product?.name}
-                            className="w-12 h-12 object-contain"
+                            className="w-10 h-10 object-contain rounded-md hover:w-20 hover:h-20 hover:rounded-md"
                           />
                         ) : (
                           product.images[0] && (
@@ -129,7 +129,7 @@ const SuperAdminProductListTable = ({
                                 product.images[0].startsWith("/") ? "" : "/"
                               }${product.images[0]}`}
                               alt={product.name || ""}
-                              className="w-12 h-12 object-contain"
+                              className="w-10 h-10 object-contain rounded-md hover:w-20 hover:h-20 hover:rounded-md"
                             />
                           )
                         )}
@@ -139,7 +139,7 @@ const SuperAdminProductListTable = ({
                       <td>
                         {product.stock > 10 ? (
                           <span className="badge badge-success text-xs">
-                            <span>In Stock ({product.stock})</span>
+                            <span>In Stock {product.stock}</span>
                           </span>
                         ) : product.stock > 0 ? (
                           <span className="badge badge-warning text-xs">
@@ -235,7 +235,7 @@ const SuperAdminProductListTable = ({
                                     className="w-20 object-contain mb-2 max-h-60"
                                   />
                                 )
-                              )
+                              ),
                             )
                           : ""}
                       </div>
@@ -313,7 +313,7 @@ const SuperAdminProductListTable = ({
                                   </li>
                                 </ul>
                               </div>
-                            ))
+                            )),
                           )
                         : ""}
                     </div>

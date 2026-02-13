@@ -51,9 +51,9 @@ const OrderConfirmationPage = () => {
   console.log("Order in Order confirmation page", order);
 
   return (
-    <>
+    <div className="lg:max-w-7xl w-full mx-auto lg:space-y-10 space-y-4">
       <DynamicPageTitle pageTitle={pageTitle} />
-      <div className="lg:max-w-7xl w-full mx-auto lg:space-y-10 space-y-4">
+      <div className="">
         <div className="grid lg:grid-cols-12 grid-cols-1 justify-between lg:gap-8 gap-4">
           <div className="lg:col-span-8 col-span-12 border border-base-content/15 shadow rounded-lg hover:shadow-md">
             <div className="space-y-3">
@@ -178,7 +178,7 @@ const OrderConfirmationPage = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

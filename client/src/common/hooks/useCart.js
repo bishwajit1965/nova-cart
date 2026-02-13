@@ -96,7 +96,7 @@ const useCart = () => {
           variantId: item.variantId ?? null,
           quantity: item.quantity,
           item: item,
-        }))
+        })),
       );
     },
     onError: (err) => {
@@ -118,7 +118,7 @@ const useCart = () => {
           variantId: item.variantId ?? null,
           quantity: item.quantity,
           item: item,
-        }))
+        })),
       );
     },
     onError: (err) => {
@@ -180,21 +180,21 @@ const useCart = () => {
     cart.some(
       (i) =>
         i.product._id === productId &&
-        (i.variantId ?? null) === (variantId ?? null)
+        (i.variantId ?? null) === (variantId ?? null),
     );
 
   const isInWishList = (productId, variantId) =>
     wishList.some(
       (i) =>
-        i.product._id === productId &&
-        (i.variantId ?? null) === (variantId ?? null)
+        i?.product?._id === productId &&
+        (i.variantId ?? null) === (variantId ?? null),
     );
 
   const findItemIndex = (productId, variantId) =>
     cart.findIndex(
       (i) =>
         i.product._id === productId &&
-        (i.variantId ?? null) === (variantId ?? null)
+        (i.variantId ?? null) === (variantId ?? null),
     );
 
   const syncCart = (productId, variantId, quantity) =>
@@ -277,7 +277,7 @@ const useCart = () => {
     if (idx === -1) return;
     const newQty = cart[idx].quantity + 1;
     setCart((prev) =>
-      prev.map((i, n) => (n === idx ? { ...i, quantity: newQty } : i))
+      prev.map((i, n) => (n === idx ? { ...i, quantity: newQty } : i)),
     );
     syncCart(productId, variantId, newQty);
   };
@@ -287,7 +287,7 @@ const useCart = () => {
     if (idx === -1) return;
     const newQty = Math.max(1, cart[idx].quantity - 1);
     setCart((prev) =>
-      prev.map((i, n) => (n === idx ? { ...i, quantity: newQty } : i))
+      prev.map((i, n) => (n === idx ? { ...i, quantity: newQty } : i)),
     );
     syncCart(productId, variantId, newQty);
   };
@@ -306,10 +306,10 @@ const useCart = () => {
             prev.filter(
               (i) =>
                 i.product._id !== productId ||
-                (i.variantId ?? null) !== (variantId ?? null)
-            )
+                (i.variantId ?? null) !== (variantId ?? null),
+            ),
           ),
-      }
+      },
     );
     setDeleteModalData(null);
     setIsDeleteModalOpen(false);

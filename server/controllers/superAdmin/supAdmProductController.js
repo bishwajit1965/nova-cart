@@ -30,143 +30,6 @@ async function generateUniqueSlug(name) {
 }
 
 /** -------> Create Product -------> */
-// export const createProduct = async (req, res) => {
-//   try {
-//     // 1️⃣ Parse JSON payload
-//     // const bodyData = JSON.parse( req?.body?.data );
-//     if (!req?.body?.data) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "No product data provided",
-//       });
-//     }
-
-//     let bodyData = {};
-
-//     if (req?.body?.data && typeof req?.body?.data === "string") {
-//       bodyData = JSON.parse(req?.body?.data);
-//     } else {
-//       bodyData = req.body;
-//     }
-
-//     const {
-//       name,
-//       description,
-//       price,
-//       category,
-//       subCategory,
-//       variants,
-//       stock,
-//       brand,
-//       tags,
-//       status,
-//     } = bodyData;
-
-//     console.log("Body data", bodyData);
-//     console.log("User Id", req.user._id);
-
-//     // 2️⃣ Validate category exists
-//     const cat = await Category.findById(category);
-//     if (!cat)
-//       return res
-//         .status(400)
-//         .json({ success: false, message: "Category not found" });
-
-//     // 3️⃣ Validate subCategory belongs to category
-//     if (subCategory) {
-//       const subCat = await SubCategory.findById(subCategory);
-//       if (!subCat || subCat.category.toString() !== category.toString())
-//         return res
-//           .status(400)
-//           .json({ success: false, message: "Invalid subCategory" });
-//     }
-
-//     // 4️⃣ Separate product images and variant images
-//     const productImages = [];
-//     const variantImagesMap = {};
-
-//     if (req.files && req.files.length > 0) {
-//       req.files.forEach((file) => {
-//         if (file.originalname.startsWith("product-")) {
-//           // Example: product-0-main.png
-//           productImages.push(`/uploads/${file.filename}`);
-//         } else if (file.originalname.startsWith("variant-")) {
-//           // Example: variant-1-0-red.png
-//           const parts = file.originalname.split("-");
-//           const variantIndex = Number(parts[1]); // variant-1-...
-//           if (!variantImagesMap[variantIndex]) {
-//             variantImagesMap[variantIndex] = [];
-//           }
-//           variantImagesMap[variantIndex].push(`/uploads/${file.filename}`);
-//         }
-//       });
-//     }
-
-//     const normalizedVariants = (variants || []).map((v, i) => ({
-//       color: v?.color || "",
-//       size: v?.size || "",
-//       price: Number(v?.price) || 0,
-//       discountPrice: Number(v?.discountPrice) || 0,
-//       SKU: v?.SKU || nanoid(8),
-//       stock: Number(v?.stock) || 0,
-//       images: variantImagesMap[i] || [],
-//     }));
-
-//     // 6️⃣ Calculate global stock
-//     const globalStock =
-//       normalizedVariants.length > 0
-//         ? normalizedVariants.reduce((sum, v) => sum + v.stock, 0)
-//         : stock || 0;
-
-//     // Slug uniqueness
-//     const slug = await generateUniqueSlug(name);
-
-//     // 7️⃣ Create product instance
-//     const product = new Product({
-//       name,
-//       description,
-//       price: Number(price) || 0,
-//       category,
-//       subCategory,
-//       variants: normalizedVariants,
-//       stock: globalStock,
-//       images: productImages,
-//       brand,
-//       slug: slug,
-//       createdBy: req?.user?._id,
-//       status: status || "active",
-//       tags: tags || [],
-//     });
-
-//     // 8️⃣ Save product
-//     const savedProduct = await product.save();
-
-//     // 9️⃣ Log action
-//     await logAction({
-//       userId: req.user._id,
-//       action: "CREATE_PRODUCT",
-//       entity: "Product",
-//       entityId: savedProduct._id,
-//       description: `Created product ${savedProduct.name}`,
-//       ipAddress: req.ip,
-//     });
-
-//     // 10️⃣ Return success
-//     res.status(201).json({
-//       success: true,
-//       message: "Product created successfully!",
-//       data: savedProduct,
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({
-//       success: false,
-//       message: "Internal server error",
-//       error: error.message,
-//     });
-//   }
-// };
-
 export const createProduct = async (req, res) => {
   try {
     // 1️⃣ Parse body (supports multipart/form-data)
@@ -266,7 +129,8 @@ export const createProduct = async (req, res) => {
           size: v?.size || "",
           price: Number(v?.price) || Number(price) || 0,
           discountPrice: Number(v?.discountPrice) || 0,
-          SKU: v?.SKU || nanoid(8),
+          SKU: v?.SKU,
+          // SKU: v?.SKU || nanoid(8),
           stock: Number(v?.stock),
           images: variantImagesMap[i] || [],
         }))
@@ -371,6 +235,7 @@ export const getProductById = async (req, res) => {
 
 /** -------> Update Product -------> */
 export const updateProduct = async (req, res) => {
+  console.log("🚀 Update product route is hit");
   try {
     // 1️⃣ Find product with populated category/subCategory
     const product = await Product.findById(req.params.id)
@@ -474,7 +339,7 @@ export const updateProduct = async (req, res) => {
           ...variant,
           images: mergeVariantImages(
             oldVariant.images,
-            variant.images // these could be new uploads OR empty
+            variant.images, // these could be new uploads OR empty
           ),
         };
       });
@@ -577,7 +442,7 @@ export const deleteProduct = async (req, res) => {
         } catch (err) {
           console.error("Failed to delete image:", filePath, err);
         }
-      })
+      }),
     );
 
     const deletedProduct = await Product.findByIdAndDelete(req.params.id);

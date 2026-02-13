@@ -120,7 +120,7 @@ const SuperAdminSubcategoryManagement = () => {
   /** --------> Delayed value for good UI experience --------> */
   const delayedIsSubmitting = useSubmitDelayedValue(
     subCategoryMutation.isPending,
-    300 // ms
+    300, // ms
   );
 
   /** --------> Form Input Handler --------> */
@@ -159,14 +159,15 @@ const SuperAdminSubcategoryManagement = () => {
           },
         };
 
-    const response = subCategoryMutation.mutate(payload);
-    if (response.success) {
-      setFormData({
-        name: "",
-        description: "",
-        slug: "",
-      });
-    }
+    subCategoryMutation.mutate(payload, {
+      onSuccess: () => {
+        setFormData({
+          name: "",
+          description: "",
+          slug: "",
+        });
+      },
+    });
   };
 
   /** --------> Sub categories update handler --------> */
@@ -272,16 +273,16 @@ const SuperAdminSubcategoryManagement = () => {
                     delayedIsSubmitting
                       ? LucideIcon.Check
                       : editingSubcategory
-                      ? LucideIcon.Edit
-                      : LucideIcon.Plus
+                        ? LucideIcon.Edit
+                        : LucideIcon.Plus
                   }
                   className=""
                 >
                   {delayedIsSubmitting
                     ? "Saving..."
                     : editingSubcategory
-                    ? "Update"
-                    : "Create"}
+                      ? "Update"
+                      : "Create"}
                 </Button>
 
                 {editingSubcategory && (

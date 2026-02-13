@@ -1,4 +1,4 @@
-import { Edit, Eye, EyeOff, Loader, LogInIcon } from "lucide-react";
+import { Eye, EyeOff, Loader, LogInIcon } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import Button from "../components/ui/Button";

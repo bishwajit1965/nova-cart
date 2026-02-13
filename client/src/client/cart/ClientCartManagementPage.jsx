@@ -249,7 +249,6 @@ const ClientCartManagementPage = () => {
           {/* Cart Item List */}
           <div
             className={`${showSummary ? "hidden" : "block"} lg:my-3 rounded-lg lg:block`}
-            // className="lg:my-3 rounded-lg"
           >
             {cart?.length > 0 && (
               <CartItemList

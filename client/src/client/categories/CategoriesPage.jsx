@@ -319,7 +319,7 @@ const CategoriesPage = () => {
             overflow-y-auto
           `}
           >
-            <div className="mb-4 text-sm text-gray-500 bg-base-300 lg:p-2 p-2 lg:text-2xl font-bold border border-base-content/10 lg:rounded-t-lg rounded-t-xs">
+            <div className="mb-4 text-sm text-gray-500 bg-base-300 lg:p-2 p-2 lg:text-2xl font-bold border border-base-content/10 lg:rounded-t-lg rounded-t-xs sticky top-0">
               <h3
                 className={`lg:text-2xl text-lg font-bold flex items-center justify-between gap-2`}
               >
@@ -545,12 +545,12 @@ const CategoriesPage = () => {
                     {addedToCart?.map((c, idx) => (
                       <div className="lg:col-span-3 col-span-6" key={c._id}>
                         <div className="flex items-center flex-wrap p-2 border border-base-content/15 rounded-lg shadow space-y-2 min-h-20 space-x-2">
-                          <div className="">
+                          <div className="w-full bg-red-500">
                             {c?.image && (
                               <img
                                 src={`${apiURL}${c?.image}`}
                                 alt={c?.brand}
-                                className="w-14 h-14 object-cover"
+                                className="w-full h-40 object-cover mb-2 rounded-t-md"
                               />
                             )}
                           </div>
@@ -583,11 +583,12 @@ const CategoriesPage = () => {
                       <img
                         src={`${apiURL}${p?.images[0]}`}
                         alt={p.name}
-                        className="w-full h-44 object-contain mb-2"
+                        className="w-full h-40 object-cover mb-2 rounded-t-md"
                       />
                     )}
                     <div className="p-2">
-                      <h3 className="font-medium">{p.name}</h3>
+                      <h3 className="text-sm font-bold">{p.name}</h3>
+                      <p className="text-sm font-bold">{p.brand}</p>
                       <p className="text-gray-600">${p.price.toFixed(2)}</p>
                     </div>
                     <div className="flex justify-between rounded-b-lg p-2 shadow">

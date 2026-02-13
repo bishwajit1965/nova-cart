@@ -414,8 +414,8 @@ const WishListItemPage = () => {
                           <Heart /> Wish List Products{" "}
                         </span>
                         <span className="w-6 h-6 rounded-full flex items-center bg-indigo-500 text-white justify-center shadow text-sm">
-                          {wishListData?.items.length > 0
-                            ? wishListData?.items.length
+                          {wishListData?.items?.length > 0
+                            ? wishListData?.items?.length
                             : 0}
                         </span>
                       </h2>
@@ -432,29 +432,29 @@ const WishListItemPage = () => {
                     <div className="grid lg:grid-cols-12 grid-cols-1 justify-between lg:gap-6 gap-2">
                       {wishListData?.items?.map((item) => {
                         const variant =
-                          item.variantId && item.product?.variants
-                            ? item.product.variants.find(
+                          item?.variantId && item?.product?.variants
+                            ? item?.product?.variants?.find(
                                 (v) => v._id === item.variantId,
                               )
                             : null;
 
                         return (
                           <div
-                            key={item.product._id}
+                            key={item?.product?._id}
                             className="lg:col-span-4 col-span-12 border border-base-content/15 rounded-xl shadow-md bg-base-100 hover:shadow-xl relative"
                           >
                             <div className=" mb-4">
                               <img
                                 src={`${apiURL}${
-                                  variant?.images[0] ?? item.product.images[0]
+                                  variant?.images[0] ?? item?.product?.images[0]
                                 }`}
-                                alt={item.product.name}
+                                alt={item?.product?.name}
                                 className="w-full h-32 object-contain rounded mb-2"
                               />
                             </div>
                             <div className="lg:max-h-56 max-h-56 lg:p-4 p-2 overflow-y-auto lg:space-y-2">
                               <h3 className="lg:text-xl text-lg font-bold">
-                                {item.product.name} || {item.product.brand}{" "}
+                                {item?.product?.name} || {item?.product?.brand}{" "}
                                 <br />
                                 {variant
                                   ? `(${variant.color || ""} / ${
@@ -467,8 +467,11 @@ const WishListItemPage = () => {
                               </p>
                               <p className="text-sm text-gray-500">
                                 {isExpanded && productId === item.product._id
-                                  ? item.product.description
-                                  : textShortener(item.product.description, 90)}
+                                  ? item?.product?.description
+                                  : textShortener(
+                                      item?.product?.description,
+                                      90,
+                                    )}
 
                                 <button
                                   onClick={() => handleToggleView(item.product)}
@@ -510,7 +513,7 @@ const WishListItemPage = () => {
                                   handleMoveToCart({
                                     productId: item.product._id,
                                     variantId: item.variantId,
-                                    name: item.product.name,
+                                    name: item?.product?.name,
                                     brand: item.product.brand,
                                     image:
                                       variant?.images?.[0] ??
@@ -523,7 +526,9 @@ const WishListItemPage = () => {
                               </Button>
                             </div>
                             <div className="absolute bottom-0 left-0 right-0 w-full rounded-b-md">
-                              <Link to={`/product-details/${item.product._id}`}>
+                              <Link
+                                to={`/product-details/${item?.product?._id}`}
+                              >
                                 <Button
                                   variant="base"
                                   className="btn btn-sm w-full rounded-t-none rounded-b-lg border-none"
