@@ -48,8 +48,6 @@ const OrderConfirmationPage = () => {
 
   const discount = order.discountAmount.toFixed(2);
 
-  console.log("Order in Order confirmation page", order);
-
   return (
     <div className="lg:max-w-7xl w-full mx-auto lg:space-y-10 space-y-4">
       <DynamicPageTitle pageTitle={pageTitle} />
@@ -105,29 +103,36 @@ const OrderConfirmationPage = () => {
         </div>
 
         <div className="space-y-2">
-          {items?.map((item, idx) => (
-            <div
-              key={idx}
-              className="flex items-center justify-between border-b border-base-content/15 w-full h-20"
-            >
-              <div className="lg:w-1/4 h-20 flex items-center">
-                {item?.image && (
-                  <img
-                    src={`${apiURL}${item.image}`}
-                    alt={item?.product?.name}
-                    className="lg:w-2/5 w-16 h-16 object-contain"
-                  />
-                )}
-              </div>
-              <div className="w-1/4 h-12 flex flex-wrap items-center text-xs lg:text-[16px]">
-                {item?.name} x {item?.price} x {item?.quantity}
-              </div>
+          {items?.map((item, idx) => {
+            const name = item.name;
+            const image = item?.image;
+            const price = item?.price;
+            const quantity = item?.quantity;
 
-              <div className="w-1/4 h-12 flex items-center justify-end font-bold">
-                ${(item?.price * item?.quantity).toFixed(2)}
+            return (
+              <div
+                key={idx}
+                className="flex items-center justify-between border-b border-base-content/15 w-full h-20"
+              >
+                <div className="lg:w-1/4 h-20 flex items-center">
+                  {image && (
+                    <img
+                      src={`${apiURL}${image}`}
+                      alt={item?.product?.name}
+                      className="lg:w-2/5 w-16 h-16 object-contain"
+                    />
+                  )}
+                </div>
+                <div className="w-1/4 h-12 flex flex-wrap items-center text-xs lg:text-[16px]">
+                  {name} x {price} x {quantity}
+                </div>
+
+                <div className="w-1/4 h-12 flex items-center justify-end font-bold">
+                  ${(price * quantity).toFixed(2)}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
           <div className="text-right border-b border-base-content/15 lg:py-6 py-2 space-x-6">
             <span> - Coupon Discount: </span>
             <span className="font-bold">${discount}</span>
@@ -142,14 +147,14 @@ const OrderConfirmationPage = () => {
           </div>
 
           <div className="text-center lg:pt-12 pt-4 border-t border-base-content/15">
-            <div className="lg:flex justify-center grid lg:space-x-4 space-x-2 lg:space-y-0 space-y-2">
-              <Link to="/client-cart-management">
-                <Button variant="indigoRounded" className="btn lg:w-52 w-48">
+            <div className="lg:flex justify-center grid lg:space-x-4 space-x-2 lg:space-y-0 space-y-2 gap-4">
+              <Link to="/client-cart-management" className="m-0 p-0">
+                <Button variant="successOutline" className="btn lg:w-52 w-48">
                   <LucideIcon.ShoppingCart size={25} /> Continue Shopping
                 </Button>
               </Link>
               <Link to="/client-specific-orders">
-                <Button variant="successRounded" className="btn lg:w-52 w-48">
+                <Button variant="success" className="btn lg:w-52 w-48">
                   <LucideIcon.List size={25} /> My Order Details
                 </Button>
               </Link>

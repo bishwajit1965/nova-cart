@@ -15,7 +15,7 @@ import toast from "react-hot-toast";
 import usePageTitle from "../../superAdmin/services/hooks/usePageTitle";
 import { useState } from "react";
 import OrderTimeline from "./components/OrderTimeline";
-import { FaFilePdf, FaFirstOrder, FaRegAddressCard } from "react-icons/fa";
+import { FaRegAddressCard } from "react-icons/fa";
 
 const ClientOrderDetailsPage = () => {
   const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
@@ -45,7 +45,7 @@ const ClientOrderDetailsPage = () => {
       setLoading(false);
     }
   };
-
+  console.log("Order Data", order);
   const handleReorder = () => {
     // I can push items back to cart
     // e.g., navigate("/client-cart-management", { state: { items: order.items } });
@@ -105,41 +105,54 @@ const ClientOrderDetailsPage = () => {
 
         {/* ----------> Items ----------> */}
         <div className="">
-          {order?.items?.map((item) => (
-            <div
-              key={item?._id}
-              className="flex items-center flex-wrap justify-between border-b border-base-content/15 lg:py-2 py-2"
-            >
-              <img
-                src={`${apiURL}${item?.image}`}
-                alt={item?.name}
-                className="w-20 object-cover rounded"
-              />
-              <div className="flex items-center lg:space-x-2">
-                <span className="font-bold">{item?.name} ➡️</span>
-                <span>
-                  Price: $
-                  {(item?.price).toLocaleString(undefined, {
+          {order?.items?.map((item) => {
+            const variant = item?.product?.variants?.find(
+              (v) => v._id === item?.variantId,
+            );
+
+            const price = variant?.price ?? item?.price ?? 0;
+            return (
+              <div
+                key={item?._id}
+                className="flex items-center flex-wrap justify-between border-b border-base-content/15 lg:py-2 py-2"
+              >
+                <img
+                  src={`${apiURL}${item?.image || variant?.images?.[0] || item?.product?.images?.[0]}`}
+                  alt={item?.name}
+                  className="w-20 object-cover rounded"
+                />
+                <div className="flex items-center lg:space-x-2">
+                  <span className="font-bold">{item?.name} ➡️</span>
+                  <span>
+                    Price: $
+                    {price.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                  </span>{" "}
+                  <span> x </span> <p>Qty: {item?.quantity}</p>
+                </div>
+                <div className="">
+                  $
+                  {(price * item?.quantity).toLocaleString(undefined, {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                   })}
-                </span>{" "}
-                <span> x </span> <p>Qty: {item?.quantity}</p>
+                </div>
               </div>
-              <div className="">
-                $
-                {(item?.price * item?.quantity).toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </div>
-            </div>
-          ))}
+            );
+          })}
           <div className="lg:space-y-4 space-y-2">
             <div className="text-right border-b border-base-content/15 font-bold lg:py-2 py-2">
               Subtotal: $
               {order.items
-                .reduce((sum, i) => sum + i.price * i.quantity, 0)
+                .reduce((sum, i) => {
+                  const variant = i?.product?.variants?.find(
+                    (v) => v._id === i?.variantId,
+                  );
+                  const price = variant?.price ?? i?.price ?? 0;
+                  return sum + price * i.quantity;
+                }, 0)
                 .toLocaleString(undefined, {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
@@ -231,10 +244,10 @@ const ClientOrderDetailsPage = () => {
         {/* --------> Action Buttons --------> */}
         <div className="lg:flex grid lg:justify-center justify-center lg:space-x-4 space-y-3 lg:space-y-0 lg:mt-12 mt-4 w-full">
           <Button
-            variant="indigoRounded"
+            variant="successOutline"
             onClick={() => handleDownloadInvoice(order?.orderId)}
             disabled={loading}
-            className="btn lg:btn-lg btn-sm lg:w-56 px-3 lg:text-lg text-shadow-amber-900"
+            className=""
           >
             {loading ? (
               <Loader className="animate-spin text-indigo-500" />
@@ -243,11 +256,7 @@ const ClientOrderDetailsPage = () => {
             )}
             {loading ? "Downloading..." : "Download Invoice"}
           </Button>
-          <Button
-            variant="successRounded"
-            onClick={handleReorder}
-            className="btn lg:btn-lg btn-sm lg:w-56 px-3 lg:text-lg text-shadow-amber-900"
-          >
+          <Button variant="primary" onClick={handleReorder} className="">
             <ShoppingCart size={20} />
             Like to Reorder ?
           </Button>

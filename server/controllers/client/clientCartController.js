@@ -13,7 +13,7 @@ export const addToCart = async (req, res) => {
     }
 
     const product = await Product.findById(productId).select(
-      "name images variants price"
+      "name images variants price",
     );
 
     if (!product) {
@@ -28,7 +28,7 @@ export const addToCart = async (req, res) => {
 
     if (variantId && product.variants?.length) {
       variant = product.variants.find(
-        (v) => String(v._id) === String(variantId)
+        (v) => String(v._id) === String(variantId),
       );
 
       if (!variant) {
@@ -68,7 +68,7 @@ export const addToCart = async (req, res) => {
       const itemIndex = cart.items.findIndex(
         (item) =>
           String(item.product) === String(productId) &&
-          String(item.variantId ?? "") === String(variantId ?? "")
+          String(item.variantId ?? "") === String(variantId ?? ""),
       );
 
       if (itemIndex > -1) {
@@ -335,7 +335,7 @@ export const getCart = async (req, res) => {
   try {
     let cart = await Cart.findOne({ user: req.user._id }).populate({
       path: "items.product",
-      select: "name brand price quantity SKU images category",
+      select: "name brand price quantity SKU images category variants",
       match: { _id: { $ne: null } },
     });
     if (!cart) {
@@ -374,7 +374,7 @@ export const updateCartItem = async (req, res) => {
 
     // Fetch product info for price / variant snapshot
     const product = await Product.findById(productId).select(
-      "name price variants images SKU"
+      "name price variants images SKU",
     );
     if (!product) {
       return res
@@ -428,7 +428,7 @@ export const updateCartItem = async (req, res) => {
       const itemIndex = cart.items.findIndex(
         (item) =>
           String(item.product) === String(productId) &&
-          String(item.variantId ?? "") === String(variantId ?? "")
+          String(item.variantId ?? "") === String(variantId ?? ""),
       );
 
       if (itemIndex === -1) {
@@ -663,7 +663,7 @@ export const removeFromCart = async (req, res) => {
     cart.items = cart.items.filter(
       (item) =>
         String(item.product) !== String(productId) ||
-        String(item.variantId) !== String(variantId)
+        String(item.variantId) !== String(variantId),
     );
 
     await cart.save();

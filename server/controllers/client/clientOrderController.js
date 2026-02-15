@@ -35,16 +35,17 @@ export const createOrder = async (req, res) => {
     const orderItems = await Promise.all(
       items.map(async (item) => {
         const product = await Product.findById(item.product).select(
-          "name images variants price quantity"
+          "name images variants price quantity",
         );
         if (!product) throw new Error(`Product not found: ${item.product}`);
         let price = product.price;
         let color = null;
         let size = null;
+        let image = null;
 
         if (item.variantId) {
           const variant = product.variants.find(
-            (v) => String(v._id) === String(item.variantId)
+            (v) => String(v._id) === String(item.variantId),
           );
 
           if (!variant) {
@@ -55,6 +56,13 @@ export const createOrder = async (req, res) => {
             typeof variant.price === "number" ? variant.price : variant.price;
           color = variant.color;
           size = variant.size;
+          // ✅ PRIORITIZE VARIANT IMAGE
+          image =
+            variant.images && variant.images.length > 0
+              ? variant.images[0]
+              : product.images && product.images.length > 0
+                ? product.images[0]
+                : null;
         } else {
           price = product.price;
         }
@@ -63,9 +71,9 @@ export const createOrder = async (req, res) => {
           throw new Error("Price resolution failed");
         }
 
-        const image =
-          item.selectedImage ||
-          (product.images && product.images.length ? product.images[0] : null);
+        // const image =
+        //   item.selectedImage ||
+        //   (product.images && product.images.length ? product.images[0] : null);
 
         return {
           product: product._id,
@@ -77,12 +85,12 @@ export const createOrder = async (req, res) => {
           size,
           image,
         };
-      })
+      }),
     );
 
     const subtotal = orderItems.reduce(
       (sum, it) => sum + it.price * it.quantity,
-      0
+      0,
     );
 
     // =============================
@@ -207,7 +215,7 @@ export const createOrder = async (req, res) => {
 
     await Cart.findOneAndUpdate(
       { user: req.user._id },
-      { $set: { items: [] } }
+      { $set: { items: [] } },
     );
     // Send confirmation email
     await sendOrderConfirmationEmail({
@@ -398,7 +406,7 @@ export const updateOrderStatus = async (req, res) => {
     const updatedOrder = await Order.findByIdAndUpdate(
       orderId,
       { status },
-      { new: true }
+      { new: true },
     );
 
     if (!updatedOrder) {

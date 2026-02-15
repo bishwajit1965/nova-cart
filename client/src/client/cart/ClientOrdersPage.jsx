@@ -91,51 +91,60 @@ const ClientOrdersPage = () => {
     >
       <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-4 gap-2 justify-between">
         <div className="lg:col-span-6">
-          {order?.items?.map((item) => (
-            <div
-              key={item._id}
-              className="grid lg:grid-cols-12 grid-cols-1 items-centers justify-between lg:gap-4 gap-2 lg:space-y-3 space-y-2"
-            >
-              {item.product ? (
-                <>
-                  <div className="lg:col-span-4 col-span-12">
-                    {item.product?.image ? (
-                      <img
-                        src={
-                          item?.product?.image
-                            ? item.product.image
-                            : item.product.images[0]
-                        }
-                        alt={item.product?.name}
-                        className="w-1/3 object-cover border p-1 rounded-md shadow border-base-content/15"
-                      />
-                    ) : (
-                      item?.product.images && (
+          {order?.items?.map((item) => {
+            const selectedVariant = item.product?.variants?.find(
+              (v) => String(v._id) === String(item.variantId),
+            );
+
+            const displayImage =
+              selectedVariant?.images?.[0] || item.product?.images?.[0];
+
+            return (
+              <div
+                key={item._id}
+                className="grid lg:grid-cols-12 grid-cols-1 items-centers justify-between lg:gap-4 gap-2 lg:space-y-3 space-y-2"
+              >
+                {item.product ? (
+                  <>
+                    <div className="lg:col-span-4 col-span-12">
+                      {item.product?.image ? (
                         <img
-                          src={`${apiURL}${
-                            item.product.images[0].startsWith("/") ? "" : "/"
-                          }${item.product.images[0]}`}
-                          alt={item.product.name || ""}
+                          src={
+                            item?.product?.image
+                              ? item.product.image
+                              : item.product.images[0]
+                          }
+                          alt={item.product?.name}
                           className="w-1/3 object-cover border p-1 rounded-md shadow border-base-content/15"
                         />
-                      )
-                    )}
-                  </div>
-                  <div className="lg:col-span-8 col-span-12">
-                    <p className="flex items-center justify-end space-x-2">
-                      {item?.product?.name} {" - "}
-                      {item?.price} x {item.quantity} =
-                      <span className="font-semibold ml-2 flex justify-end">
-                        ${(item?.price * item.quantity).toFixed(2)}
-                      </span>
-                    </p>
-                  </div>
-                </>
-              ) : (
-                <p className="text-red-600">Product unavailable</p>
-              )}
-            </div>
-          ))}
+                      ) : (
+                        displayImage && (
+                          <img
+                            src={`${apiURL}${
+                              displayImage.startsWith("/") ? "" : "/"
+                            }${displayImage}`}
+                            alt={item.product.name || ""}
+                            className="w-1/3 object-cover border p-1 rounded-md shadow border-base-content/15"
+                          />
+                        )
+                      )}
+                    </div>
+                    <div className="lg:col-span-8 col-span-12">
+                      <p className="flex items-center justify-end space-x-2">
+                        {item?.product?.name} {" - "}
+                        {item?.price} x {item.quantity} =
+                        <span className="font-semibold ml-2 flex justify-end">
+                          ${(item?.price * item.quantity).toFixed(2)}
+                        </span>
+                      </p>
+                    </div>
+                  </>
+                ) : (
+                  <p className="text-red-600">Product unavailable</p>
+                )}
+              </div>
+            );
+          })}
         </div>
 
         <div className="lg:col-span-6 bg-base-200 rounded-md lg:p-3 space-y-2">

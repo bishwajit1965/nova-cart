@@ -7,7 +7,10 @@ const Button = ({
   className = "",
   href,
   disabled = false,
+  tooltip, // label override
   loading = false,
+  label = false, // 👈 if true, shows "Edit" text
+  size = "md", // "xs", "sm", "md" (default sm)
   icon: Icon,
   ...props
 }) => {
@@ -21,7 +24,8 @@ const Button = ({
       "bg-blue-600 text-white hover:text-gray-200 hover:bg-blue-800 shadow-md rounded-full",
     success:
       "bg-green-600 text-white hover:text-gray-200 hover:bg-green-700 shadow-md rounded-md lg:px-4 px-2 py-2",
-
+    successOutline:
+      "border-2 border-green-600 bg-green-600 text-white hover:text-gray-200 hover:bg-green-700 shadow-md rounded-md lg:px-4 px-2 py-2",
     successRounded:
       "bg-green-800 hover:bg-green-700 text-white hover:text-base-300 shadow-md rounded-full lg:px-4 px-2 py-2",
     secondary:
@@ -81,18 +85,26 @@ const Button = ({
     }
   };
 
+  const baseSize = {
+    xs: "px-1 py-1 text-xs h-8",
+    sm: "px-2 py-2 text-sm h-9",
+    md: "px-3 py-3 text-sm h-10",
+  };
+
   return (
     <Component
       href={href && !isDisabled ? href : undefined}
       onClick={handleClick}
+      // label={label}
       className={cn(
         "cursor-pointer",
         "disabled:cursor-not-allowed",
         "disabled:opacity-50",
         base,
+        baseSize[size],
         variants[variant],
         isDisabled && disabledStyles,
-        className
+        className,
       )}
       aria-disabled={isDisabled}
       {...(Component === "button" ? { disabled: isDisabled } : {})}
@@ -101,6 +113,7 @@ const Button = ({
       {loading ? loadingSpinner : null}
       {Icon && <Icon className="w-4 h-4" />}
       {!loading && children}
+      {label}
     </Component>
   );
 };

@@ -71,7 +71,7 @@ export function MiniIconButton({
       className={cn(
         baseSize[size],
         "gap-1 cursor-pointer shadow-md",
-        className
+        className,
       )}
     >
       {label && text}

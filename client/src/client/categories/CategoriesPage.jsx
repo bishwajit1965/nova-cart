@@ -1,4 +1,4 @@
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 import API_PATHS from "../../superAdmin/services/apiPaths/apiPaths";
 import Button from "../../common/components/ui/Button";
@@ -15,6 +15,8 @@ import usePageTitle from "../../superAdmin/services/hooks/usePageTitle";
 import { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { LucidePackageCheck } from "lucide-react";
+import useGlobalContext from "../../common/hooks/useGlobalContext";
+import textShortener from "../../utils/textShortener";
 
 const CategoriesPage = () => {
   const pageTile = usePageTitle();
@@ -27,12 +29,23 @@ const CategoriesPage = () => {
   const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 });
   const [selectedBrand, setSelectedBrand] = useState("All Brands");
   const apiURL = import.meta.env.VITE_API_URL || "http:localhost:3000";
+  const navigate = useNavigate();
+
+  // Global context data
+  const {
+    allProducts,
+    hasVariants,
+    getFirstVariant,
+    isInCart,
+    handleAddToCart,
+  } = useGlobalContext();
 
   // Filters from URL
   const categorySlug = searchParams.get("category") || "";
   const subCategorySlug = searchParams.get("subCategory") || "";
   const brandFilter = searchParams.get("brand") || "All Brands";
   const minPrice = parseFloat(searchParams.get("minPrice")) || 0;
+  let quantity = 1;
 
   // Always define the current filters from searchParams
   const maxPrice = parseFloat(searchParams.get("maxPrice")) || Infinity;
@@ -185,48 +198,48 @@ const CategoriesPage = () => {
   });
 
   /** --------> Add product to cart --------> */
-  const handleAddToCart = (product) => {
-    if (addedToCart.length >= CART_LIMIT) {
-      toast.success("You have added 10 items!");
-      return; // prevent adding more
-    }
-    addToCartMutation.mutate(
-      {
-        data: {
-          productId: product._id,
-          quantity: 1,
-        },
-      },
-      {
-        onSuccess: (res) => {
-          setAddedToCart((prev) => {
-            const existing = prev.find((item) => item._id === product._id);
-            if (existing) {
-              // update quantity
-              return prev.map((item) =>
-                item._id === product._id
-                  ? { ...item, quantity: item.quantity + 1 }
-                  : item,
-              );
-              // toast.error("Item already added! try new one!");
-            } else {
-              return [
-                ...prev,
-                {
-                  _id: product._id,
-                  name: product.name,
-                  brand: product.brand,
-                  image: product.images?.[0], // first image
-                  price: product.price,
-                  quantity: 1,
-                },
-              ];
-            }
-          });
-        },
-      },
-    );
-  };
+  // const handleAddToCart = (product) => {
+  //   if (addedToCart.length >= CART_LIMIT) {
+  //     toast.success("You have added 10 items!");
+  //     return; // prevent adding more
+  //   }
+  //   addToCartMutation.mutate(
+  //     {
+  //       data: {
+  //         productId: product._id,
+  //         quantity: 1,
+  //       },
+  //     },
+  //     {
+  //       onSuccess: (res) => {
+  //         setAddedToCart((prev) => {
+  //           const existing = prev.find((item) => item._id === product._id);
+  //           if (existing) {
+  //             // update quantity
+  //             return prev.map((item) =>
+  //               item._id === product._id
+  //                 ? { ...item, quantity: item.quantity + 1 }
+  //                 : item,
+  //             );
+  //             // toast.error("Item already added! try new one!");
+  //           } else {
+  //             return [
+  //               ...prev,
+  //               {
+  //                 _id: product._id,
+  //                 name: product.name,
+  //                 brand: product.brand,
+  //                 image: product.images?.[0], // first image
+  //                 price: product.price,
+  //                 quantity: 1,
+  //               },
+  //             ];
+  //           }
+  //         });
+  //       },
+  //     },
+  //   );
+  // };
 
   /*** -----> Sidebar toggler handler -----> */
   const handleToggleSidebar = () => {
@@ -574,78 +587,111 @@ const CategoriesPage = () => {
             {/* Products grid */}
             {products?.length > 0 ? (
               <div className="grid lg:grid-cols-12 grid-cols-1 justify-between lg:gap-6 gap-4">
-                {products?.map((p) => (
-                  <div
-                    key={p._id}
-                    className="lg:col-span-4 col-span-1 border border-base-content/20 rounded-lg hover:shadow-lg transition"
-                  >
-                    {p.images && (
-                      <img
-                        src={`${apiURL}${p?.images[0]}`}
-                        alt={p.name}
-                        className="w-full h-40 object-cover mb-2 rounded-t-md"
-                      />
-                    )}
-                    <div className="p-2">
-                      <h3 className="text-sm font-bold">{p.name}</h3>
-                      <p className="text-sm font-bold">{p.brand}</p>
-                      <p className="text-gray-600">${p.price.toFixed(2)}</p>
-                    </div>
-                    <div className="flex justify-between rounded-b-lg p-2 shadow">
-                      <Link to={`/product-details/${p._id}`}>
-                        <Button variant="base" className="btn btn-sm">
+                {products?.map((p) => {
+                  const variant = getFirstVariant(p);
+                  const inCart = isInCart(p._id, variant?._id);
+                  return (
+                    <div
+                      key={p._id}
+                      className="lg:col-span-4 col-span-1 border border-base-content/20 rounded-lg hover:shadow-lg transition"
+                    >
+                      {p.images && (
+                        <img
+                          src={`${apiURL}${variant?.images?.[0] || p?.images?.[0]}`}
+                          alt={p.name}
+                          onClick={() => navigate(`/product-details/${p._id}`)}
+                          className="w-full h-40 object-cover mb-2 rounded-t-md cursor-pointer"
+                        />
+                      )}
+                      <div className="p-2">
+                        <h3 className="text-sm font-bold">{p.name}</h3>
+                        <p className="text-sm font-bold">{p.brand}</p>
+                        <p className="text-sm text-gray-500">
+                          {textShortener(p.description, 100)}
+                        </p>
+                        <p className="text-gray-600">${p.price.toFixed(2)}</p>
+                      </div>
+                      <div className="flex justify-between rounded-b-lg p-2 shadow">
+                        <Button
+                          href={`/product-details/${p._id}`}
+                          variant="base"
+                          size="xs"
+                          className="btn btn-sm"
+                        >
                           <LucideIcon.EyeIcon size={20} /> View Details
                         </Button>
-                      </Link>
 
-                      <div
-                        className={`${
-                          addedToCart.some((item) => item._id === p._id)
-                            ? "cursor-not-allowed"
-                            : ""
-                        }`}
-                      >
-                        <Button
-                          disabled={addedToCart.some(
-                            (item) =>
-                              item._id === p._id ||
-                              addedToCart.length >= CART_LIMIT,
-                          )}
-                          type="submit"
-                          variant={`${
+                        <div
+                          className={`${
                             addedToCart.some((item) => item._id === p._id)
-                              ? "base"
-                              : "indigo"
-                          }`}
-                          onClick={() => handleAddToCart(p)}
-                          className={`btn btn-sm ${
-                            addedToCart.some((item) => item._id === p._id)
-                              ? "disabled cursor-not-allowed"
-                              : "visible"
+                              ? "cursor-not-allowed"
+                              : ""
                           }`}
                         >
-                          {addedToCart.some((item) => item._id === p._id) ? (
-                            <LucideIcon.CircleCheckBig
-                              size={20}
-                              className="text-base-content"
-                            />
-                          ) : (
-                            <LucideIcon.ShoppingCart
-                              size={20}
-                              className="text-white"
-                            />
-                          )}
+                          <Button
+                            disabled={addedToCart.some(
+                              (item) =>
+                                item._id === p._id ||
+                                addedToCart.length >= CART_LIMIT,
+                            )}
+                            type="submit"
+                            size="xs"
+                            variant={`${
+                              addedToCart.some((item) => item._id === p._id)
+                                ? "base"
+                                : "indigo"
+                            }`}
+                            onClick={() => {
+                              if (!p) {
+                                toast.error("Product not found!");
+                                return;
+                              }
+                              // Check if product has variants
+                              const hasVariants =
+                                Array.isArray(p.variants) &&
+                                p.variants.length > 0;
 
-                          {addedToCart.some((item) => item._id === p._id)
-                            ? "Added"
-                            : addedToCart.length >= CART_LIMIT
-                              ? "Cart Full!"
-                              : "Add to Cart"}
-                        </Button>
+                              if (hasVariants) {
+                                // Redirect to product details page to choose variant
+                                navigate(`/product-details/${p._id}`);
+                                return;
+                              }
+                              // No variants, safe to add directly
+                              handleAddToCart({
+                                product: p,
+                                variant: null,
+                                quantity,
+                              });
+                            }}
+                            className={`btn btn-sm ${
+                              addedToCart.some((item) => item._id === p._id)
+                                ? "disabled cursor-not-allowed"
+                                : "visible"
+                            }`}
+                          >
+                            {addedToCart.some((item) => item._id === p._id) ? (
+                              <LucideIcon.CircleCheckBig
+                                size={20}
+                                className="text-base-content"
+                              />
+                            ) : (
+                              <LucideIcon.ShoppingCart
+                                size={20}
+                                className="text-white"
+                              />
+                            )}
+
+                            {addedToCart.some((item) => item._id === p._id)
+                              ? "Added"
+                              : addedToCart.length >= CART_LIMIT
+                                ? "Cart Full!"
+                                : "Add to Cart"}
+                          </Button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <NoDataFound label={"Product"} />

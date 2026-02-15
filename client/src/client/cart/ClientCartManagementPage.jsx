@@ -1,5 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
-import { AlertCircle, HeartPlus, Loader, ShoppingCart } from "lucide-react";
+import {
+  AlertCircle,
+  HeartPlus,
+  Loader,
+  ShoppingCart,
+  ShoppingCartIcon,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 
 import Button from "../../common/components/ui/Button";
@@ -19,6 +25,7 @@ const ClientCartManagementPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(null);
   const [productId, setProductId] = useState(null);
   const [showSummary, setShowSummary] = useState(false);
+  const [expandedModalId, setExpandedModalId] = useState(null);
 
   // central global hooks
   const {
@@ -51,6 +58,8 @@ const ClientCartManagementPage = () => {
     handleRequestCartItemDelete,
     handleRemoveCartItem,
   } = useGlobalContext();
+
+  console.log("Is modal open", isModalOpen);
 
   const productItems = allProducts.map((item) => item.product);
 
@@ -142,20 +151,23 @@ const ClientCartManagementPage = () => {
               </h2>
             </div>
             <div className="flex items-center lg:justify-end justify-center lg:space-x-4 space-x-16">
-              <Link to="/client-product-wishlist">
-                <Button variant="base" className="btn btn-sm">
-                  <HeartPlus size={20} />
-                  Wish List
-                </Button>
-              </Link>
+              <Button
+                href="/client-product-wishlist"
+                variant="base"
+                label="Wish List"
+                size="xs"
+                icon={HeartPlus}
+                className=""
+              />
+
               <Button
                 onClick={onGenerateCouponCode}
                 variant="indigo"
-                className="btn btn-sm"
-              >
-                <ShoppingCart size={20} />
-                Checkout
-              </Button>
+                label="Checkout"
+                size="xs"
+                icon={ShoppingCartIcon}
+                className=""
+              />
             </div>
           </div>
 
@@ -291,8 +303,6 @@ const ClientCartManagementPage = () => {
                         src={buildUrl(
                           variant?.images?.[0] || product?.images?.[0],
                         )}
-                        // src={product?.images?.[0]}
-
                         alt={product.name}
                         className="h-32 object-contain w-full cursor-pointer z-50"
                       />
@@ -330,12 +340,12 @@ const ClientCartManagementPage = () => {
                       <div className="">
                         <Button
                           variant="success"
+                          size="xs"
                           icon={LucideIcon.Eye}
+                          label="View Details"
                           onClick={() => handleModalToggleView(product._id)}
-                          className="btn btn-sm border-none"
-                        >
-                          View Details
-                        </Button>
+                          className=" "
+                        />
                       </div>
 
                       <div
@@ -348,6 +358,7 @@ const ClientCartManagementPage = () => {
                         }`}
                       >
                         <Button
+                          size="xs"
                           onClick={() =>
                             variant
                               ? navigate(`/product-details/${product._id}`)
@@ -369,7 +380,7 @@ const ClientCartManagementPage = () => {
                           {loadingCartId === product._id ? (
                             <Loader className="animate-spin" />
                           ) : (
-                            <LucideIcon.ShoppingCart size={20} />
+                            <LucideIcon.ShoppingCart size={16} />
                           )}
                           {inCart
                             ? "In Cart"
@@ -437,7 +448,6 @@ const ClientCartManagementPage = () => {
               bg-white dark:bg-slate-900
               lg:z-40 z-50
             `}
-            // className="sticky top-20"
           >
             <CartSummaryPanel
               cart={cart}
@@ -459,54 +469,92 @@ const ClientCartManagementPage = () => {
           <Modal
             isOpen={!!isModalOpen}
             onClose={() => setIsModalOpen(null)}
-            title={isModalOpen.name}
+            title={isModalOpen.name || "Product Details"}
           >
             <div className="grid lg:grid-cols-12 grid-cols-1 gap-4">
+              {/* Image Section */}
               <div className="lg:col-span-4 col-span-12">
                 <img
-                  src={buildUrl(isModalOpen?.images?.[0])}
-                  // src={isModalOpen?.images?.[0]}
-                  alt={isModalOpen.name}
+                  src={
+                    isModalOpen?.images?.[0]
+                      ? buildUrl(isModalOpen.images[0])
+                      : "/placeholder.png"
+                  }
+                  alt={isModalOpen.name || "Product Image"}
                   className="w-full h-full object-cover rounded-lg shadow"
                 />
               </div>
+
+              {/* Info Section */}
               <div className="lg:col-span-8 col-span-12 overflow-y-auto max-h-56">
                 <h3 className="text-lg font-semibold mb-2">
-                  {isModalOpen.name}
+                  {isModalOpen.name || "Unnamed Product"}
                 </h3>
+
                 <p className="text-sm text-gray-500 mb-4">
-                  {isExpanded
+                  {expandedModalId === isModalOpen._id
                     ? isModalOpen.description
                     : textShortener(isModalOpen.description, 100)}
                   <button
-                    onClick={() => setIsExpanded(!isExpanded)}
+                    onClick={() =>
+                      setExpandedModalId(
+                        expandedModalId === isModalOpen._id
+                          ? null
+                          : isModalOpen._id,
+                      )
+                    }
                     className="text-indigo-500 link ml-1 text-sm font-semibold"
                   >
-                    {isExpanded ? "Read Less" : "Read More"}
+                    {expandedModalId === isModalOpen._id
+                      ? "Read Less"
+                      : "Read More"}
                   </button>
                 </p>
+
                 <p className="font-bold text-xl">
-                  ${isModalOpen.price.toFixed(2)}
+                  $
+                  {isModalOpen.price !== undefined
+                    ? isModalOpen.price.toFixed(2)
+                    : isModalOpen.variants?.length
+                      ? Math.min(
+                          ...isModalOpen.variants.map((v) => v.price),
+                        ).toFixed(2)
+                      : "0.00"}
                 </p>
 
-                <div className="mt-4 space-x-2 flex items-center">
+                {/* Buttons */}
+                <div className="mt-4 space-x-2 flex items-center p-2">
                   <Button
                     icon={LucideIcon.ShoppingCart}
                     variant="indigo"
-                    onClick={() => handleAddToCart(isModalOpen)}
+                    size="xs"
+                    onClick={() => {
+                      if (hasVariants(isModalOpen)) {
+                        // Redirect to product details if variants exist
+                        navigate(`/product-details/${isModalOpen._id}`);
+                        return;
+                      }
+                      handleAddToCart({ product: isModalOpen });
+                    }}
                     disabled={
                       addedToCart.some((i) => i._id === isModalOpen._id) ||
                       addedToCart.length >= CART_LIMIT
                     }
-                    className="btn btn-sm"
+                    className=""
                   >
-                    Add to Cart
+                    {addedToCart.some((i) => i._id === isModalOpen._id)
+                      ? "In Cart"
+                      : addedToCart.length >= CART_LIMIT
+                        ? "Cart Full"
+                        : "Add to Cart"}
                   </Button>
+
                   <Button
                     variant="danger"
+                    size="xs"
                     icon={LucideIcon.X}
                     onClick={() => setIsModalOpen(null)}
-                    className="btn btn-sm ml-2"
+                    className=""
                   >
                     Close
                   </Button>

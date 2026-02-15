@@ -697,16 +697,16 @@ const ProductDetails = () => {
                   </button>
                 </div>
 
-                <div className="flex items-center lg:space-x-2 space-x-2 gap-1 mt- flex-wrap border border-base-content/15 rounded-lg shadow hover:shadow-lg px-2 py-4">
+                <div className="flex items-center lg:space-x-2 space-x-2 gap-1 flex-wrap border border-base-content/15 rounded-lg shadow hover:shadow-lg px-2 py-4 bg-base-100">
                   {/* Color display & Variant Selector */}
                   <h3 className="font-semibold hidden lg:block">Color ➡️</h3>
                   {colors.map((color, index) => (
                     <div
                       key={index}
-                      className={`w-6 h-6 rounded-full cursor-pointer border-4 bg-base-100 ${
+                      className={`w-6 h-6 rounded-full cursor-pointer shadow-md ${
                         selectedColor === color
-                          ? "border border-cyan-400 p-1 ring-1 ring-offset-1 ring-offset-cyan-400"
-                          : "border-base-100"
+                          ? "border-4 border-cyan-400 p-1 ring-2 ring-blue-400 ring-offset-2 ring-offset-cyan-400 shadow-md"
+                          : "border-base-200 shadow-md"
                       }`}
                       style={{ backgroundColor: color }}
                       onClick={() => handleColorSelect(color)}
@@ -720,7 +720,7 @@ const ProductDetails = () => {
                     {sizes.map((size, index) => (
                       <button
                         key={index}
-                        className={`px-3 py-1 border rounded-md cursor-pointer shadow ${
+                        className={`px-3 py-1 border border-base-content/30 rounded-md cursor-pointer shadow ${
                           selectedSize === size
                             ? "bg-black text-white"
                             : "bg-white text-black"

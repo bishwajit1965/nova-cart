@@ -40,13 +40,13 @@ export const useApiMutation = ({
       const message =
         typeof successMessage === "function"
           ? successMessage({ data, variables, method })
-          : successMessage ??
+          : (successMessage ??
             backendMessage ??
             (method === "create"
-              ? "Operation successful!"
+              ? "Operation is successful!"
               : method === "update"
-              ? "Data updated successfully!"
-              : "Data deleted successfully!");
+                ? "Data updated successfully!"
+                : "Data deleted successfully!"));
 
       toast.success(message);
     },

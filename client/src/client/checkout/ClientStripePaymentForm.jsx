@@ -102,7 +102,7 @@ const ClientStripePaymentForm = ({
           {isProcessing ? <Loader /> : <LucideIcon.CreditCard />}
           {isProcessing
             ? "Processing..."
-            : `Pay with Stripe $ ${(amount / 100).toFixed(2)}`} 
+            : `Pay with Stripe $ ${(amount / 100).toFixed(2)}`}
         </Button>
       </form>
     </div>

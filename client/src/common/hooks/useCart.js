@@ -207,7 +207,7 @@ const useCart = () => {
 
   const handleAddToCart = ({ product, variant = null, quantity = 1 }) => {
     const requiresVariant = (product) =>
-      Array.isArray(product.variants) && product.variants.length > 0;
+      Array.isArray(product?.variants) && product?.variants?.length > 0;
 
     if (requiresVariant(product) && !variant) {
       toast.error("Please select a variant");
@@ -316,8 +316,10 @@ const useCart = () => {
   };
 
   const handleGenerateCouponCode = () => {
-    if (cart.length === 0)
-      return toast.error("Your cart is empty! Add products to cart.");
+    if (!cart || cart.length === 0) {
+      toast.error("Your cart is empty! Add products to cart.");
+      return;
+    }
     couponMutation.mutateAsync({ data: { code: "code" } });
   };
 

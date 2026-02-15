@@ -46,6 +46,8 @@ const CartItemList = ({
     });
   };
 
+  console.log("Variant Images", cart);
+
   return (
     <div className="">
       <div className="p-2 sticky top-0 bg-base-300 rounded-t-lg border border-base-content/15">
@@ -65,80 +67,99 @@ const CartItemList = ({
         </h2>
       </div>
       <div className="lg:space-y-4 space-y-2 lg:max-h-[18.5rem] max-h-[11.2rem] overflow-y-auto bg-base-100 rounded-b-lg py-2">
-        {cart?.map((item) => (
-          <div
-            key={`${item?.product?._id}${item?.variantId || "no-variant"}`}
-            // key={item.product._id}
-            className="grid lg:grid-cols-12 grid-cols-1 items-center justify-between border border-base-content/15 p-2 shadow-sm rounded-lg lg:space-y-0 space-y-4 cursor-pointer"
-          >
-            <div className="lg:col-span-4 col-span-12 flex items-center gap-3 text-xs">
-              <img
-                onClick={() => handleNavigate(item)}
-                src={`${apiURL}${item?.product?.images[0]}`}
-                alt={item?.product?.name}
-                className="w-16 h-16 object-contain rounded"
-              />
-              <div className="text-sm">
-                <h3
-                  onClick={() => handleNavigate(item)}
-                  className="text-sm font-semibold"
-                >
-                  {item?.product?.name}
-                </h3>
+        {cart?.map((item) => {
+          const selectedVariant = item?.product?.variants?.find(
+            (variant) => String(variant?._id) === String(item?.variantId),
+          );
 
-                <p className="font-bold mt-1">
-                  <span className="text-sm">
-                    $
-                    {item?.price?.toLocaleString(undefined, {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
-                  </span>
-                  ?
-                </p>
+          const displayImage =
+            selectedVariant?.images?.length > 0
+              ? selectedVariant?.images[0]
+              : item?.product?.images?.[0];
+
+          const basePrice = selectedVariant?.price ?? item?.price;
+
+          const discount =
+            selectedVariant?.discountPrice ?? item?.discountPrice ?? 0;
+
+          const finalPrice = basePrice - discount;
+
+          return (
+            <div
+              key={`${item?.product?._id}${item?.variantId || "no-variant"}`}
+              // key={item.product._id}
+              className="grid lg:grid-cols-12 grid-cols-1 items-center justify-between border border-base-content/15 p-2 shadow-sm rounded-lg lg:space-y-0 space-y-4 cursor-pointer"
+            >
+              <div className="lg:col-span-4 col-span-12 flex items-center gap-3 text-xs">
+                <img
+                  onClick={() => handleNavigate(item)}
+                  src={`${apiURL}${displayImage}`}
+                  alt={item?.product?.name}
+                  className="w-16 h-16 object-contain rounded"
+                />
+                <div className="text-sm">
+                  <h3
+                    onClick={() => handleNavigate(item)}
+                    className="text-xs font-bold"
+                  >
+                    {item?.product?.name}
+                  </h3>
+
+                  <p className="font-bold mt-1">
+                    <span className="text-sm">
+                      $
+                      {basePrice?.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </span>
+                    ?
+                  </p>
+                </div>
+              </div>
+
+              <div className="lg:col-span-4 col-span-12 flex items-center justify-center gap-2">
+                <button
+                  onClick={() =>
+                    handleDecreaseQuantity(item?.product?._id, item?.variantId)
+                  }
+                  className="btn btn-sm"
+                >
+                  <Minus size={16} />
+                </button>
+                <span className="font-semibold">{item?.quantity}</span>
+                <button
+                  onClick={() =>
+                    handleIncreaseQuantity(item.product._id, item.variantId)
+                  }
+                  className="btn btn-sm"
+                >
+                  <Plus size={16} />
+                </button>
+              </div>
+
+              <div className="lg:col-span-4 col-span-12 flex items-center justify-end gap-2">
+                <span className="text-sm font-bold">
+                  $
+                  {(basePrice * item?.quantity).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </span>
+
+                <Button
+                  variant="danger"
+                  icon={LucideIcon.Trash2}
+                  onClick={() => onDeleteRequest(item)}
+                  size="xs"
+                  label="Remove"
+                  className="btn btn-sm text-xs"
+                />
               </div>
             </div>
+          );
+        })}
 
-            <div className="lg:col-span-4 col-span-12 flex items-center justify-center gap-2">
-              <button
-                onClick={() =>
-                  handleDecreaseQuantity(item?.product?._id, item?.variantId)
-                }
-                className="btn btn-sm"
-              >
-                <Minus size={16} />
-              </button>
-              <span className="font-semibold">{item?.quantity}</span>
-              <button
-                onClick={() =>
-                  handleIncreaseQuantity(item.product._id, item.variantId)
-                }
-                className="btn btn-sm"
-              >
-                <Plus size={16} />
-              </button>
-            </div>
-
-            <div className="lg:col-span-4 col-span-12 flex items-center justify-end gap-2">
-              <span className="text-sm font-bold">
-                $
-                {(item?.price * item?.quantity).toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </span>
-
-              <Button
-                variant="danger"
-                icon={LucideIcon.Trash2}
-                onClick={() => onDeleteRequest(item)}
-                className="btn btn-sm text-xs"
-              >
-                Remove
-              </Button>
-            </div>
-          </div>
-        ))}
         {/* DELETE CONFIRM MODAL */}
         {deleteModalData && (
           <ConfirmModal

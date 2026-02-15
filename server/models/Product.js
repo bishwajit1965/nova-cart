@@ -66,21 +66,4 @@ productSchema.pre("save", function (next) {
   next();
 });
 
-// productSchema.pre("save", function (next) {
-//   if (this.isNew && this.variants && this.variants.length > 0) {
-//     this.variants.forEach((variant, index) => {
-//       if (!variant.SKU) {
-//         const prefix = this.name
-//           .replace(/\s+/g, "")
-//           .substring(0, 5)
-//           .toUpperCase();
-//         variant.SKU = `${prefix}-${index + 1}-${Date.now()
-//           .toString()
-//           .slice(-4)}`;
-//       }
-//     });
-//   }
-//   next();
-// });
-
 export default mongoose.model("Product", productSchema);

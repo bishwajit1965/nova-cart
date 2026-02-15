@@ -1,4 +1,8 @@
-import { LucideCircleArrowDown, ShoppingCart } from "lucide-react";
+import {
+  LucideCircleArrowDown,
+  ShoppingCart,
+  ShoppingCartIcon,
+} from "lucide-react";
 
 import Button from "../../../common/components/ui/Button";
 import { Link } from "react-router-dom";
@@ -97,16 +101,19 @@ const CartSummaryPanel = ({ cart, handleGenerateCouponCode }) => {
         <span>${subTotal.toFixed(2)}</span>
       </div>
 
-      <div className="w-full border-t border-base-content/25">
-        <Link to="/client-cart-checkout" className="w-full">
-          <Button
-            onClick={handleGenerateCouponCode}
-            variant="indigo"
-            className="w-full lg:text-xl rounded-t-none rounded-b-lg border-none"
-          >
-            <ShoppingCart /> Checkout
-          </Button>
-        </Link>
+      <div
+        className={`${!cart || cart.length === 0 ? "cursor-not-allowed" : ""} w-full border-t border-base-content/25`}
+      >
+        <Button
+          href="/client-cart-checkout"
+          onClick={handleGenerateCouponCode}
+          disabled={!cart || cart.length === 0}
+          variant="indigo"
+          label="Checkout"
+          size="md"
+          icon={ShoppingCartIcon}
+          className="w-full lg:text-lg rounded-t-none rounded-b-lg border-none"
+        />
       </div>
     </div>
   );

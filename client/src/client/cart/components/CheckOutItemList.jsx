@@ -16,33 +16,46 @@ const CheckOutItemList = ({ items }) => {
       {items?.length === 0 ? (
         <NoDataFound />
       ) : (
-        items?.map((item) => (
-          <div
-            key={item.product._id}
-            className="flex items-center justify-between border border-base-content/15 w-full bg-base-200 rounded-lg"
-          >
-            <div className="lg:min-w-1/4 min-w-1/4 lg:p-3 p-2">
-              {item.product.images && (
-                <img
-                  src={`${apiURL}${item?.product?.images}`}
-                  alt={item?.product?.name}
-                  className="lg:h-16 w-14 object-contain"
-                />
-              )}
+        items?.map((item) => {
+          const selectedVariant = item?.product?.variants?.find(
+            (variant) => String(variant?._id) === String(item?.variantId),
+          );
+
+          const displayImage =
+            selectedVariant?.images?.length > 0
+              ? selectedVariant?.images[0]
+              : item?.product?.images?.[0];
+
+          const basePrice = selectedVariant?.price ?? item?.price;
+
+          return (
+            <div
+              key={item.product._id}
+              className="flex items-center justify-between border border-base-content/15 w-full bg-base-200 rounded-lg"
+            >
+              <div className="lg:min-w-1/4 min-w-1/4 lg:p-3 p-2">
+                {displayImage && (
+                  <img
+                    src={`${apiURL}${displayImage}`}
+                    alt={item?.product?.name}
+                    className="lg:h-16 w-14 object-contain"
+                  />
+                )}
+              </div>
+              <div className="lg:min-w-1/4 min-w-1/4 lg:p-4 p-2">
+                <p className="lg:text-xl text-xs lg:font-bold">
+                  {item.product.name}
+                </p>
+              </div>
+              <div className="lg:min-w-1/4 min-w-1/4 lg:p-4 p-2 text-center">
+                <p>Qty: {item.quantity}</p>
+              </div>
+              <div className="lg:min-w-1/4 min-w-1/4 lg:p-4 p-2 text-right font-bold">
+                <p>${(basePrice * item.quantity).toFixed(2)}</p>
+              </div>
             </div>
-            <div className="lg:min-w-1/4 min-w-1/4 lg:p-4 p-2">
-              <p className="lg:text-xl text-xs lg:font-bold">
-                {item.product.name}
-              </p>
-            </div>
-            <div className="lg:min-w-1/4 min-w-1/4 lg:p-4 p-2 text-center">
-              <p>Qty: {item.quantity}</p>
-            </div>
-            <div className="lg:min-w-1/4 min-w-1/4 lg:p-4 p-2 text-right font-bold">
-              <p>${(item.product.price * item.quantity).toFixed(2)}</p>
-            </div>
-          </div>
-        ))
+          );
+        })
       )}
     </div>
   );
