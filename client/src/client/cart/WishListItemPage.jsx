@@ -487,6 +487,7 @@ const WishListItemPage = () => {
                               <Button
                                 className="text-red-500 btn btn-sm"
                                 variant="danger"
+                                size="xs"
                                 icon={LucideIcon.Trash2}
                                 onClick={() =>
                                   handleDeleteClick(
@@ -508,6 +509,7 @@ const WishListItemPage = () => {
                               <Button
                                 className="btn btn-sm"
                                 variant="indigo"
+                                size="xs"
                                 icon={LucideIcon.ShoppingCart}
                                 onClick={() =>
                                   handleMoveToCart({
@@ -531,6 +533,7 @@ const WishListItemPage = () => {
                               >
                                 <Button
                                   variant="base"
+                                  size="sm"
                                   className="btn btn-sm w-full rounded-t-none rounded-b-lg border-none"
                                 >
                                   <LucideIcon.Eye /> View Details

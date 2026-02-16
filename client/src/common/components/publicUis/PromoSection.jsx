@@ -16,7 +16,7 @@ const PromoSection = () => {
     >
       <div className="max-w-6xl mx-auto px-6 flex flex-col lg:flex-row items-center justify-between gap-6">
         <motion.div variants={itemVariants}>
-          <h2 className="text-3xl font-bold mb-2">
+          <h2 className="lg:text-5xl text-sm font-bold mb-2">
             🎉 Big Sale: Up to 50% Off!
           </h2>
           <p className="text-lg">

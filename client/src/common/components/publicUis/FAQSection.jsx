@@ -9,7 +9,8 @@ import { motion } from "framer-motion";
 import { useApiQuery } from "../../../superAdmin/services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../utils/hooks/useFetchedDataStatusHandler";
 import { useState } from "react";
-import { FaQuestion } from "react-icons/fa";
+import { FaQuestion, FaQuestionCircle } from "react-icons/fa";
+import SectionTitle from "../../utils/sectionTitle/SectionTitle";
 
 const FAQSection = () => {
   /*** ------> Faq data fetched ------> */
@@ -55,12 +56,16 @@ const FAQSection = () => {
         className="max-w-4xl mx-auto lg:px-6 px-2"
         variants={itemVariants}
       >
-        <motion.h2
-          className="text-xl lg:text-3xl flex items-center gap-2 font-extrabold text-center lg:mb-8 mb-4 text-base-content/70"
-          variants={itemVariants}
-        >
-          <FaQuestion className="text-primary" /> Frequently Asked Questions
-        </motion.h2>
+        <motion.div variants={itemVariants} className="lg:mb-8 mb-4">
+          <SectionTitle
+            title="Frequently"
+            decoratedText="Asked Questions"
+            subTitle="Explore your question & our answer"
+            icon={<FaQuestionCircle size={28} />}
+            description="Relevant questions have been answered here. Just explore to know in details."
+          />
+        </motion.div>
+
         <motion.div className="space-y-4" variants={itemVariants}>
           {faqs?.map((faq, idx) => (
             <motion.div

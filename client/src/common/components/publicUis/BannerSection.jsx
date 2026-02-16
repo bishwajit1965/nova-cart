@@ -6,6 +6,8 @@ import Marquee from "react-fast-marquee";
 import { motion } from "framer-motion";
 import { useApiQuery } from "../../../superAdmin/services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../utils/hooks/useFetchedDataStatusHandler";
+import SectionTitle from "../../utils/sectionTitle/SectionTitle";
+import { itemVariants } from "../../../client/service/animations";
 
 const BannerSection = () => {
   const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
@@ -28,8 +30,8 @@ const BannerSection = () => {
       // Filter only "banner" type slides
       setBanners(
         bannerData?.filter(
-          (slide) => slide?.type === "banner" && slide?.isActive === true
-        )
+          (slide) => slide?.type === "banner" && slide?.isActive === true,
+        ),
       );
     }
   }, [bannerData]);
@@ -49,9 +51,16 @@ const BannerSection = () => {
 
   return (
     <section className="max-w-7xl mx-auto bg-base-200 lg:p-16 p-8 rounded-md shadow-md border border-base-content/15">
-      <h2 className="lg:text-2xl text-xl font-bold text-center mb-8 flex items-center justify-center gap-2">
-        <Layers /> Featured Promotions
-      </h2>
+      <motion.div variants={itemVariants} className="lg:mb-8 mb-4">
+        <SectionTitle
+          title="Featured"
+          decoratedText="Promotions"
+          subTitle="Explore different sections"
+          icon={<Layers size={28} />}
+          description="Handpicked collections, limited offers, and premium selections made just for you."
+        />
+      </motion.div>
+      <h2 className="lg:text-2xl text-sm font-bold text-center mb-8 flex items-center justify-center gap-2"></h2>
       <Marquee pauseOnHover={true} speed={30} gradient={false}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  justify-between gap-5">
           {banners?.map((banner, idx) => (

@@ -435,32 +435,43 @@ const ClientProfilePage = () => {
                         viewport={{ once: false }}
                         variants={containerVariants}
                       >
-                        {order?.items.map((item) => (
-                          <div
-                            key={item._id}
-                            className="lg:col-span-3 col-span-12 border border-base-content/15 rounded-md shadow hover:shadow-lg"
-                          >
-                            {item?.product?.images && (
-                              <div className="flex justify-center">
-                                <img
-                                  src={`${apiURL}${item?.product?.images[0]}`}
-                                  alt={item.name || ""}
-                                  className="h-20 w-full object-contain"
-                                />
+                        {order?.items.map((item) => {
+                          const variant = item?.product?.variants?.find(
+                            (v) => v._id === item?.variantId,
+                          );
+
+                          const price = variant?.price ?? item?.price ?? 0;
+                          return (
+                            <div
+                              key={item._id}
+                              className="lg:col-span-3 col-span-12 border border-base-content/15 rounded-md shadow hover:shadow-lg"
+                            >
+                              {item?.product?.images && (
+                                <div className="flex justify-center">
+                                  <img
+                                    src={`${apiURL}${
+                                      item?.image ||
+                                      variant?.images?.[0] ||
+                                      item?.product?.images?.[0]
+                                    }`}
+                                    alt={item.name || ""}
+                                    className="h-20 w-full object-contain"
+                                  />
+                                </div>
+                              )}
+                              <div className="p-2">
+                                <p className="font-semibold">{item.name}</p>
+                                <p className="text-sm">
+                                  ${price.toFixed(2)} x {item.quantity}
+                                  <span className="font-bold">
+                                    {" "}
+                                    = ${(price * item.quantity).toFixed(2)}
+                                  </span>
+                                </p>
                               </div>
-                            )}
-                            <div className="p-2">
-                              <p className="font-semibold">{item.name}</p>
-                              <p className="text-sm">
-                                ${item.price.toFixed(2)} x {item.quantity}
-                                <span className="font-bold">
-                                  {" "}
-                                  = ${(item.price * item.quantity).toFixed(2)}
-                                </span>
-                              </p>
                             </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </motion.div>
 
                       {order.status === "pending" && (

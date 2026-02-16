@@ -6,6 +6,8 @@ import { LucideIcon } from "../../common/lib/LucideIcons";
 import { motion } from "framer-motion";
 import { useApiQuery } from "../../superAdmin/services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
+import SectionTitle from "../../common/utils/sectionTitle/SectionTitle";
+import { Sparkles, SparklesIcon, WandSparklesIcon } from "lucide-react";
 
 const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 const RandomProductsSection = () => {
@@ -60,15 +62,19 @@ const RandomProductsSection = () => {
           variants={containerVariants}
           className="max-w-6xl mx-auto lg:px-6 px-2 text-center text-base-content/70"
         >
-          <motion.h2
-            variants={itemVariants}
-            className="lg:text-3xl text-lg font-extrabold items-center lg:mb-8 mb-4 flex justify-center gap-2"
-          >
-            ✨ Discover Something New{" "}
-            <span className="lg:w-8 lg:h-8 w-6 h-6 rounded-full bg-indigo-600 text-sm text-white p-1 flex items-center justify-center border-2 shadow-sm border-base-100">
-              {randomProducts?.length > 0 ? randomProducts?.length : "0"}
-            </span>
-          </motion.h2>
+          <motion.div variants={itemVariants} className="lg:mb-8 mb-4">
+            <SectionTitle
+              icon={<SparklesIcon size={28} />}
+              title="Discover"
+              subTitle="Explore new items and add to cart"
+              decoratedText="Something New"
+              description="Handpicked collections, limited offers, and premium selections made just for you."
+              dataLength={
+                randomProducts?.length > 0 ? randomProducts?.length : 0
+              }
+            />
+          </motion.div>
+
           <motion.div
             variants={containerVariants}
             className="grid lg:grid-cols-12 grid-cols-1 md:grid-cols-4 lg:gap-6 gap-4 justify-between"

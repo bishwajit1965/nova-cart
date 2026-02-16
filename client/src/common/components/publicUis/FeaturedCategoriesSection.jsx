@@ -10,6 +10,8 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useApiQuery } from "../../../superAdmin/services/hooks/useApiQuery";
+import SectionTitle from "../../utils/sectionTitle/SectionTitle";
+import { RocketIcon } from "lucide-react";
 
 const FeaturedCategoriesSection = () => {
   const { data: categories = [], isLoading } = useApiQuery({
@@ -41,12 +43,16 @@ const FeaturedCategoriesSection = () => {
         variants={containerVariants}
         className="max-w-6xl mx-auto lg:px-6 px-2 text-center text-base-content/70"
       >
-        <motion.h2
-          variants={itemVariants}
-          className="lg:text-3xl text-xl font-extrabold lg:mb-8 mb-4"
-        >
-          🚀 Featured Categories
-        </motion.h2>
+        <motion.div variants={itemVariants} className="lg:mb-8 mb-4">
+          <SectionTitle
+            title="Featured"
+            decoratedText="Categories"
+            subTitle="Explore different features & categories"
+            icon={<RocketIcon size={28} />}
+            description="Handpicked collections, limited offers, and premium selections made just for you."
+          />
+        </motion.div>
+
         <motion.div
           variants={containerVariants}
           className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:gap-6 gap-4"

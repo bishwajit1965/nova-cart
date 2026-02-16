@@ -12,6 +12,9 @@ import API_PATHS from "../../../superAdmin/services/apiPaths/apiPaths";
 import { motion } from "framer-motion";
 import { useApiQuery } from "../../../superAdmin/services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../utils/hooks/useFetchedDataStatusHandler";
+import SectionTitle from "../../utils/sectionTitle/SectionTitle";
+import { CommandIcon } from "lucide-react";
+import { FaComment, FaCommentAlt } from "react-icons/fa";
 
 // const testimonials = [
 //   {
@@ -76,12 +79,16 @@ const TestimonialsSection = () => {
         className="max-w-5xl mx-auto lg:px-4 px-2 text-center relative z-0 lg:my-8 my-4"
         variants={itemVariants}
       >
-        <motion.h2
-          className="lg:text-3xl text-xl font-extrabold lg:mb-8 mb-4 text-base-content/70"
-          variants={itemVariants}
-        >
-          💬 What Our Customers Say
-        </motion.h2>
+        <motion.div variants={itemVariants} className="lg:mb-8 mb-4">
+          <SectionTitle
+            title="What Our"
+            decoratedText="Customers Say"
+            subTitle="Explore different user experiences."
+            icon={<FaComment size={28} />}
+            description="Here are few comments and experiences the users have shared with us after we served them."
+          />
+        </motion.div>
+
         {testimonialsStatus.status !== "success" ? (
           testimonialsStatus.content
         ) : (

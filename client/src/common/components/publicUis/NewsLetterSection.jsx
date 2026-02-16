@@ -73,10 +73,13 @@ const NewsLetterSection = () => {
       variants={containerVariants}
     >
       <div
-        className="max-w-3xl mx-auto px-6 text-center"
+        className="max-w-6xl mx-auto px-6 text-center"
         variants={itemVariants}
       >
-        <h2 className="text-3xl font-bold mb-4" variants={itemVariants}>
+        <h2
+          className="lg:text-5xl text-sm font-bold mb-4"
+          variants={itemVariants}
+        >
           📬 Subscribe to Our Newsletter
         </h2>
         <p className="mb-6 text-lg" variants={itemVariants}>

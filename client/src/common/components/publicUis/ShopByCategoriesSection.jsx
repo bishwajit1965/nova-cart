@@ -14,6 +14,8 @@ import NoDataFound from "../ui/NoDataFound";
 import { motion } from "framer-motion";
 import { useApiQuery } from "../../../superAdmin/services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../utils/hooks/useFetchedDataStatusHandler";
+import SectionTitle from "../../utils/sectionTitle/SectionTitle";
+import { Layers3Icon } from "lucide-react";
 
 const ShopByCategoriesSection = () => {
   const [visibleCount, setVisibleCount] = useState(4); // show first 8
@@ -54,12 +56,16 @@ const ShopByCategoriesSection = () => {
       className="lg:py-16 py-6 bg-base-200 rounded-md shadow border border-base-content/15"
     >
       <div className="max-w-6xl mx-auto lg:px-6 px-2 text-center text-base-content/70">
-        <motion.h2
-          variants={itemVariants}
-          className="lg:text-3xl text-xl font-extrabold lg:mb-8 mb-4"
-        >
-          🏪 Shop by Category
-        </motion.h2>
+        <motion.div variants={itemVariants} className="lg:mb-8 mb-4">
+          <SectionTitle
+            title="Shop"
+            decoratedText="by Category"
+            subTitle="Explore different categories"
+            icon={<Layers3Icon size={28} />}
+            description="Handpicked collections, limited offers, and premium selections made just for you."
+          />
+        </motion.div>
+
         <motion.div variants={containerVariants}>
           {categoryDataStatus.status !== "success" ? (
             categoryDataStatus.content

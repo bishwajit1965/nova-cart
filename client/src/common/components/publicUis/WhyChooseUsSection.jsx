@@ -3,6 +3,8 @@ import {
   containerVariants,
   itemVariants,
 } from "../../../client/service/animations";
+import SectionTitle from "../../utils/sectionTitle/SectionTitle";
+import { FileQuestionMarkIcon } from "lucide-react";
 
 const features = [
   {
@@ -37,12 +39,16 @@ const WhyChooseUsSection = () => {
       className="lg:py-16 py-6 bg-base-200 text-base-content rounded-md shadow border border-base-content/15"
     >
       <div className="max-w-6xl mx-auto lg:px-6 px-2 text-center text-base-content/70">
-        <motion.h2
-          variants={itemVariants}
-          className="lg:text-3xl text-xl font-extrabold lg:mb-8 mb-4"
-        >
-          🎯 Why Choose Nova-Cart?
-        </motion.h2>
+        <motion.div variants={itemVariants} className="lg:mb-8 mb-4">
+          <SectionTitle
+            icon={<FileQuestionMarkIcon size={28} />}
+            title="Why Choose"
+            subTitle="Explore reasons to choose Nova Cart"
+            decoratedText="Nova-Cart?"
+            description="Handpicked collections, limited offers, and premium selections made just for you."
+          />
+        </motion.div>
+
         <motion.div
           variants={containerVariants}
           className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6"

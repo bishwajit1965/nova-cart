@@ -1,6 +1,6 @@
 import API_PATHS from "../../superAdmin/services/apiPaths/apiPaths";
 import Button from "../../common/components/ui/Button";
-import { CheckCircleIcon } from "lucide-react";
+import { CheckCircleIcon, Package2Icon } from "lucide-react";
 import { Input } from "../../common/components/ui/Input";
 import NoDataFound from "../../common/components/ui/NoDataFound";
 import ProductCard from "./ProductCard";
@@ -9,6 +9,7 @@ import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedData
 import { useState } from "react";
 import { LucideIcon } from "../../common/lib/LucideIcons";
 import { motion, AnimatePresence } from "framer-motion";
+import SectionTitle from "../../common/utils/sectionTitle/SectionTitle";
 
 const ProductsListSection = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -30,12 +31,12 @@ const ProductsListSection = () => {
     (p) =>
       p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       p.brand?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.description?.toLowerCase().includes(searchTerm.toLowerCase())
+      p.description?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const visibleFilteredProducts = filteredProducts?.slice(
     0,
-    visibleProductsCount
+    visibleProductsCount,
   );
 
   const handleLoadMoreProducts = () =>
@@ -54,14 +55,14 @@ const ProductsListSection = () => {
   return (
     <div className="bg-base-200 text-base-content/70 lg:p-15 p-2 shadow border border-base-content/15 rounded-lg">
       <div className="bg-base-300 rounded-lg lg:p-8 p-4 lg:mb-12 mb-6 shadow">
-        <div className="lg:pb-8 pb-4">
-          <h2 className="lg:text-3xl text-lg font-extrabold justify-center flex items-center gap-2">
-            🚙 Our Products{" "}
-            <span className="w-10 h-10 rounded-full bg-indigo-600 border-2 border-base-100 text-[18px] font-bold p-1 text-white flex items-center justify-center shadow-sm">
-              {products ? products?.length : 0}
-            </span>
-          </h2>
-        </div>
+        <SectionTitle
+          title="Our"
+          decoratedText="Products"
+          icon={<Package2Icon size={28} />}
+          subTitle="Explore products to add to cart!"
+          description="Handpicked collections, limited offers, and premium selections made just for you."
+          dataLength={products ? products?.length : 0}
+        />
 
         {/* Search Bar */}
         <div className="max-w-lg mx-auto lg:pb-8 pb-4 flex items-center gap-2">

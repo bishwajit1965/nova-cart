@@ -11,6 +11,8 @@ import textShortener from "../../../utils/textShortener";
 import { useApiQuery } from "../../../superAdmin/services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../utils/hooks/useFetchedDataStatusHandler";
 import { useState } from "react";
+import { ShoppingCart } from "lucide-react";
+import SectionTitle from "../../utils/sectionTitle/SectionTitle";
 
 const BestSellersSection = () => {
   const [isExtended, setIsExtended] = useState(false);
@@ -59,12 +61,16 @@ const BestSellersSection = () => {
         className="max-w-6xl mx-auto lg:px-6 px-2 text-center text-base-content/70"
         variants={itemVariants}
       >
-        <h2
-          className="lg:text-3xl text-xl font-extrabold lg:mb-8 mb-4"
-          variants={itemVariants}
-        >
-          🛒 Best Sellers
-        </h2>
+        <motion.div variants={itemVariants} className="lg:mb-8 mb-4">
+          <SectionTitle
+            title="Best"
+            decoratedText="Sellers"
+            subTitle="Explore best sellers"
+            icon={<ShoppingCart size={28} />}
+            description="Handpicked collections, limited offers, and premium selections made just for you."
+          />
+        </motion.div>
+
         {bestSellersDataStatus.status !== "success" ? (
           bestSellersDataStatus.content
         ) : bestSellers.length === 0 ? (
