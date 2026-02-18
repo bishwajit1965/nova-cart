@@ -1,20 +1,30 @@
+import React from "react";
+
 const SectionTitle = ({
   title,
   subTitle,
   userStatus,
-  activeStatus,
+  isActive,
   decoratedText,
   description,
   icon,
   dataLength,
+  badgeSize = { lg: 40, sm: 24 }, // default sizes
 }) => {
+  const badgeClasses = `
+    rounded-full bg-indigo-600 border-2 border-amber-500
+    font-bold text-white flex items-center justify-center shadow-sm  rounded-full bg-indigo-600 border-2 border-base-100 lg:text-xl text-sm font-bold text-white flex items-center justify-center shadow-sm mt-1 lg:p-4 p-3
+  `;
+
   return (
     <div className=" lg:space-y-4 space-y-2 text-center w-full z-30">
       <div className="text-base-content/90">
-        <h1 className="lg:text-5xl text-sm font-extrabold flex items-center justify-center space-x-2">
+        <h1 className="lg:text-5xl text-[16px] font-extrabold flex items-center justify-center space-x-1">
           {icon && (
             <span className="lg:p-2 p-1 rounded-full bg-primary/10 text-primary shadow-sm">
-              {icon}
+              {React.cloneElement(icon, {
+                className: "w-5 h-5 lg:w-8 lg:h-8",
+              })}
             </span>
           )}
           <span className="capitalize">{userStatus}</span>
@@ -25,11 +35,21 @@ const SectionTitle = ({
             </span>
           </span>{" "}
           {dataLength && (
-            <span className="lg:w-10 lg:h-10 w-6 h-6 rounded-full bg-indigo-600 border-2 border-base-100 lg:text-xl text-sm font-bold text-white flex items-center justify-center shadow-sm mt-1">
+            <span
+              style={{
+                width: badgeSize.sm,
+                height: badgeSize.sm,
+              }}
+              className={`lg:text-xl text-sm font-bold ${badgeClasses} lg:w-[${badgeSize.lg}px] lg:h-[${badgeSize.lg}px]`}
+            >
               {dataLength}
             </span>
           )}
-          {activeStatus && <span>{activeStatus}</span>}
+          {isActive && (
+            <span className="tooltip-content flex items-center h-20">
+              {isActive}
+            </span>
+          )}
         </h1>
       </div>
       <div className="">

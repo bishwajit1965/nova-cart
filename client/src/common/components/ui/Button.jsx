@@ -15,7 +15,7 @@ const Button = ({
   ...props
 }) => {
   const base =
-    "inline-flex items-center justify-center gap-2 px-2 py-2 rounded font-semibold transition duration-150 cursor-pointer hover:scale-100 transition-transform focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-90 text-gray-700 text-sm px-2 bg-base-200 hover:bg-base-300";
+    "inline-flex items-center justify-center gap-2 px-2 py-2 rounded font-semibold transition duration-150 cursor-pointer hover:scale-100 transition-transform focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-90 text-base-300 text-sm px-2 bg-base-200 hover:bg-base-200";
 
   const variants = {
     primary:
@@ -64,6 +64,7 @@ const Button = ({
       "bg-base-100 text-base-content hover:text-base-300 hover:bg-red-700 shadow-sm outline outline-red-500 rounded-md",
     global:
       "bg-base-100 text-base-content hover:text-base-content/80 hover:bg-base-300 shadow-sm outline outline-base-content/50 rounded-sm px-3 py-2 hover:outline-none",
+    disabled: "bg-pink-500 opacity-50 cursor-not-allowed",
   };
 
   const disabledStyles =

@@ -370,6 +370,7 @@ const useCart = () => {
     coupons,
     viewCart,
 
+    // Data fetched status
     cartsDataStatus,
     wishListDataStatus,
     productsDataStatus,

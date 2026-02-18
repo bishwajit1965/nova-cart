@@ -93,7 +93,7 @@ const router = createBrowserRouter([
         element: <ProductDetails />,
         loader: async ({ params }) => {
           return fetch(
-            `http://localhost:3000/api/client/products/${params.id}`
+            `http://localhost:3000/api/client/products/${params.id}`,
           );
         },
       },
@@ -133,7 +133,7 @@ const router = createBrowserRouter([
         path: "/client-order-details/:orderId",
         loader: async ({ params }) => {
           return api.get(
-            `http://localhost:3000/api/client/orders/${params.orderId}`
+            `http://localhost:3000/api/client/orders/${params.orderId}`,
           );
         },
         element: (
@@ -296,7 +296,7 @@ const router = createBrowserRouter([
         path: "super-admin-order-details/:orderId",
         loader: async ({ params }) => {
           return api.get(
-            `http://localhost:3000/api/superAdmin/orders/${params.orderId}`
+            `http://localhost:3000/api/superAdmin/orders/${params.orderId}`,
           );
         },
         element: (

@@ -56,12 +56,49 @@ const BannerSection = () => {
           title="Featured"
           decoratedText="Promotions"
           subTitle="Explore different sections"
-          icon={<Layers size={28} />}
+          icon={<Layers />}
           description="Handpicked collections, limited offers, and premium selections made just for you."
+          badgeSize={{ lg: 48, sm: 28 }}
         />
       </motion.div>
-      <h2 className="lg:text-2xl text-sm font-bold text-center mb-8 flex items-center justify-center gap-2"></h2>
-      <Marquee pauseOnHover={true} speed={30} gradient={false}>
+      <Marquee pauseOnHover speed={30} gradient={false}>
+        {banners?.map((banner, idx) => (
+          <motion.div
+            key={banner._id || idx}
+            className="relative flex-shrink-0 w-[280px] sm:w-[320px] lg:w-[380px] mx-3 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: idx * 0.1 }}
+          >
+            <a
+              href={banner.ctaLink || "#"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block"
+            >
+              <motion.img
+                src={`${apiURL}/uploads/${banner.image}`}
+                alt={banner.title}
+                className="w-full h-56 sm:h-60 lg:h-64 object-cover"
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 200 }}
+              />
+
+              <div className="absolute inset-0 bg-black/40 flex flex-col justify-center items-center text-center text-white p-4">
+                <h3 className="text-base sm:text-lg font-semibold">
+                  {banner.title}
+                </h3>
+
+                {banner.subtitle && (
+                  <p className="text-xs sm:text-sm mt-1">{banner.subtitle}</p>
+                )}
+              </div>
+            </a>
+          </motion.div>
+        ))}
+      </Marquee>
+
+      {/* <Marquee pauseOnHover={true} speed={30} gradient={false}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  justify-between gap-5">
           {banners?.map((banner, idx) => (
             <motion.div
@@ -93,7 +130,7 @@ const BannerSection = () => {
             </motion.div>
           ))}
         </div>
-      </Marquee>
+      </Marquee> */}
     </section>
   );
 };

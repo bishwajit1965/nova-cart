@@ -278,6 +278,7 @@ const ProductDetails = () => {
         pageTitle={pageTitle}
       />
 
+      {/* --------> Top two buttons --------> */}
       <div className="lg:flex grid items-center justify-center lg:space-y-0 space-y-2 space-x-10 w-full">
         <div className="flex justify-start lg:min-w-[10rem] min-w-full space-x-2">
           <Button

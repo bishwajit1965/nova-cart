@@ -30,7 +30,9 @@ const LandingPage = () => {
   //SEO
   useSEO(SEO_TEMPLATES.home);
   const { user, isAuthenticated } = useAuth();
+  const hasAccess = { user: user, isAuthenticated: isAuthenticated };
   console.log("USER DATA", user);
+  console.log("HAS ACCESS=>", hasAccess);
   console.log("USER Authenticated", isAuthenticated.toString());
   const [isFormOpen, setIsFormOpen] = useState(false);
   const toggleForm = () => setIsFormOpen(!isFormOpen);
@@ -47,13 +49,13 @@ const LandingPage = () => {
 
       <div className="lg:max-w-7xl mx-auto lg:space-y-12 space-y-6">
         {/* Announcement Bar */}
-        <AnnouncementBar />
+        {hasAccess?.isAuthenticated && <AnnouncementBar />}
 
         {/*Hero section*/}
-        <HeroSection />
+        {hasAccess?.isAuthenticated && <HeroSection />}
 
         {/* Products List Section */}
-        <ProductsListSection />
+        <ProductsListSection user={user} isAuthenticated={isAuthenticated} />
 
         {/* banner Section */}
         <BannerSection />

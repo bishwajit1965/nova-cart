@@ -62,6 +62,7 @@ const ProductsListSection = () => {
           subTitle="Explore products to add to cart!"
           description="Handpicked collections, limited offers, and premium selections made just for you."
           dataLength={products ? products?.length : 0}
+          badgeSize={{ lg: 48, sm: 28 }}
         />
 
         {/* Search Bar */}

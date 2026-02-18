@@ -26,7 +26,7 @@ export const saveToLocalStorage = (productId) => {
   filtered.unshift(productId);
   localStorage.setItem(
     "recentlyViewedProducts",
-    JSON.stringify(filtered.slice(0, 20))
+    JSON.stringify(filtered.slice(0, 20)),
   );
 };
 
@@ -60,7 +60,7 @@ const RecentlyViewedProducts = ({ viewedProducts }) => {
     if (productId && user) {
       saveToLocalStorage(productId);
       setIds((prev) =>
-        [productId, ...prev.filter((id) => id !== productId)].slice(0, 20)
+        [productId, ...prev.filter((id) => id !== productId)].slice(0, 20),
       );
     }
   }, [productId]);
@@ -132,7 +132,7 @@ const RecentlyViewedProducts = ({ viewedProducts }) => {
             return (
               <div
                 key={p._id}
-                className="lg:min-w-[240px] min-w-[295px] border border-base-content/15 rounded-md shadow hover:shadow-lg flex-shrink-0 relative"
+                className="lg:min-w-[243px] min-w-[295px] border border-base-content/15 rounded-md shadow hover:shadow-lg flex-shrink-0 relative min-h-40"
               >
                 <div className="bg-base-100 mb-2">
                   <img
@@ -152,7 +152,7 @@ const RecentlyViewedProducts = ({ viewedProducts }) => {
                           maximumFractionDigits: 2,
                         })}`
                       : `From $${Math.min(
-                          ...p.variants?.map((v) => v.price)
+                          ...p.variants?.map((v) => v.price),
                         ).toLocaleString(undefined, {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
@@ -166,6 +166,7 @@ const RecentlyViewedProducts = ({ viewedProducts }) => {
                     <Button
                       onClick={() => handleModalToggleView(p._id)}
                       variant="success"
+                      size="xs"
                       icon={LucideIcon.Eye}
                       className="btn btn-sm"
                     >
@@ -176,18 +177,19 @@ const RecentlyViewedProducts = ({ viewedProducts }) => {
                   <div
                     className={`${
                       inCart
-                        ? "cursor-not-allowed bg-pink-500 rounded-b-md opacity-50"
+                        ? "cursor-not-allowed bg-pink-500 rounded-md opacity-50"
                         : cart?.length >= CART_LIMIT
-                        ? "cursor-not-allowed bg-gray-600 rounded-b-md opacity-50"
-                        : ""
+                          ? "cursor-not-allowed bg-gray-600 rounded-b-md opacity-50"
+                          : ""
                     }`}
                   >
                     <Button
                       onClick={() => handleAddToCart({ product: p, variant })}
                       disabled={inCart || cart?.length >= CART_LIMIT}
                       variant="indigo"
+                      size="xs"
                       className={`btn btn-sm ${
-                        inCart ? "cursor-not-allowed opacity-50" : ""
+                        inCart ? "!cursor-not-allowed opacity-50" : ""
                       }`}
                     >
                       {loadingCartId === p._id ? (
@@ -198,8 +200,8 @@ const RecentlyViewedProducts = ({ viewedProducts }) => {
                       {inCart
                         ? "In Cart"
                         : cart?.length >= CART_LIMIT
-                        ? "Cart Full"
-                        : "Add to Cart"}
+                          ? "Cart Full"
+                          : "Add to Cart"}
                     </Button>
                   </div>
                 </div>
@@ -209,8 +211,8 @@ const RecentlyViewedProducts = ({ viewedProducts }) => {
                     inWishlist
                       ? "cursor-not-allowed bg-pink-500 rounded-b-md opacity-50"
                       : wishList?.length >= WISHLIST_LIMIT
-                      ? "cursor-not-allowed bg-base-300 rounded-b-md opacity-80"
-                      : ""
+                        ? "cursor-not-allowed bg-base-300 rounded-b-md opacity-80"
+                        : ""
                   } absolute bottom-0 left-0 right-0 w-full`}
                 >
                   <Button
@@ -221,6 +223,7 @@ const RecentlyViewedProducts = ({ viewedProducts }) => {
                     }
                     disabled={inWishlist || wishList.length >= WISHLIST_LIMIT}
                     variant="base"
+                    size="xs"
                     className={`btn btn-sm w-full border-none rounded-b-md rounded-t-none text-gray-600 ${
                       inWishlist
                         ? "opacity-50 bg-red-500 text-white"
@@ -237,8 +240,8 @@ const RecentlyViewedProducts = ({ viewedProducts }) => {
                     {inWishlist
                       ? "In Wishlist"
                       : wishList.length >= WISHLIST_LIMIT
-                      ? "Wishlist Full"
-                      : "Add to Wishlist"}
+                        ? "Wishlist Full"
+                        : "Add to Wishlist"}
                   </Button>
                 </div>
               </div>

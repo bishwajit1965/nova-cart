@@ -77,7 +77,7 @@ const ClientRelatedProducts = ({ relatedProducts }) => {
           return (
             <div
               key={p._id}
-              className="lg:min-w-[240px] min-w-[295px] border border-base-content/15 rounded-md shadow hover:shadow-lg flex-shrink-0 relative"
+              className="lg:min-w-[243px] min-w-[295px] border border-base-content/15 rounded-md shadow hover:shadow-lg flex-shrink-0 relative"
             >
               <div className="bg-base-100 mb-2">
                 <img
@@ -96,7 +96,7 @@ const ClientRelatedProducts = ({ relatedProducts }) => {
                         maximumFractionDigits: 2,
                       })}`
                     : `From $${Math.min(
-                        ...p.variants?.map((v) => v.price)
+                        ...p.variants?.map((v) => v.price),
                       ).toLocaleString(undefined, {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
@@ -109,6 +109,7 @@ const ClientRelatedProducts = ({ relatedProducts }) => {
                 <Button
                   onClick={() => navigate(`/product-details/${p._id}`)}
                   variant="success"
+                  size="xs"
                   icon={LucideIcon.Eye}
                   className="btn btn-sm"
                 >
@@ -120,8 +121,8 @@ const ClientRelatedProducts = ({ relatedProducts }) => {
                     inCart
                       ? "cursor-not-allowed bg-pink-500 rounded-b-md opacity-50"
                       : cart?.length >= CART_LIMIT
-                      ? "cursor-not-allowed bg-gray-600 rounded-b-md opacity-50"
-                      : ""
+                        ? "cursor-not-allowed bg-gray-600 rounded-b-md opacity-50"
+                        : ""
                   }`}
                 >
                   <Button
@@ -133,11 +134,9 @@ const ClientRelatedProducts = ({ relatedProducts }) => {
                             variant: variant,
                           })
                     }
-                    // onClick={() =>
-                    //   variant && handleAddToCart({ product: p, variant })
-                    // }
                     disabled={inCart || cart?.length >= CART_LIMIT}
                     variant="indigo"
+                    size="xs"
                     className={`btn btn-sm ${
                       inCart ? "cursor-not-allowed opacity-50" : ""
                     }`}
@@ -150,8 +149,8 @@ const ClientRelatedProducts = ({ relatedProducts }) => {
                     {inCart
                       ? "In Cart"
                       : cart?.length >= CART_LIMIT
-                      ? "Cart Full"
-                      : "Add to Cart"}
+                        ? "Cart Full"
+                        : "Add to Cart"}
                   </Button>
                 </div>
               </div>
@@ -160,8 +159,8 @@ const ClientRelatedProducts = ({ relatedProducts }) => {
                   inWishlist
                     ? "cursor-not-allowed bg-pink-500 rounded-b-md opacity-50"
                     : wishList?.length >= WISHLIST_LIMIT
-                    ? "cursor-not-allowed bg-base-300 rounded-b-md opacity-80"
-                    : ""
+                      ? "cursor-not-allowed bg-base-300 rounded-b-md opacity-80"
+                      : ""
                 } absolute bottom-0 left-0 right-0 w-full`}
               >
                 <Button
@@ -170,6 +169,7 @@ const ClientRelatedProducts = ({ relatedProducts }) => {
                   }
                   disabled={inWishlist || wishList.length >= WISHLIST_LIMIT}
                   variant="base"
+                  size="xs"
                   className={`btn btn-sm w-full border-none rounded-b-md rounded-t-none text-gray-600 ${
                     inWishlist
                       ? "opacity-50 bg-red-600 text-white"
@@ -186,8 +186,8 @@ const ClientRelatedProducts = ({ relatedProducts }) => {
                   {inWishlist
                     ? "In Wishlist"
                     : wishList.length >= WISHLIST_LIMIT
-                    ? "Wishlist Full"
-                    : "Add to Wishlist"}
+                      ? "Wishlist Full"
+                      : "Add to Wishlist"}
                 </Button>
               </div>
             </div>

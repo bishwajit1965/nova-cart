@@ -14,14 +14,15 @@ import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedData
 import usePageTitle from "../../superAdmin/services/hooks/usePageTitle";
 import { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
-import { LucidePackageCheck } from "lucide-react";
+import { Heart, HeartPlus, LucidePackageCheck } from "lucide-react";
 import useGlobalContext from "../../common/hooks/useGlobalContext";
 import textShortener from "../../utils/textShortener";
+import { useAuth } from "../../common/hooks/useAuth";
 
 const CategoriesPage = () => {
   const pageTile = usePageTitle();
   const [products, setProducts] = useState([]);
-  const [cart, setCart] = useState([]);
+  // const [cart, setCart] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [addedToCart, setAddedToCart] = useState([]);
@@ -29,16 +30,24 @@ const CategoriesPage = () => {
   const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 });
   const [selectedBrand, setSelectedBrand] = useState("All Brands");
   const apiURL = import.meta.env.VITE_API_URL || "http:localhost:3000";
+  const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const hasAccess = { user: user, isAuthenticated: isAuthenticated };
 
   // Global context data
   const {
     allProducts,
     hasVariants,
+    cart,
+    wishList,
     getFirstVariant,
     isInCart,
+    isInWishList,
     handleAddToCart,
+    handleAddToWishList,
   } = useGlobalContext();
+
+  console.log("WishList", wishList);
 
   // Filters from URL
   const categorySlug = searchParams.get("category") || "";
@@ -50,6 +59,7 @@ const CategoriesPage = () => {
   // Always define the current filters from searchParams
   const maxPrice = parseFloat(searchParams.get("maxPrice")) || Infinity;
   const CART_LIMIT = 10;
+  const WISHLIST_LIMIT = 10;
 
   // Local UI state synced to URL
   useEffect(() => {
@@ -589,11 +599,13 @@ const CategoriesPage = () => {
               <div className="grid lg:grid-cols-12 grid-cols-1 justify-between lg:gap-6 gap-4">
                 {products?.map((p) => {
                   const variant = getFirstVariant(p);
-                  const inCart = isInCart(p._id, variant?._id);
+                  const inCart = isInCart(p?._id, variant?._id);
+                  const inWishList = isInWishList(p?._id, variant?._id);
+
                   return (
                     <div
                       key={p._id}
-                      className="lg:col-span-4 col-span-1 border border-base-content/20 rounded-lg hover:shadow-lg transition"
+                      className="lg:col-span-4 col-span-1 border border-base-content/10 rounded-lg shadow-sm hover:shadow-lg transition"
                     >
                       {p.images && (
                         <img
@@ -611,36 +623,31 @@ const CategoriesPage = () => {
                         </p>
                         <p className="text-gray-600">${p.price.toFixed(2)}</p>
                       </div>
-                      <div className="flex justify-between rounded-b-lg p-2 shadow">
+                      <div className={`flex justify-between rounded-b-lg p-2`}>
                         <Button
-                          href={`/product-details/${p._id}`}
-                          variant="base"
+                          onClick={() => {
+                            if (!hasAccess?.isAuthenticated) {
+                              navigate("/login");
+                              return;
+                            }
+                            navigate(`/product-details/${p._id}`);
+                          }}
+                          variant="success"
                           size="xs"
-                          className="btn btn-sm"
+                          className=""
                         >
                           <LucideIcon.EyeIcon size={20} /> View Details
                         </Button>
 
+                        {/* Cart button */}
                         <div
-                          className={`${
-                            addedToCart.some((item) => item._id === p._id)
-                              ? "cursor-not-allowed"
-                              : ""
-                          }`}
+                          className={`${inCart ? "!cursor-not-allowed opacity-50 bg-pink-500 rounded-md text-base-content" : ""}`}
                         >
                           <Button
-                            disabled={addedToCart.some(
-                              (item) =>
-                                item._id === p._id ||
-                                addedToCart.length >= CART_LIMIT,
-                            )}
+                            disabled={inCart || cart.length >= CART_LIMIT}
                             type="submit"
                             size="xs"
-                            variant={`${
-                              addedToCart.some((item) => item._id === p._id)
-                                ? "base"
-                                : "indigo"
-                            }`}
+                            variant={`${inCart ? "danger" : "indigo"}`}
                             onClick={() => {
                               if (!p) {
                                 toast.error("Product not found!");
@@ -650,6 +657,12 @@ const CategoriesPage = () => {
                               const hasVariants =
                                 Array.isArray(p.variants) &&
                                 p.variants.length > 0;
+
+                              // Checks if logged in
+                              if (!hasAccess?.isAuthenticated) {
+                                navigate("/login");
+                                return;
+                              }
 
                               if (hasVariants) {
                                 // Redirect to product details page to choose variant
@@ -663,16 +676,12 @@ const CategoriesPage = () => {
                                 quantity,
                               });
                             }}
-                            className={`btn btn-sm ${
-                              addedToCart.some((item) => item._id === p._id)
-                                ? "disabled cursor-not-allowed"
-                                : "visible"
-                            }`}
+                            className={` ${inCart ? "disabled" : "visible"} btn`}
                           >
-                            {addedToCart.some((item) => item._id === p._id) ? (
+                            {inCart ? (
                               <LucideIcon.CircleCheckBig
                                 size={20}
-                                className="text-base-content"
+                                className="text-base-100"
                               />
                             ) : (
                               <LucideIcon.ShoppingCart
@@ -681,13 +690,53 @@ const CategoriesPage = () => {
                               />
                             )}
 
-                            {addedToCart.some((item) => item._id === p._id)
-                              ? "Added"
-                              : addedToCart.length >= CART_LIMIT
+                            {inCart
+                              ? "In Cart"
+                              : cart.length >= CART_LIMIT
                                 ? "Cart Full!"
                                 : "Add to Cart"}
                           </Button>
                         </div>
+                      </div>
+
+                      {/* WishList button */}
+                      <div
+                        className={`${inWishList || wishList.length >= WISHLIST_LIMIT ? "!cursor-not-allowed opacity-50 bg-gray-300 rounded-md rounded-t-none text-base-content" : ""}`}
+                      >
+                        <Button
+                          onClick={() => {
+                            const hasVariants =
+                              Array.isArray(p.variants) &&
+                              p.variants.length > 0;
+
+                            if (!hasAccess?.isAuthenticated) {
+                              navigate("/login");
+                              return;
+                            }
+
+                            if (hasVariants) {
+                              navigate(`/product-details/${p._id}`);
+                              return;
+                            }
+                            handleAddToWishList({ product: p, variant: null });
+                          }}
+                          icon={
+                            inWishList ? LucideIcon.HeartPlus : LucideIcon.Heart
+                          }
+                          variant={inWishList ? "disabled" : "base"}
+                          disabled={
+                            inWishList || wishList.length >= WISHLIST_LIMIT
+                          }
+                          label={
+                            inWishList
+                              ? "In Wish List"
+                              : wishList.length >= WISHLIST_LIMIT
+                                ? "Wish List Full"
+                                : "Add to Wish List"
+                          }
+                          size="sm"
+                          className={`${inWishList || wishList.length >= WISHLIST_LIMIT ? "opacity-60 !cursor-not-allowed" : ""} w-full rounded-t-none border-none`}
+                        />
                       </div>
                     </div>
                   );
