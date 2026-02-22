@@ -1,3 +1,4 @@
+import { AlertCircle } from "lucide-react";
 import textShortener from "../../utils/textShortener";
 import NoDataFound from "../components/ui/NoDataFound";
 
@@ -9,21 +10,22 @@ const WishListSummaryPanel = ({ addedToWishList }) => {
     if (src.startsWith("http://") || src.startsWith("https://")) return src;
     return `${apiURL}${src.startsWith("/") ? src : `/${src}`}`;
   };
-  console.log("Added to wishlist", addedToWishList);
+
   return (
     <div>
       {addedToWishList && addedToWishList.length > 0 ? (
-        <div className="rounded-xl shadow hover:shadow-md lg:p-4 p-2 mb-10 bg-base-200">
-          <div className="pb-2">
-            <h2 className="lg:text-xl text-lg font-bold text-center flex items-center gap-2">
-              🛒 Wishlist
+        <div className="rounded-xl shadow hover:shadow-md lg:p-4 p-2 mb-10 bg-base-200 space-y-5">
+          <div className="space-y-1">
+            <h2 className="lg:text-xl text-sm font-bold text-center flex items-center gap-2">
+              🛒 Wishlist Items
               <span className="lg:w-5 lg:h-5 w-4 h-4 rounded-full bg-indigo-500 flex justify-center items-center text-white shadow text-xs">
                 {addedToWishList?.length}
               </span>
             </h2>
             {addedToWishList.length >= WISHLIST_LIMIT && (
-              <p className="text-xl text-red-500 flex justify-center items-center gap-1 font-bold">
-                <AlertCircle /> Wishlist full!
+              <p className="lg:text-xl text-sm text-red-500 flex justify-center items-center gap-1 font-bold">
+                <AlertCircle size={20} /> Your limit of {WISHLIST_LIMIT}{" "}
+                products reached !
               </p>
             )}
           </div>

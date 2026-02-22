@@ -20,7 +20,6 @@ const useCart = () => {
   const [loadingWishListId, setLoadingWishListId] = useState(null);
   const [deleteModalData, setDeleteModalData] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  // const { addRecentlyViewed } = useRecentlyViewed();
 
   /* ------------------ QUERY APIS ------------------ */
   const {
@@ -256,7 +255,7 @@ const useCart = () => {
     setLoadingCartId(product._id);
     addToCartMutation.mutateAsync(payload, {
       onSuccess: (res) => {
-        toast.success(`"${product.name}" added to cart!`);
+        toast.success(`${product.name} added to cart!`);
       },
       onError: (error) => {
         toast.error(`${error.response?.data?.message}`);
@@ -292,7 +291,7 @@ const useCart = () => {
 
     setLoadingWishListId(product._id);
     addToWishListMutation.mutateAsync(payload, {
-      onSuccess: () => toast.success(`"${product.name}" added to wishlist!`),
+      onSuccess: () => toast.success(`${product.name} added to wishlist!`),
       onError: (error) => toast.error(`${error?.response?.data?.message}`),
       onSettled: () => setLoadingWishListId(null),
     });

@@ -443,25 +443,35 @@ const WishListItemPage = () => {
                             key={item?.product?._id}
                             className="lg:col-span-4 col-span-12 border border-base-content/15 rounded-xl shadow-md bg-base-100 hover:shadow-xl relative"
                           >
-                            <div className=" mb-4">
+                            <div className="mb-4 p-2">
                               <img
                                 src={`${apiURL}${
                                   variant?.images[0] ?? item?.product?.images[0]
                                 }`}
                                 alt={item?.product?.name}
-                                className="w-full h-32 object-contain rounded mb-2"
+                                className="w-full h-32 object-contain rounded mb-2 transform hover:scale-115 transition-transform duration-300"
                               />
                             </div>
                             <div className="lg:max-h-56 max-h-56 lg:p-4 p-2 overflow-y-auto lg:space-y-2">
-                              <h3 className="lg:text-xl text-lg font-bold">
-                                {item?.product?.name} || {item?.product?.brand}{" "}
-                                <br />
+                              <h3 className="lg:text-lg text-lg font-bold">
+                                {item?.product?.name}
+                              </h3>
+                              <p>
+                                {item?.product?.brand}
                                 {variant
-                                  ? `(${variant.color || ""} / ${
-                                      variant.size || ""
+                                  ? ` (${variant?.color || ""} / ${
+                                      variant?.size || ""
                                     })`
                                   : ""}
-                              </h3>
+
+                                <span
+                                  style={{
+                                    backgroundColor: variant?.color || "",
+                                  }}
+                                  className={`inline-block w-3 h-3 rounded-full ml-2 border border-gray-300`}
+                                ></span>
+                              </p>
+
                               <p className="mt-1 font-bold">
                                 ${variant?.price.toFixed(2)}
                               </p>
@@ -470,7 +480,7 @@ const WishListItemPage = () => {
                                   ? item?.product?.description
                                   : textShortener(
                                       item?.product?.description,
-                                      90,
+                                      85,
                                     )}
 
                                 <button
@@ -553,11 +563,9 @@ const WishListItemPage = () => {
                     fixed
                     bottom-0 left-0 right-0
                     transition-transform duration-300
-                    bg-white dark:bg-slate-900
+                    bg-base-100 dark:bg-slate-900
                     lg:z-40 z-50
                     `}
-
-                // className="lg:col-span-3 col-span-12 lg:max-h-[34rem] sticky top-20 lg:order-last order-first"
               >
                 {viewCart && (
                   <motion.div
