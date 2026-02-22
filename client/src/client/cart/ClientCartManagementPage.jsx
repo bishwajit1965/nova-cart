@@ -1,5 +1,5 @@
-import { Link, useNavigate } from "react-router-dom";
-import { AlertCircle, HeartPlus, Loader, ShoppingCartIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { HeartPlus, Loader, ShoppingCartIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import Button from "../../common/components/ui/Button";
@@ -217,21 +217,20 @@ const ClientCartManagementPage = () => {
 
                 return (
                   <div
-                    key={product._id}
+                    key={product?._id}
                     className="border border-base-content/10 lg:p-2 p-2 rounded-lg shadow min-h-[360px] relative"
                   >
                     <div className="mb-2">
-                      {variant?.images?.[0] ||
-                        (product?.images?.[0] && (
-                          <img
-                            onClick={() => handleItemClick(product)}
-                            src={buildUrl(
-                              variant?.images?.[0] || product?.images?.[0],
-                            )}
-                            alt={product?.name}
-                            className="h-32 object-contain w-full cursor-pointer z-50"
-                          />
-                        ))}
+                      {product?.images && (
+                        <img
+                          onClick={() => handleItemClick(product)}
+                          src={buildUrl(
+                            variant?.images?.[0] || product?.images?.[0],
+                          )}
+                          alt={product?.name}
+                          className="w-full h-32 object-contain bg-center p-2 mb-2 rounded-t-md cursor-pointer transition-transform duration-300 hover:scale-150 z-50"
+                        />
+                      )}
                     </div>
 
                     <div className="max-h-32 overflow-y-auto space-y-1 mb-3">
