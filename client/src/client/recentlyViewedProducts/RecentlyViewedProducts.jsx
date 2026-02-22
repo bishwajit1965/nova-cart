@@ -141,7 +141,7 @@ const RecentlyViewedProducts = ({ viewedProducts, removeRecentlyViewed }) => {
             return (
               <div
                 key={p._id}
-                className="lg:min-w-[231px] min-w-[295px] border border-base-content/15 rounded-md shadow hover:shadow-lg flex-shrink-0 relative min-h-40"
+                className="lg:min-w-[243px] min-w-[295px] border border-base-content/15 rounded-md shadow hover:shadow-lg flex-shrink-0 relative min-h-40"
               >
                 <div className="bg-base-100 mb-2">
                   <img
@@ -152,7 +152,9 @@ const RecentlyViewedProducts = ({ viewedProducts, removeRecentlyViewed }) => {
                 </div>
 
                 <div className="p-2 space-y-2">
-                  <h3 className="text-lg font-semibold">{p.name}</h3>
+                  <h3 className="text-lg font-semibold">
+                    {textShortener(p?.name, 20)}
+                  </h3>
                   <h4 className="text-sm text-gray-600">Brand: {p.brand}</h4>
                   <p className="text-sm font-bold">
                     {hasVariant

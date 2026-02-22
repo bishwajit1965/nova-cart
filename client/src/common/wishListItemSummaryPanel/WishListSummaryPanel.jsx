@@ -54,7 +54,7 @@ const WishListSummaryPanel = ({ addedToWishList }) => {
 
                         {c?.item?.product?.variants?.[0]?.color && (
                           <div className="flex flex-wrap items-center gap-2">
-                            <span className="text-xs capitalize">
+                            <span className="text-sm capitalize">
                               {c?.item?.product?.variants?.[0]?.color
                                 ? `${c?.item?.product?.variants?.[0]?.color}`
                                 : ""}

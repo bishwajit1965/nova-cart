@@ -1,7 +1,6 @@
 import { LucideCircleArrowDown, ShoppingCartIcon } from "lucide-react";
 
 import Button from "../../../common/components/ui/Button";
-import { Link } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
 import NoDataFound from "../../../common/components/ui/NoDataFound";
 import { LucideIcon } from "../../../common/lib/LucideIcons";
@@ -83,8 +82,8 @@ const CartSummaryPanel = ({ cart, handleGenerateCouponCode }) => {
                     ? item.product.name.slice(0, 23) + "..."
                     : item.product.name
                   : "Unnamed Product"}
-                {/* {(item?.product?.name).slice(0, 23) + " ... "} ({item.color},{" "} */}
-                {item.size}) x {item.quantity}
+                {item?.color && ` (${item?.color})`}
+                {item?.size && ` (${item?.size})`} x {item.quantity}
               </span>
               <span className="font-semibold">
                 ${(item?.price * item?.quantity).toFixed(2)}

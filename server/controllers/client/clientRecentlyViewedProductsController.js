@@ -4,7 +4,6 @@ import User from "../../models/User.js";
 // Save recently viewed product ids to user's collection
 export const saveRecentlyViewedProduct = async (req, res) => {
   try {
-    console.log("🎯 Save recently viewed method is hit");
     const userId = req.user._id;
 
     const { productId } = req.body;
@@ -64,7 +63,6 @@ export const getRecentlyViewedProductsByIds = async (req, res) => {
       return res.status(200).json({ success: true, data: [] });
     }
 
-    console.log("ID ARRAYS=>", idArray);
     // Fetch products from DB
     const products = await Product.find({
       _id: { $in: idArray },
@@ -138,12 +136,8 @@ export const getRecentlyViewedProductsFromDB = async (req, res) => {
 
 export const removeFromRecentlyViewed = async (req, res) => {
   try {
-    console.log("🎯 Delete method is hit");
-
     const userId = req.user._id;
     const { productId, variantId } = req.params; // optional variantId
-    console.log("ProductId", productId);
-    console.log("VariantId", variantId);
 
     if (!productId) {
       return res

@@ -5,6 +5,7 @@ import useCart from "../../common/hooks/useCart";
 import { ChevronLeft, ChevronRight, Loader, Package } from "lucide-react";
 import { useRef } from "react";
 import buildUrl from "../../common/hooks/useBuildUrl";
+import textShortener from "../../utils/textShortener";
 
 const ClientRelatedProducts = ({ relatedProducts }) => {
   const navigate = useNavigate();
@@ -87,7 +88,9 @@ const ClientRelatedProducts = ({ relatedProducts }) => {
                 />
               </div>
               <div className="p-2 space-y-2">
-                <h3 className="text-md font-semibold">{p.name}</h3>
+                <h3 className="text-md font-semibold">
+                  {textShortener(p?.name, 20)}
+                </h3>
                 <p className="text-sm text-gray-600">{p.brand}</p>
                 <p className="text-sm font-bold">
                   {hasVariant

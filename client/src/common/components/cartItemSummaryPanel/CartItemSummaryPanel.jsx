@@ -45,7 +45,7 @@ const CartItemSummaryPanel = ({ addedToCart }) => {
                       <p className="font-bold capitalize">
                         {textShortener(c?.item?.product?.name, 10)}
                       </p>
-                      <p className="">Brand: {c?.item.product?.brand}</p>
+                      <p className="">{c?.item.product?.brand}</p>
                       <p className="">${c?.item?.price.toFixed(2)}</p>
 
                       {c?.item?.color && (
