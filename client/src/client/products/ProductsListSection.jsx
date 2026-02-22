@@ -116,7 +116,7 @@ const ProductsListSection = () => {
           <Button
             onClick={handleLoadMoreProducts}
             icon={LucideIcon.ChevronDown}
-            variant="indigoRounded"
+            variant="indigo"
           >
             Load More
           </Button>
@@ -125,7 +125,7 @@ const ProductsListSection = () => {
           <Button
             onClick={handleLoadLessProducts}
             icon={LucideIcon.ChevronUp}
-            variant="successRounded"
+            variant="success"
           >
             Load Less
           </Button>

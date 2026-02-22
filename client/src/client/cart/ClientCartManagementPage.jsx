@@ -1,11 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import {
-  AlertCircle,
-  HeartPlus,
-  Loader,
-  ShoppingCart,
-  ShoppingCartIcon,
-} from "lucide-react";
+import { AlertCircle, HeartPlus, Loader, ShoppingCartIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import Button from "../../common/components/ui/Button";
@@ -17,9 +11,13 @@ import PageMeta from "../../common/components/ui/PageMeta";
 import textShortener from "../../utils/textShortener";
 import { LucideIcon } from "../../common/lib/LucideIcons";
 import useGlobalContext from "../../common/hooks/useGlobalContext";
+import useRecentlyViewed from "../../common/hooks/useRecentlyViewed";
+import CartItemSummaryPanel from "../../common/components/cartItemSummaryPanel/CartItemSummaryPanel";
+import WishListSummaryPanel from "../../common/wishListItemSummaryPanel/WishListSummaryPanel";
 const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 const ClientCartManagementPage = () => {
+  const { addRecentlyViewed } = useRecentlyViewed();
   const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(null);
@@ -59,8 +57,6 @@ const ClientCartManagementPage = () => {
     handleRemoveCartItem,
   } = useGlobalContext();
 
-  console.log("Is modal open", isModalOpen);
-
   const productItems = allProducts.map((item) => item.product);
 
   const CART_LIMIT = 10;
@@ -88,6 +84,7 @@ const ClientCartManagementPage = () => {
   };
 
   const handleModalToggleView = (productId) => {
+    addRecentlyViewed({ productId: productId });
     const item = productItems.find((i) => i._id === productId);
     setIsModalOpen(item);
   };
@@ -98,6 +95,7 @@ const ClientCartManagementPage = () => {
   };
 
   const handleItemClick = (product) => {
+    addRecentlyViewed({ productId: product._id });
     if (product?.variants?.length > 0) {
       navigate(`/product-details/${product?._id}`, {
         state: {
@@ -172,89 +170,14 @@ const ClientCartManagementPage = () => {
           </div>
 
           {/* Cart Summary */}
-          {addedToCart.length > 0 && (
-            <div className="rounded-xl shadow hover:shadow-md lg:p-4 p-2 mb-10">
-              <h2 className="lg:text-2xl text-xl font-bold text-center flex items-center gap-2 mb-2">
-                🛒 Cart ➡️
-                <span className="lg:w-7 lg:h-7 w-6 h-6 rounded-full bg-indigo-600 text-white text-sm flex items-center justify-center">
-                  {addedToCart?.length}
-                </span>
-              </h2>
-              {addedToCart?.length >= CART_LIMIT && (
-                <p className="text-xl text-red-600 text-center">
-                  You have reached the limit of {CART_LIMIT} products!
-                </p>
-              )}
-              <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-3 gap-2 justify-between bg-base-100 rounded-2xl">
-                {addedToCart?.map((c, idx) => (
-                  <div className="lg:col-span-3 col-span-12" key={c._id}>
-                    <div className="flex items-center flex-wrap p-2 border border-base-content/15 rounded-lg shadow space-y-2 min-h-20 space-x-2">
-                      <div className="">
-                        {c?.item.image && (
-                          <img
-                            src={buildUrl(c?.item.image)}
-                            alt={c?.item?.product?.name}
-                            className="w-12 h-12 object-cover rounded-md"
-                          />
-                        )}
-                      </div>
-
-                      <div className="font-bold text-sm">
-                        <p>
-                          {idx + 1} {") "}${c?.item?.price.toFixed(2)}
-                        </p>
-                        <p>➡️ {c?.item.name}</p>
-                        <p>➡️ {c?.item.product?.brand}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+          {addedToCart && addedToCart?.length > 0 && (
+            <CartItemSummaryPanel addedToCart={addedToCart} />
           )}
 
-          {/* Wishlist Summary */}
-          {addedToWishList.length > 0 && (
-            <div className="rounded-xl shadow hover:shadow-md lg:p-3 p-2 mb-10">
-              <div className="pb-2">
-                <h2 className="lg:text-2xl text-lg font-bold text-center flex items-center gap-2">
-                  🛒 Wishlist ➡️
-                  <span className="w-7 h-7 rounded-full bg-indigo-500 flex justify-center items-center text-white shadow text-sm">
-                    {addedToWishList.length}
-                  </span>
-                </h2>
-                {addedToWishList.length >= WISHLIST_LIMIT && (
-                  <p className="text-xl text-red-500 flex justify-center items-center gap-1 font-bold">
-                    <AlertCircle /> Wishlist full!
-                  </p>
-                )}
-              </div>
-
-              <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-3 gap-2 justify-between bg-base-100 rounded-2xl">
-                {addedToWishList?.map((c, idx) => (
-                  <div className="lg:col-span-3 col-span-12" key={c._id}>
-                    <div className="flex items-center flex-wrap p-2 border border-base-content/15 rounded-lg shadow space-y-2 min-h-20 space-x-2">
-                      <div className="">
-                        {c?.item.product.images[0] && (
-                          <img
-                            src={buildUrl(c?.item.product.images[0])}
-                            alt={c?.item?.product?.name}
-                            className="w-12 h-12 object-cover rounded-md"
-                          />
-                        )}
-                      </div>
-
-                      <div className="font-bold text-sm">
-                        <p>
-                          {idx + 1} {") "}${c?.item?.product.price.toFixed(2)}
-                        </p>
-                        <p>➡️ {c?.item.product.name}</p>
-                        <p>➡️ {c?.item.product?.brand}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+          {/* Wishlist summary */}
+          {addedToWishList && addedToWishList?.length > 0 && (
+            <div className="">
+              <WishListSummaryPanel addedToWishList={addedToWishList} />
             </div>
           )}
 
@@ -298,14 +221,17 @@ const ClientCartManagementPage = () => {
                     className="border border-base-content/10 lg:p-2 p-2 rounded-lg shadow min-h-[360px] relative"
                   >
                     <div className="mb-2">
-                      <img
-                        onClick={() => handleItemClick(product)}
-                        src={buildUrl(
-                          variant?.images?.[0] || product?.images?.[0],
-                        )}
-                        alt={product.name}
-                        className="h-32 object-contain w-full cursor-pointer z-50"
-                      />
+                      {variant?.images?.[0] ||
+                        (product?.images?.[0] && (
+                          <img
+                            onClick={() => handleItemClick(product)}
+                            src={buildUrl(
+                              variant?.images?.[0] || product?.images?.[0],
+                            )}
+                            alt={product?.name}
+                            className="h-32 object-contain w-full cursor-pointer z-50"
+                          />
+                        ))}
                     </div>
 
                     <div className="max-h-32 overflow-y-auto space-y-1 mb-3">
@@ -313,13 +239,13 @@ const ClientCartManagementPage = () => {
                         onClick={() => handleItemClick(product)}
                         className="font-semibold cursor-pointer"
                       >
-                        {product.name}
+                        {product?.name}
                       </h3>
 
                       <p className="text-sm text-gray-500">
-                        {isExpanded && productId === product._id
-                          ? product.description
-                          : textShortener(product.description, 95)}
+                        {isExpanded && productId === product?._id
+                          ? product?.description
+                          : textShortener(product?.description, 95)}
 
                         <button
                           onClick={() => handleToggleView(product)}
@@ -445,7 +371,7 @@ const ClientCartManagementPage = () => {
               fixed
               bottom-0 left-0 right-0
               transition-transform duration-300
-              bg-white dark:bg-slate-900
+              rounded-xl dark:bg-slate-900
               lg:z-40 z-50
             `}
           >
@@ -481,7 +407,7 @@ const ClientCartManagementPage = () => {
                       : "/placeholder.png"
                   }
                   alt={isModalOpen.name || "Product Image"}
-                  className="w-full h-full object-cover rounded-lg shadow"
+                  className="w-full h-full object-contain rounded-lg shadow transition-all duration-300 transform hover:scale-140 cursor-pointer"
                 />
               </div>
 

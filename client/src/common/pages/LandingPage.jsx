@@ -31,9 +31,6 @@ const LandingPage = () => {
   useSEO(SEO_TEMPLATES.home);
   const { user, isAuthenticated } = useAuth();
   const hasAccess = { user: user, isAuthenticated: isAuthenticated };
-  console.log("USER DATA", user);
-  console.log("HAS ACCESS=>", hasAccess);
-  console.log("USER Authenticated", isAuthenticated.toString());
   const [isFormOpen, setIsFormOpen] = useState(false);
   const toggleForm = () => setIsFormOpen(!isFormOpen);
   return (

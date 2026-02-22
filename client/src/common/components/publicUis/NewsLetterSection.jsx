@@ -107,7 +107,7 @@ const NewsLetterSection = () => {
               type="submit"
               disabled={loading}
               variant="roundedFull"
-              className="cursor-pointer rounded-full font-bold flex items-center bg-base-100 text-base-content/70 px-4 py-2 hover:bg-base-200 hover:text-base-content/90 transition focus:outline-base-100"
+              className="cursor-pointer rounded-full font-bold flex items-center bg-base-100 text-base-content/70 px-2 py-1 hover:bg-base-200 hover:text-base-content/90 transition focus:outline-base-100"
             >
               {loading ? (
                 <Loader size={16} className="animate-spin" />

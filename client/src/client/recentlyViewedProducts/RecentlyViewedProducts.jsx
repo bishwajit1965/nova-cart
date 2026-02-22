@@ -30,7 +30,7 @@ export const saveToLocalStorage = (productId) => {
   );
 };
 
-const RecentlyViewedProducts = ({ viewedProducts }) => {
+const RecentlyViewedProducts = ({ viewedProducts, removeRecentlyViewed }) => {
   const { user } = useAuth();
   const { id: productId } = useParams();
   const [ids, setIds] = useState(getFromLocalStorage());
@@ -74,6 +74,15 @@ const RecentlyViewedProducts = ({ viewedProducts }) => {
   }, []);
 
   const modalProduct = viewedProducts?.find((p) => p._id === modalProductId);
+
+  const onAddToCart = ({ product, variant }) => {
+    handleAddToCart({ product: product, variant });
+    removeRecentlyViewed({
+      productId: (product?._id).toString(),
+      variantId: variant?._id,
+    });
+    setModalProductId(null);
+  };
 
   const handleModalToggleView = (id) => {
     const product = viewedProducts?.find((p) => p._id === id);
@@ -132,7 +141,7 @@ const RecentlyViewedProducts = ({ viewedProducts }) => {
             return (
               <div
                 key={p._id}
-                className="lg:min-w-[243px] min-w-[295px] border border-base-content/15 rounded-md shadow hover:shadow-lg flex-shrink-0 relative min-h-40"
+                className="lg:min-w-[231px] min-w-[295px] border border-base-content/15 rounded-md shadow hover:shadow-lg flex-shrink-0 relative min-h-40"
               >
                 <div className="bg-base-100 mb-2">
                   <img
@@ -184,7 +193,7 @@ const RecentlyViewedProducts = ({ viewedProducts }) => {
                     }`}
                   >
                     <Button
-                      onClick={() => handleAddToCart({ product: p, variant })}
+                      onClick={() => onAddToCart({ product: p, variant })}
                       disabled={inCart || cart?.length >= CART_LIMIT}
                       variant="indigo"
                       size="xs"

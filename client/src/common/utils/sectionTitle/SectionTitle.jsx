@@ -17,7 +17,7 @@ const SectionTitle = ({
   `;
 
   return (
-    <div className=" lg:space-y-4 space-y-2 text-center w-full z-30">
+    <div className="lg:space-y-3 space-y-2 text-center w-full z-30">
       <div className="text-base-content/90">
         <h1 className="lg:text-5xl text-[16px] font-extrabold flex items-center justify-center space-x-1">
           {icon && (
@@ -52,6 +52,7 @@ const SectionTitle = ({
           )}
         </h1>
       </div>
+
       <div className="">
         {subTitle && (
           <h2 className="lg:text-xl text-sm font-semibold text-base-content/60 max-w-xl mx-auto">
@@ -59,11 +60,20 @@ const SectionTitle = ({
           </h2>
         )}
       </div>
+
       <div className="">
         <p className="lg:text-lg text-sm lg:max-w-96 mx-auto">{description}</p>
       </div>
 
-      <div className="lg:w-32 w-28 h-1.5 bg-primary mx-auto lg:my-6 my-2 rounded-full shadow-md" />
+      {/* <div className="flex items-center mx-auto max-w-52 justify-between gap-1 border py-1 px-3 rounded-full bg-base-200 border-base-content/5 shadow">
+        <div className="h-1.5 bg-amber-600 w-20 rounded-xl shadow" />
+        <div className="w-2 h-2 p-1 rounded-full shadow-2xl bg-orange-400 flex items-center justify-center" />
+        <div className="w-4 h-4 p-2 rounded-full shadow-2xl border-2 border-amber-600 bg-orange-500 flex items-center justify-center" />
+        <div className="w-2 h-2 p-1 rounded-full shadow-2xl bg-orange-400 flex items-center justify-center" />
+        <div className="h-1.5 bg-amber-600 w-20 shadow rounded-xl" />
+      </div> */}
+
+      <div className="lg:w-32 w-28 h-1.5 bg-primary mx-auto lg:mb-5 mb-4 rounded-full shadow-md" />
     </div>
   );
 };

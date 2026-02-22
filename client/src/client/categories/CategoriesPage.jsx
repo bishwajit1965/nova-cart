@@ -18,8 +18,10 @@ import { Heart, HeartPlus, LucidePackageCheck } from "lucide-react";
 import useGlobalContext from "../../common/hooks/useGlobalContext";
 import textShortener from "../../utils/textShortener";
 import { useAuth } from "../../common/hooks/useAuth";
+import useRecentlyViewed from "../../common/hooks/useRecentlyViewed";
 
 const CategoriesPage = () => {
+  const { addRecentlyViewed } = useRecentlyViewed();
   const pageTile = usePageTitle();
   const [products, setProducts] = useState([]);
   // const [cart, setCart] = useState([]);
@@ -319,7 +321,7 @@ const CategoriesPage = () => {
         ></div>
       )}
 
-      <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-10 gap-4 justify-between">
+      <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-6 gap-2 justify-between">
         {/*** ------> Aside Categories section ----->  */}
         {categoriesStatus.status !== "success" ? (
           categoriesStatus.content
@@ -328,8 +330,11 @@ const CategoriesPage = () => {
             className={`
             bg-base-100 shadow
             lg:col-span-3 col-span-12
-            fixed lg:static
-            top-0 left-0
+            fixed lg:sticky
+            self-start
+            top-0
+            lg:top-20
+            left-0
             h-screen lg:h-auto
             w-80 lg:w-auto
             lg:z-30
@@ -337,9 +342,7 @@ const CategoriesPage = () => {
             transform transition-transform duration-300
             ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
             lg:translate-x-0
-            lg:max-h-[calc(100vh-6rem)] max-h-screen
-            lg:sticky lg:top-20
-            overflow-y-auto
+            lg:max-h-[calc(100vh-6rem)] max-h-screen overflow-y-auto
           `}
           >
             <div className="mb-4 text-sm text-gray-500 bg-base-300 lg:p-2 p-2 lg:text-2xl font-bold border border-base-content/10 lg:rounded-t-lg rounded-t-xs sticky top-0">
@@ -612,16 +615,20 @@ const CategoriesPage = () => {
                           src={`${apiURL}${variant?.images?.[0] || p?.images?.[0]}`}
                           alt={p.name}
                           onClick={() => navigate(`/product-details/${p._id}`)}
-                          className="w-full h-40 object-cover mb-2 rounded-t-md cursor-pointer"
+                          className="w-full h-40 object-contain bg-center p-2 mb-2 rounded-t-md cursor-pointer transition-transform duration-300 hover:scale-150"
                         />
                       )}
                       <div className="p-2">
-                        <h3 className="text-sm font-bold">{p.name}</h3>
-                        <p className="text-sm font-bold">{p.brand}</p>
+                        <h3 className="text-medium font-extrabold">{p.name}</h3>
+                        <p className="text-sm font-semibold">
+                          Brand: {p.brand}
+                        </p>
                         <p className="text-sm text-gray-500">
                           {textShortener(p.description, 100)}
                         </p>
-                        <p className="text-gray-600">${p.price.toFixed(2)}</p>
+                        <p className="text-gray-600 font-extrabold">
+                          ${p.price.toFixed(2)}
+                        </p>
                       </div>
                       <div className={`flex justify-between rounded-b-lg p-2`}>
                         <Button
@@ -630,6 +637,7 @@ const CategoriesPage = () => {
                               navigate("/login");
                               return;
                             }
+                            addRecentlyViewed({ productId: p._id });
                             navigate(`/product-details/${p._id}`);
                           }}
                           variant="success"

@@ -2,6 +2,7 @@ import Category from "../../models/Category.js";
 import Order from "../../models/client/Order.js";
 import Product from "../../models/Product.js";
 import SubCategory from "../../models/SubCategory.js";
+import Cart from "../../models/Cart.js";
 
 export const getProducts = async (req, res) => {
   try {
@@ -195,6 +196,40 @@ export const getProductById = async (req, res) => {
     res
       .status(500)
       .json({ success: false, message: "Internal server error", error });
+  }
+};
+
+export const deleteProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    // Delete product
+    await Product.findByIdAndDelete(id);
+
+    // Remove product from all carts
+    await Cart.updateMany(
+      { "items.product": id },
+      { $pull: { items: { product: id } } },
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Product deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };
 

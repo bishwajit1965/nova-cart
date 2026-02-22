@@ -30,8 +30,13 @@ import CartItemList from "../cart/components/CartItemList";
 import RecentlyViewedProducts from "../recentlyViewedProducts/RecentlyViewedProducts";
 import ClientRelatedProducts from "../relatedProducts/ClientRelatedProducts";
 import { useAuth } from "../../common/hooks/useAuth";
+import useRecentlyViewed from "../../common/hooks/useRecentlyViewed";
+import CartItemSummaryPanel from "../../common/components/cartItemSummaryPanel/CartItemSummaryPanel";
+import WishListSummaryPanel from "../../common/wishListItemSummaryPanel/WishListSummaryPanel";
+import NoDataFound from "../../common/components/ui/NoDataFound";
 
 const ProductDetails = () => {
+  const { removeRecentlyViewed, recentlyViewed } = useRecentlyViewed();
   const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
   const navigate = useNavigate();
   const pageTitle = usePageTitle();
@@ -41,13 +46,18 @@ const ProductDetails = () => {
   const [instruction, setInstruction] = useState(false);
   const [openViewPanel, setOpenViewPanel] = useState(false);
   const [isOpenRelatedProducts, setIsOpenRelatedProducts] = useState(false);
+  const [openCartSummary, setOpenCartSummary] = useState(false);
+  const [wishListSummary, setWishListSummary] = useState(false);
+  const [reset, setReset] = useState(false);
   const { user } = useAuth();
 
   // Global cart data
   const {
     cart,
+    addedToCart,
     setCart,
     wishList,
+    addedToWishList,
     coupons,
     handleAddToCart,
     handleAddToWishList,
@@ -255,6 +265,24 @@ const ProductDetails = () => {
 
   const handleInstruct = () => setInstruction((prev) => !prev);
 
+  const handleOpenCartSummary = () => {
+    setOpenCartSummary((prev) => !prev);
+    setWishListSummary(false);
+  };
+  const handleOpenWishListSummary = () => {
+    setWishListSummary((prev) => !prev);
+    setOpenCartSummary(false);
+  };
+
+  const handleReset = () => {
+    setWishListSummary(false);
+    setOpenCartSummary(false);
+    setOpenViewPanel(false);
+    setIsOpenRelatedProducts(false);
+    removeRecentlyViewed();
+    toast.success("Recently viewed products cleared!");
+  };
+
   /*** ========> DATA FETCHED STATUS ========> */
 
   const viewedProductsDataStatus = useFetchedDataStatusHandler({
@@ -278,78 +306,177 @@ const ProductDetails = () => {
         pageTitle={pageTitle}
       />
 
-      {/* --------> Top two buttons --------> */}
-      <div className="lg:flex grid items-center justify-center lg:space-y-0 space-y-2 space-x-10 w-full">
-        <div className="flex justify-start lg:min-w-[10rem] min-w-full space-x-2">
-          <Button
-            onClick={handleViewPanelToggler}
-            variant={openViewPanel ? "successRounded" : "indigoRounded"}
-            className={`${
-              openViewPanel ? "bg-green-800" : "bg-info-800 text-base-100"
-            } flex items-center gap-2 lg:text-[16px] text-sm lg:min-w-[10rem] min-w-full`}
-          >
-            <motion.span
-              animate={{ rotate: openViewPanel ? 180 : 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="flex items-center justify-center lg:h-7 lg:w-7 h-6 w-6 rounded-full bg-green-600 border-2 shadow"
+      {/* --------> Top four buttons --------> */}
+      <div className="lg:flex grid items-center justify-center lg:space-y-0 space-y-2 space-x-10 w-full bg-base-300 rounded-lg lg:py-8 py-4">
+        <div className="lg:flex grid gap-2 justify-start lg:min-w-[10rem] min-w-full lg:space-x-2 space-x-0">
+          {/* Cart summary button */}
+          <div className="">
+            <Button
+              onClick={handleOpenCartSummary}
+              variant="successRounded"
+              className=" lg:min-w-[10rem] min-w-full lg:text-[14px] text-[12px] flex items-center gap-2 lg:justify-center justify-between"
             >
-              {openViewPanel ? (
-                <LucideIcon.ChevronsUp size={18} />
-              ) : (
-                <LucideIcon.ChevronsDown size={18} />
-              )}
-            </motion.span>
+              <motion.span
+                animate={{ rotate: openCartSummary ? 360 : 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="flex items-center justify-center h-5 w-5 rounded-full bg-green-600 border-2 shadow"
+              >
+                {openCartSummary ? (
+                  <LucideIcon.ChevronsUp size={18} />
+                ) : (
+                  <LucideIcon.ChevronsDown size={18} />
+                )}
+              </motion.span>
 
-            <span className="lg:text-[16px] text-[11px]">
-              {openViewPanel ? "Close Viewed Products" : "Viewed Products"}
-            </span>
+              <span className="lg:text-[14px] text-[12px]">
+                {openCartSummary ? "Close Cart Summary" : "Open Cart Summary"}
+              </span>
 
-            <span className="lg:w-7 lg:h-7 w-6 h-6 rounded-full bg-amber-600 flex items-center justify-center border-2 text-sm shadow">
-              {viewedProducts?.length}
-            </span>
+              <span className="w-5 h-5 rounded-full bg-amber-600 flex items-center justify-center border-2 text-xs shadow">
+                {addedToCart?.length}
+              </span>
+              <span className={openCartSummary ? "block" : "hidden"}>
+                {openCartSummary && <ArrowDownAZ size={18} />}
+              </span>
+            </Button>
+          </div>
 
-            <span className={openViewPanel ? "block" : "hidden"}>
-              {openViewPanel && <ArrowDownAZ />}
-            </span>
-          </Button>
-        </div>
-
-        <div className="flex justify-start lg:min-w-[10rem] min-w-full space-x-4">
-          <Button
-            onClick={handleRelatedProductsToggler}
-            variant={isOpenRelatedProducts ? "primaryRounded" : "purpleRounded"}
-            className={`${
-              isOpenRelatedProducts
-                ? "bg-primary-800"
-                : "bg-info-800 text-base-100"
-            } flex items-center gap-2 lg:text-[16px] text-sm lg:min-w-[10rem] min-w-full`}
-          >
-            <motion.span
-              animate={{ rotate: isOpenRelatedProducts ? 180 : 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="flex items-center justify-center lg:h-7 lg:w-7 h-6 w-6 rounded-full bg-green-600 border-2 shadow"
+          {/* WishList Button */}
+          <div className="">
+            <Button
+              onClick={handleOpenWishListSummary}
+              variant="purpleRounded"
+              className="lg:justify-center justify-between lg:text-[14px] text-[12px] lg:min-w-[10rem] min-w-full flex items-center gap-2"
             >
-              {isOpenRelatedProducts ? (
-                <LucideIcon.ChevronsUp size={18} />
-              ) : (
-                <LucideIcon.ChevronsDown size={18} />
-              )}
-            </motion.span>
+              <motion.span
+                animate={{ rotate: wishListSummary ? 360 : 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="flex items-center justify-center h-5 w-5 rounded-full bg-green-600 border-2 shadow"
+              >
+                {wishListSummary ? (
+                  <LucideIcon.ChevronsUp size={18} />
+                ) : (
+                  <LucideIcon.ChevronsDown size={18} />
+                )}
+              </motion.span>
 
-            <span className="lg:text-[16px] text-[11px]">
-              {isOpenRelatedProducts
-                ? "Close Related Products"
-                : "Related Products"}
-            </span>
+              <span className="lg:text-[14px] text-[12px]">
+                {wishListSummary
+                  ? "Close WishList Summary"
+                  : "Open WishList Summary"}
+              </span>
 
-            <span className="lg:w-7 lg:h-7 w-6 h-6 rounded-full bg-amber-600 flex items-center justify-center border-2 text-sm shadow">
-              {relatedProducts?.length}
-            </span>
+              <motion.span className="w-5 h-5 rounded-full bg-amber-600 flex items-center justify-center border-2 text-xs shadow">
+                {addedToWishList?.length}
+              </motion.span>
+              <span className={wishListSummary ? "block" : "hidden"}>
+                {wishListSummary && <ArrowDownAZ size={18} />}
+              </span>
+            </Button>
+          </div>
 
-            <span className={isOpenRelatedProducts ? "block" : "hidden"}>
-              {isOpenRelatedProducts && <ArrowDownAZ />}
-            </span>
-          </Button>
+          {/* Viewed products button */}
+          <div className="">
+            <Button
+              onClick={handleViewPanelToggler}
+              variant={openViewPanel ? "successRounded" : "indigoRounded"}
+              className={`${
+                openViewPanel ? "bg-green-800" : "bg-info-800 text-base-100"
+              } flex items-center gap-2 lg:text-[14px] text-[12px] lg:min-w-[10rem] min-w-full`}
+            >
+              <motion.span
+                animate={{ rotate: openViewPanel ? 180 : 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="flex items-center justify-center h-5 w-5 rounded-full bg-green-600 border-2 shadow"
+              >
+                {openViewPanel ? (
+                  <LucideIcon.ChevronsUp size={18} />
+                ) : (
+                  <LucideIcon.ChevronsDown size={18} />
+                )}
+              </motion.span>
+
+              <span className="lg:text-[14px] text-[12px]">
+                {openViewPanel ? "Close Viewed Products" : "Viewed Products"}
+              </span>
+
+              <span className="w-5 h-5 rounded-full bg-amber-600 flex items-center justify-center border-2 text-xs shadow">
+                {viewedProducts?.length}
+              </span>
+
+              <span className={openViewPanel ? "block" : "hidden"}>
+                {openViewPanel && <ArrowDownAZ size={18} />}
+              </span>
+            </Button>
+          </div>
+
+          {/* Related Products Button */}
+          <div className="">
+            <Button
+              onClick={handleRelatedProductsToggler}
+              variant={
+                isOpenRelatedProducts ? "primaryRounded" : "purpleRounded"
+              }
+              className={`${
+                isOpenRelatedProducts
+                  ? "bg-primary-800"
+                  : "bg-info-800 text-base-100"
+              } flex items-center gap-2 lg:text-[14px] text-[12px] lg:min-w-[10rem] min-w-full`}
+            >
+              <motion.span
+                animate={{
+                  rotate: isOpenRelatedProducts ? 180 : 0,
+                }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="flex items-center justify-center h-5 w-5 rounded-full bg-green-600 border-2 shadow"
+              >
+                {isOpenRelatedProducts ? (
+                  <LucideIcon.ChevronsUp size={18} />
+                ) : (
+                  <LucideIcon.ChevronsDown size={18} />
+                )}
+              </motion.span>
+
+              <span className="lg:text-[14px] text-[12px]">
+                {isOpenRelatedProducts
+                  ? "Close Related Products"
+                  : "Related Products"}
+              </span>
+
+              <span className="w-5 h-5 rounded-full bg-amber-600 flex items-center justify-center border-2 text-xs shadow">
+                {relatedProducts?.length}
+              </span>
+
+              <span className={isOpenRelatedProducts ? "block" : "hidden"}>
+                {isOpenRelatedProducts && <ArrowDownAZ size={18} />}
+              </span>
+            </Button>
+          </div>
+
+          {/* Reset Button */}
+          <div className="">
+            <Button
+              onClick={handleReset}
+              variant="warningRounded"
+              className="flex items-center gap-2 lg:text-[14px] text-[12px] lg:min-w-[10rem] min-w-full"
+            >
+              <motion.span
+                animate={{
+                  rotate:
+                    isOpenRelatedProducts ||
+                    openViewPanel ||
+                    openCartSummary ||
+                    wishListSummary
+                      ? 180
+                      : 0,
+                }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                <LucideIcon.RefreshCcwDotIcon size={18} />
+              </motion.span>
+              <span className="lg:text-[14px] text-[12px]">Reset All</span>
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -376,6 +503,7 @@ const ProductDetails = () => {
                   viewedProducts={viewedProducts}
                   viewedProductsDataStatus={viewedProductsDataStatus}
                   handleAddToCart={handleAddToCart}
+                  removeRecentlyViewed={removeRecentlyViewed}
                 />
               </motion.div>
             )}
@@ -412,6 +540,16 @@ const ProductDetails = () => {
           </AnimatePresence>
         </motion.div>
       )}
+
+      {/* ------>  Cart & wishlist summary Panel Begins ------> */}
+      {/* Cart summary */}
+      {openCartSummary && <CartItemSummaryPanel addedToCart={addedToCart} />}
+
+      {/* Wishlist summary */}
+      {wishListSummary && (
+        <WishListSummaryPanel addedToWishList={addedToWishList} />
+      )}
+      {/* ------> Cart & wishlist summary Panel Ends //------> */}
 
       <div className="">
         <div className="bg-base-300 rounded-t-xl p-2 mb-2 shadow border border-base-content/5">
@@ -698,9 +836,9 @@ const ProductDetails = () => {
                   </button>
                 </div>
 
-                <div className="flex items-center lg:space-x-2 space-x-2 gap-1 flex-wrap border border-base-content/15 rounded-lg shadow hover:shadow-lg px-2 py-4 bg-base-100">
+                <div className="flex items-center lg:space-x-2 space-x-2 gap-1 flex-wrap border border-base-content/15 rounded-lg shadow hover:shadow-lg px-2 py-4 bg-base-100 lg:space-y-0 space-y-2">
                   {/* Color display & Variant Selector */}
-                  <h3 className="font-semibold hidden lg:block">Color ➡️</h3>
+                  <h3 className="font-semibold hidden lg:block">Color:</h3>
                   {colors.map((color, index) => (
                     <div
                       key={index}
@@ -716,12 +854,12 @@ const ProductDetails = () => {
                   ))}
 
                   {/* Size display */}
-                  <div className="flex items-center gap-2 flex-wrap lg:pl-6 pl-3">
-                    <h3 className="font-semibold hidden lg:block">Size ➡️</h3>
+                  <div className="flex items-center gap-2 flex-wrap lg:pl- pl-">
+                    <h3 className="font-semibold hidden lg:block">Size:</h3>
                     {sizes.map((size, index) => (
                       <button
                         key={index}
-                        className={`px-3 py-1 border border-base-content/30 rounded-md cursor-pointer shadow ${
+                        className={`px-2 py-0.5 border border-base-content/30 rounded-md cursor-pointer shadow ${
                           selectedSize === size
                             ? "bg-black text-white"
                             : "bg-white text-black"

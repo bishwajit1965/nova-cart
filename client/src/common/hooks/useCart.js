@@ -20,6 +20,7 @@ const useCart = () => {
   const [loadingWishListId, setLoadingWishListId] = useState(null);
   const [deleteModalData, setDeleteModalData] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  // const { addRecentlyViewed } = useRecentlyViewed();
 
   /* ------------------ QUERY APIS ------------------ */
   const {
@@ -92,7 +93,7 @@ const useCart = () => {
       setCart(res.data.items);
       setAddedToCart(
         res.data.items.map((item) => ({
-          productId: item.product._id,
+          productId: item.product?._id,
           variantId: item.variantId ?? null,
           quantity: item.quantity,
           item: item,
@@ -114,7 +115,7 @@ const useCart = () => {
       setWishList(res.data.items);
       setAddedToWishList(
         res.data.items.map((item) => ({
-          productId: item.product._id,
+          productId: item.product?._id,
           variantId: item.variantId ?? null,
           quantity: item.quantity,
           item: item,
@@ -137,7 +138,9 @@ const useCart = () => {
   const deleteCartMutation = useApiMutation({
     method: "delete",
     path: ({ productId, variantId }) =>
-      `${API_PATHS.CLIENT_CARTS.CLIENT_ENDPOINT}/${productId}/${variantId}`,
+      variantId
+        ? `${API_PATHS.CLIENT_CARTS.CLIENT_ENDPOINT}/${productId}/${variantId}`
+        : `${API_PATHS.CLIENT_CARTS.CLIENT_ENDPOINT}/${productId}`,
     onError: () => toast.error("Failed to remove item"),
   });
 
@@ -166,6 +169,29 @@ const useCart = () => {
     }
   }, [products]);
 
+  useEffect(() => {
+    const normalized = cart.map((item) => ({
+      productId: item.product?._id,
+      variantId: item.variantId ?? null,
+      quantity: item.quantity,
+      item,
+    }));
+
+    setAddedToCart(normalized);
+  }, [cart]);
+
+  useEffect(() => {
+    const normalized = wishList.map((item) => ({
+      productId: item.product?._id,
+      variantId: item.variantId ?? null,
+      quantity: item.quantity,
+      item,
+    }));
+    wishList;
+
+    setAddedToWishList(normalized);
+  }, [wishList]);
+
   /* ------------------ HELPERS ------------------ */
 
   const normalizeVariantId = (variant) => variant?._id ?? null;
@@ -179,7 +205,7 @@ const useCart = () => {
   const isInCart = (productId, variantId) =>
     cart.some(
       (i) =>
-        i.product._id === productId &&
+        i.product?._id === productId &&
         (i.variantId ?? null) === (variantId ?? null),
     );
 
@@ -193,7 +219,7 @@ const useCart = () => {
   const findItemIndex = (productId, variantId) =>
     cart.findIndex(
       (i) =>
-        i.product._id === productId &&
+        i.product?._id === productId &&
         (i.variantId ?? null) === (variantId ?? null),
     );
 
@@ -298,6 +324,7 @@ const useCart = () => {
   };
 
   const handleRemoveCartItem = ({ productId, variantId }) => {
+    setLoadingCartId(productId);
     deleteCartMutation.mutateAsync(
       { productId, variantId },
       {
@@ -309,6 +336,9 @@ const useCart = () => {
                 (i.variantId ?? null) !== (variantId ?? null),
             ),
           ),
+
+        onError: () => toast.error("Failed to remove item"),
+        onSettled: () => setLoadingCartId(null),
       },
     );
     setDeleteModalData(null);

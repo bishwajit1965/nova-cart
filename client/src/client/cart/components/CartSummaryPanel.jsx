@@ -1,8 +1,4 @@
-import {
-  LucideCircleArrowDown,
-  ShoppingCart,
-  ShoppingCartIcon,
-} from "lucide-react";
+import { LucideCircleArrowDown, ShoppingCartIcon } from "lucide-react";
 
 import Button from "../../../common/components/ui/Button";
 import { Link } from "react-router-dom";
@@ -42,7 +38,7 @@ const CartSummaryPanel = ({ cart, handleGenerateCouponCode }) => {
         </h2>
       </div>
       <div className="lg:space-y-4 space-y-2 lg:px-2 lg:py-4 p-2">
-        {!cart || cart.length === 0 ? <NoDataFound label="Cart item" /> : null}
+        {!cart || cart?.length === 0 ? <NoDataFound label="Cart item" /> : null}
 
         <div className="flex flex-col gap-2 text-sm text-base-content">
           <h3 className="font-bold text-sm flex items-center border-b pb-1 border-base-content/20 gap-1 text-base-content/80 mb-2">
@@ -82,7 +78,12 @@ const CartSummaryPanel = ({ cart, handleGenerateCouponCode }) => {
                 <span className="">
                   <LucideIcon.Check size={10} className="mr-1" />
                 </span>
-                {(item?.product?.name).slice(0, 23) + " ... "} ({item.color},{" "}
+                {item?.product?.name
+                  ? item.product.name.length > 23
+                    ? item.product.name.slice(0, 23) + "..."
+                    : item.product.name
+                  : "Unnamed Product"}
+                {/* {(item?.product?.name).slice(0, 23) + " ... "} ({item.color},{" "} */}
                 {item.size}) x {item.quantity}
               </span>
               <span className="font-semibold">

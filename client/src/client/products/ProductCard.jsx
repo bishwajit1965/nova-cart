@@ -1,13 +1,14 @@
 import Button from "../../common/components/ui/Button";
-import { Link } from "react-router-dom";
 import { LucideIcon } from "../../common/lib/LucideIcons";
 import StarRating from "../../common/components/ui/StartRating";
 import textShortener from "../../utils/textShortener";
 import { useEffect, useState } from "react";
 import { injectJsonLd } from "../../common/utils/injectJsonLd/injectJsonLd.js";
 import { motion } from "framer-motion";
+import useRecentlyViewed from "../../common/hooks/useRecentlyViewed.js";
 
 const ProductCard = ({ product }) => {
+  const { addRecentlyViewed } = useRecentlyViewed();
   const [isExpanded, setIsExpanded] = useState(false);
   const [productId, setProductId] = useState(null);
   const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
@@ -33,6 +34,12 @@ const ProductCard = ({ product }) => {
       },
     });
   }, [product]);
+
+  const handleView = () => {
+    addRecentlyViewed({ productId: product._id });
+    // optionally navigate
+    window.location.href = `/product-details/${product._id}`;
+  };
 
   /*** ------> Toggle read more and read less ------> */
   const handleToggleView = (product) => {
@@ -62,16 +69,23 @@ const ProductCard = ({ product }) => {
 
         {/* Quick Actions */}
         <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-t-xl hover:bg-base-100">
-          <Link to="/client-cart-management">
-            <Button icon={LucideIcon.ShoppingCart} variant="baseRounded">
-              Add to Cart
-            </Button>
-          </Link>
-          <Link to="/client-product-wishlist">
-            <Button icon={LucideIcon.Heart} variant="defaultRounded">
-              Wishlist
-            </Button>
-          </Link>
+          <Button
+            href="/client-cart-management"
+            icon={LucideIcon.ShoppingCart}
+            size="xs"
+            variant="base"
+          >
+            Add to Cart
+          </Button>
+
+          <Button
+            href="/client-product-wishlist"
+            icon={LucideIcon.Heart}
+            size="xs"
+            variant="default"
+          >
+            Wishlist
+          </Button>
         </div>
 
         {/* Badge Example */}
@@ -113,16 +127,24 @@ const ProductCard = ({ product }) => {
         </div>
 
         <div className="flex gap-2">
-          <Link to={`/product-details/${product._id}`}>
-            <Button icon={LucideIcon.Eye} variant="indigoRounded">
-              View
-            </Button>
-          </Link>
-          <Link to="/client-cart-management">
-            <Button icon={LucideIcon.Rocket} variant="successRounded">
-              Buy Now
-            </Button>
-          </Link>
+          <Button
+            onClick={handleView}
+            // href={`/product-details/${product._id}`}
+            icon={LucideIcon.Eye}
+            size="xs"
+            variant="indigo"
+          >
+            View Details
+          </Button>
+
+          <Button
+            href="/client-cart-management"
+            icon={LucideIcon.Rocket}
+            size="xs"
+            variant="success"
+          >
+            Buy Now
+          </Button>
         </div>
       </div>
     </motion.div>

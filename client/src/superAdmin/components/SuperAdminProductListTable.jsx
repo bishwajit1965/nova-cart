@@ -170,16 +170,19 @@ const SuperAdminProductListTable = ({
                             onClick={() => onEdit(product)}
                             icon="edit"
                             variant="indigo"
+                            size="xs"
                           />
                           <MiniIconButton
                             onClick={() => setViewProduct(product)}
                             icon="view"
                             variant="green"
+                            size="xs"
                           />
                           <MiniIconButton
                             onClick={() => onConfirmDelete(product)}
                             icon="delete"
                             variant="danger"
+                            size="xs"
                           />
                         </div>
                       </td>

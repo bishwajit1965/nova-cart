@@ -30,7 +30,7 @@ router.post(
   requireFeature("cart"),
   featureGuard(),
   authorizeRole("super-admin", "admin", "user"),
-  addToCart
+  addToCart,
 );
 
 // Update quantity of a specific product
@@ -39,7 +39,7 @@ router.patch(
   requireFeature("cart"),
   featureGuard(),
   authorizeRole("super-admin", "admin", "user"),
-  updateCartItem
+  updateCartItem,
 );
 
 // Remove a product from cart
@@ -48,7 +48,16 @@ router.delete(
   requireFeature("cart"),
   featureGuard(),
   authorizeRole("super-admin", "admin", "user"),
-  removeFromCart
+  removeFromCart,
+);
+
+// Variantless product delete
+router.delete(
+  "/:productId",
+  requireFeature("cart"),
+  featureGuard(),
+  authorizeRole("super-admin", "admin", "user"),
+  removeFromCart,
 );
 
 export default router;

@@ -90,6 +90,11 @@ import {
   BookCopyIcon,
   BookOpen,
   UserCircle,
+  Rocket,
+  RocketIcon,
+  RefreshCcw,
+  RefreshCcwDot,
+  RefreshCcwDotIcon,
 } from "lucide-react";
 import { FaTimesCircle } from "react-icons/fa";
 import { Layer } from "recharts";
@@ -164,6 +169,11 @@ export const LucideIcon = {
   Package,
   Plus,
   Phone,
+  RefreshCcw,
+  RefreshCcwDot,
+  RefreshCcwDotIcon,
+  Rocket,
+  RocketIcon,
   RotateCcwKey,
   RotateCcw,
   Save,

@@ -46,10 +46,8 @@ const CartItemList = ({
     });
   };
 
-  console.log("Variant Images", cart);
-
   return (
-    <div className="">
+    <>
       <div className="p-2 sticky top-0 bg-base-300 rounded-t-lg border border-base-content/15">
         <h2 className="lg:text-xl text-lg font-extrabold flex items-center justify-between gap-2 text-base-content/70">
           <span className="flex items-center space-x-2">
@@ -153,7 +151,7 @@ const CartItemList = ({
                   onClick={() => onDeleteRequest(item)}
                   size="xs"
                   label="Remove"
-                  className="btn btn-sm text-xs"
+                  className=""
                 />
               </div>
             </div>
@@ -187,7 +185,7 @@ const CartItemList = ({
           />
         )}
       </div>
-    </div>
+    </>
   );
 };
 

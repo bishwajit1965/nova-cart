@@ -44,16 +44,18 @@ const ConfirmModal = ({
             <Button
               onClick={onCancel}
               variant="primary"
+              size="xs"
               icon={LucideIcon.Save}
-              className="btn btn-sm"
+              className=""
             >
               {cancelText}
             </Button>
             <Button
               onClick={onConfirm}
+              size="xs"
               variant="danger"
               icon={LucideIcon.Trash2}
-              className="btn btn-sm"
+              className=""
             >
               {confirmText}
             </Button>

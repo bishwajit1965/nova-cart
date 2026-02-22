@@ -388,7 +388,7 @@ const WishListItemPage = () => {
                 {/* ------> CARTS LIST DATA DISPLAYED ------> */}
 
                 <div
-                  className={`${showSummary ? "hidden" : "block"} lg:my-3 rounded-lg lg:block`}
+                  className={`${showSummary ? "hidden" : "block"} rounded-lg lg:block`}
                   // className="lg:my-3 rounded-lg"
                 >
                   {cartsDataStatus.status !== "success" ? (
@@ -434,7 +434,7 @@ const WishListItemPage = () => {
                         const variant =
                           item?.variantId && item?.product?.variants
                             ? item?.product?.variants?.find(
-                                (v) => v._id === item.variantId,
+                                (v) => v?._id === item?.variantId,
                               )
                             : null;
 
@@ -466,7 +466,7 @@ const WishListItemPage = () => {
                                 ${variant?.price.toFixed(2)}
                               </p>
                               <p className="text-sm text-gray-500">
-                                {isExpanded && productId === item.product._id
+                                {isExpanded && productId === item?.product?._id
                                   ? item?.product?.description
                                   : textShortener(
                                       item?.product?.description,
@@ -477,7 +477,8 @@ const WishListItemPage = () => {
                                   onClick={() => handleToggleView(item.product)}
                                   className="text-sm text-indigo-500 font-bold link ml-1"
                                 >
-                                  {isExpanded && productId === item.product._id
+                                  {isExpanded &&
+                                  productId === item?.product?._id
                                     ? "Read Less"
                                     : "Read More"}
                                 </button>
@@ -498,14 +499,7 @@ const WishListItemPage = () => {
                               >
                                 Remove
                               </Button>
-                              {/* <Link to={`/product-details/${item.product._id}`}>
-                                <Button
-                                  variant="primary"
-                                  className="btn btn-sm"
-                                >
-                                  <LucideIcon.Eye />
-                                </Button>
-                              </Link> */}
+
                               <Button
                                 className="btn btn-sm"
                                 variant="indigo"
@@ -513,14 +507,15 @@ const WishListItemPage = () => {
                                 icon={LucideIcon.ShoppingCart}
                                 onClick={() =>
                                   handleMoveToCart({
-                                    productId: item.product._id,
-                                    variantId: item.variantId,
+                                    productId: item?.product?._id,
+                                    variantId: item?.variantId,
                                     name: item?.product?.name,
-                                    brand: item.product.brand,
+                                    brand: item?.product?.brand,
                                     image:
                                       variant?.images?.[0] ??
-                                      item.product.images[0],
-                                    price: variant?.price ?? item.product.price,
+                                      item?.product?.images[0],
+                                    price:
+                                      variant?.price ?? item?.product?.price,
                                   })
                                 }
                               >
@@ -552,6 +547,7 @@ const WishListItemPage = () => {
               <div
                 className={`
                     ${showSummary ? "translate-y-0" : "translate-y-full"}
+                    lg:col-span-3 col-span-12 lg:max-h-[34rem]
                     lg:translate-y-0
                     lg:sticky top-20
                     fixed
@@ -559,7 +555,6 @@ const WishListItemPage = () => {
                     transition-transform duration-300
                     bg-white dark:bg-slate-900
                     lg:z-40 z-50
-                    lg:col-span-3 col-span-12 lg:max-h-[34rem]
                     `}
 
                 // className="lg:col-span-3 col-span-12 lg:max-h-[34rem] sticky top-20 lg:order-last order-first"

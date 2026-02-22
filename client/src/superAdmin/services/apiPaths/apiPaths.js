@@ -1,5 +1,8 @@
 const API_PATHS = {
-  // SUPER_ADMIN RELATED API_PATHS
+  /**=========================================================
+   * SUPER_ADMIN RELATED API_PATHS
+   * =========================================================*/
+
   AUDIT_LOGS: {
     ENDPOINT: "superAdmin/audit-logs",
     KEY: ["audit-logs"],
@@ -165,7 +168,10 @@ const API_PATHS = {
     SUPER_ADMIN_TESTIMONIAL_KEY: ["testimonials"],
   },
 
-  /***------> ADMIN RELATED API PATHS ------>*/
+  /**=========================================================
+   * ADMIN RELATED API PATHS
+   * =========================================================*/
+
   ADMIN_ANALYTICS: {
     USERS_ANALYTICS_ENDPOINT: "admin/analytics",
     USERS_ANALYTICS_KEY: ["admin-users-analytics"],
@@ -206,7 +212,10 @@ const API_PATHS = {
     STATUS_SUMMARY_KEY: ["admin-users", "user-status-summary"],
   },
 
-  /*** ------> CLIENT RELATED API_PATHS ------> */
+  /**=========================================================
+   * CLIENT RELATED API_PATHS
+   * =========================================================*/
+
   CLIENT_ADDRESS: {
     CLIENT_ADDRESS_ENDPOINT: "client/address",
     CLIENT_ADDRESS_KEY: ["address"],

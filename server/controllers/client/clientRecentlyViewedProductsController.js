@@ -4,6 +4,7 @@ import User from "../../models/User.js";
 // Save recently viewed product ids to user's collection
 export const saveRecentlyViewedProduct = async (req, res) => {
   try {
+    console.log("🎯 Save recently viewed method is hit");
     const userId = req.user._id;
 
     const { productId } = req.body;
@@ -22,7 +23,7 @@ export const saveRecentlyViewedProduct = async (req, res) => {
 
     // Remove duplicate if exists
     user.recentlyViewedProducts = user.recentlyViewedProducts.filter(
-      (item) => item.productId.toString() !== productId
+      (item) => item.productId.toString() !== productId,
     );
 
     // Add to top
@@ -43,6 +44,7 @@ export const saveRecentlyViewedProduct = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
 // Ids from localStorage then get product details from DB(products collection)
 export const getRecentlyViewedProductsByIds = async (req, res) => {
   try {
@@ -73,7 +75,7 @@ export const getRecentlyViewedProductsByIds = async (req, res) => {
 
     // Map products for fast lookup
     const productMap = Object.fromEntries(
-      products.map((p) => [p._id.toString(), p])
+      products.map((p) => [p._id.toString(), p]),
     );
 
     // Preserve frontend order & map name → title
@@ -134,8 +136,48 @@ export const getRecentlyViewedProductsFromDB = async (req, res) => {
   }
 };
 
+export const removeFromRecentlyViewed = async (req, res) => {
+  try {
+    console.log("🎯 Delete method is hit");
+
+    const userId = req.user._id;
+    const { productId, variantId } = req.params; // optional variantId
+    console.log("ProductId", productId);
+    console.log("VariantId", variantId);
+
+    if (!productId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Product ID required" });
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user)
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+
+    user.recentlyViewedProducts = user.recentlyViewedProducts.filter(
+      (item) => item.productId.toString() !== productId,
+    );
+
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Product removed from recently viewed",
+      data: user.recentlyViewedProducts,
+    });
+  } catch (error) {
+    console.error("Delete recently viewed error:", error);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
 export default {
   saveRecentlyViewedProduct,
   getRecentlyViewedProductsByIds,
   getRecentlyViewedProductsFromDB,
+  removeFromRecentlyViewed,
 };

@@ -55,9 +55,9 @@ export function MiniIconButton({
   const text = tooltip || iconLabels[icon.toLowerCase()] || "Edit" || "Action";
 
   const baseSize = {
-    xs: "px-1 py-1 text-xs h-8",
-    sm: "px-2 py-2 text-sm h-9",
-    md: "px-3 py-3 text-sm h-10",
+    xs: "!px-1 !py-1 w-7 !h-7 !p-0 text-xs",
+    sm: "!px-2 !py-2 !w-8 !h-8 !p-0 text-sm",
+    md: "!px-3 !py-3 !w-10 !h-10 !p-0 text-sm",
   };
 
   return (
