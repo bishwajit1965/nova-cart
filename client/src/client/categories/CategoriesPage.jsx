@@ -14,11 +14,12 @@ import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedData
 import usePageTitle from "../../superAdmin/services/hooks/usePageTitle";
 import { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
-import { Heart, HeartPlus, LucidePackageCheck } from "lucide-react";
+import { LucidePackageCheck } from "lucide-react";
 import useGlobalContext from "../../common/hooks/useGlobalContext";
 import textShortener from "../../utils/textShortener";
 import { useAuth } from "../../common/hooks/useAuth";
 import useRecentlyViewed from "../../common/hooks/useRecentlyViewed";
+import StarRating from "../../common/components/ui/StartRating";
 
 const CategoriesPage = () => {
   const { addRecentlyViewed } = useRecentlyViewed();
@@ -194,64 +195,6 @@ const CategoriesPage = () => {
       maxPrice: priceRange.max.toString(),
     });
   };
-
-  /*** ------> Add to Cart Mutation Query ------> */
-  const addToCartMutation = useApiMutation({
-    method: "create",
-    path: `${API_PATHS.CLIENT_CARTS.CLIENT_ENDPOINT}`,
-    key: API_PATHS.CLIENT_CARTS.CLIENT_KEY,
-    onSuccess: (res) => {
-      setCart(res.data.items); // update cart with latest
-    },
-    onError: (err) => {
-      toast.error("Failed to add product to cart");
-      console.error(err);
-    },
-  });
-
-  /** --------> Add product to cart --------> */
-  // const handleAddToCart = (product) => {
-  //   if (addedToCart.length >= CART_LIMIT) {
-  //     toast.success("You have added 10 items!");
-  //     return; // prevent adding more
-  //   }
-  //   addToCartMutation.mutate(
-  //     {
-  //       data: {
-  //         productId: product._id,
-  //         quantity: 1,
-  //       },
-  //     },
-  //     {
-  //       onSuccess: (res) => {
-  //         setAddedToCart((prev) => {
-  //           const existing = prev.find((item) => item._id === product._id);
-  //           if (existing) {
-  //             // update quantity
-  //             return prev.map((item) =>
-  //               item._id === product._id
-  //                 ? { ...item, quantity: item.quantity + 1 }
-  //                 : item,
-  //             );
-  //             // toast.error("Item already added! try new one!");
-  //           } else {
-  //             return [
-  //               ...prev,
-  //               {
-  //                 _id: product._id,
-  //                 name: product.name,
-  //                 brand: product.brand,
-  //                 image: product.images?.[0], // first image
-  //                 price: product.price,
-  //                 quantity: 1,
-  //               },
-  //             ];
-  //           }
-  //         });
-  //       },
-  //     },
-  //   );
-  // };
 
   /*** -----> Sidebar toggler handler -----> */
   const handleToggleSidebar = () => {
@@ -618,17 +561,35 @@ const CategoriesPage = () => {
                           className="w-full h-40 object-contain bg-center p-2 mb-2 rounded-t-md cursor-pointer transition-transform duration-300 hover:scale-150"
                         />
                       )}
-                      <div className="p-2">
-                        <h3 className="text-medium font-extrabold">{p.name}</h3>
+                      <div className="p-2 space-y-2">
+                        <h3 className="text-medium font-extrabold">
+                          {textShortener(p.name, 28)}
+                        </h3>
                         <p className="text-sm font-semibold">
                           Brand: {p.brand}
                         </p>
                         <p className="text-sm text-gray-500">
                           {textShortener(p.description, 100)}
                         </p>
-                        <p className="text-gray-600 font-extrabold">
-                          ${p.price.toFixed(2)}
-                        </p>
+
+                        <div className="flex items-center justify-between gap-1 text-medium font-extrabold">
+                          <div className="">${p.price.toFixed(2)}</div>
+                          <div className="flex items-center gap-1 text-sm">
+                            <span
+                              className={`${p?.rating === 0 ? "text-base-content/25" : "text-base-content/70"} font-bold`}
+                            >
+                              Rating:
+                            </span>
+                            <span
+                              className={`${p?.rating === 0 ? "text-base-content/25" : "text-base-content/70"} font-bold`}
+                            >
+                              {p?.rating ?? 0}
+                            </span>
+                            <span>
+                              <StarRating rating={p?.rating ?? 0} />
+                            </span>
+                          </div>
+                        </div>
                       </div>
                       <div className={`flex justify-between rounded-b-lg p-2`}>
                         <Button

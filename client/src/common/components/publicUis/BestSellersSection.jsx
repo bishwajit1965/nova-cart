@@ -114,10 +114,10 @@ const BestSellersSection = () => {
                       <p className="text-justify">
                         {isExtended
                           ? product?.description
-                          : textShortener(product?.description, 60)}
+                          : textShortener(product?.description, 57)}
                       </p>
                       <p className="text-primary font-bold">
-                        $ {product.price}
+                        $ {product.price.toFixed(2)}
                       </p>
                     </div>
                   </div>

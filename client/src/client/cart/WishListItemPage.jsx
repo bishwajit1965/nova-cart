@@ -389,7 +389,6 @@ const WishListItemPage = () => {
 
                 <div
                   className={`${showSummary ? "hidden" : "block"} rounded-lg lg:block`}
-                  // className="lg:my-3 rounded-lg"
                 >
                   {cartsDataStatus.status !== "success" ? (
                     cartsDataStatus.content
@@ -443,16 +442,16 @@ const WishListItemPage = () => {
                             key={item?.product?._id}
                             className="lg:col-span-4 col-span-12 border border-base-content/15 rounded-xl shadow-md bg-base-100 hover:shadow-xl relative"
                           >
-                            <div className="mb-4 p-2">
+                            <div className="p-2">
                               <img
                                 src={`${apiURL}${
                                   variant?.images[0] ?? item?.product?.images[0]
                                 }`}
                                 alt={item?.product?.name}
-                                className="w-full h-32 object-contain rounded mb-2 transform hover:scale-115 transition-transform duration-300"
+                                className="w-full h-32 object-contain rounded transform hover:scale-115 transition-transform duration-300"
                               />
                             </div>
-                            <div className="lg:max-h-56 max-h-56 lg:p-4 p-2 overflow-y-auto lg:space-y-2">
+                            <div className="lg:max-h-52 max-h-52 lg:px-4 p-2 overflow-y-auto lg:space-y-">
                               <h3 className="lg:text-lg text-lg font-bold">
                                 {item?.product?.name}
                               </h3>
@@ -463,7 +462,6 @@ const WishListItemPage = () => {
                                       variant?.size || ""
                                     })`
                                   : ""}
-
                                 <span
                                   style={{
                                     backgroundColor: variant?.color || "",
@@ -480,12 +478,12 @@ const WishListItemPage = () => {
                                   ? item?.product?.description
                                   : textShortener(
                                       item?.product?.description,
-                                      85,
+                                      90,
                                     )}
 
                                 <button
                                   onClick={() => handleToggleView(item.product)}
-                                  className="text-sm text-indigo-500 font-bold link ml-1"
+                                  className="text-sm text-indigo-500 font-bold link"
                                 >
                                   {isExpanded &&
                                   productId === item?.product?._id
@@ -494,7 +492,7 @@ const WishListItemPage = () => {
                                 </button>
                               </p>
                             </div>
-                            <div className=" bottom-0 right-0 p-2 w-full flex justify-between items-center mb-8">
+                            <div className="bottom-0 right-0 p-2 w-full flex justify-between items-center mb-9">
                               <Button
                                 className="text-red-500 btn btn-sm"
                                 variant="danger"
@@ -539,7 +537,7 @@ const WishListItemPage = () => {
                                 <Button
                                   variant="base"
                                   size="sm"
-                                  className="btn btn-sm w-full rounded-t-none rounded-b-lg border-none"
+                                  className="btn btn-sm w-full border-t-base-content/15 rounded-t-none rounded-b-lg border-none  hover:text-gray-800 hover:bg-gray-100"
                                 >
                                   <LucideIcon.Eye /> View Details
                                 </Button>
@@ -557,7 +555,7 @@ const WishListItemPage = () => {
               <div
                 className={`
                     ${showSummary ? "translate-y-0" : "translate-y-full"}
-                    lg:col-span-3 col-span-12 lg:max-h-[34rem]
+                    lg:col-span-3 col-span-12 lg:max-h-screen
                     lg:translate-y-0
                     lg:sticky top-20
                     fixed

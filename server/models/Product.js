@@ -32,6 +32,9 @@ const productSchema = new mongoose.Schema(
     // ✅ Extra
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     status: { type: String, enum: ["active", "inactive"], default: "active" },
+    // ⭐ NEW: Product rating (0–5)
+    rating: { type: Number, default: 0, min: 0, max: 5 },
+    reviewsCount: { type: Number, default: 0 }, // optional for showing number of reviews
   },
   { timestamps: true },
 );

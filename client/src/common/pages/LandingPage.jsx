@@ -29,10 +29,15 @@ import { SEO_TEMPLATES } from "../../utils/seoTemplate";
 const LandingPage = () => {
   //SEO
   useSEO(SEO_TEMPLATES.home);
+
   const { user, isAuthenticated } = useAuth();
+
   const hasAccess = { user: user, isAuthenticated: isAuthenticated };
+
   const [isFormOpen, setIsFormOpen] = useState(false);
+
   const toggleForm = () => setIsFormOpen(!isFormOpen);
+
   return (
     <div className="lg:space-y-16 space-y-6">
       {/* -----> Page Meta -----> */}

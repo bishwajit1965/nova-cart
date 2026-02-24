@@ -1,4 +1,4 @@
-import { AlertTriangleIcon } from "lucide-react";
+import { AlertCircleIcon, AlertTriangleIcon } from "lucide-react";
 
 const NoDataFound = ({ label }) => {
   return (
@@ -6,14 +6,14 @@ const NoDataFound = ({ label }) => {
       <div className="flex items-center">
         <div className="">
           <div className="flex justify-center items-center">
-            <AlertTriangleIcon size={25} className="text-red-600" />
+            <AlertCircleIcon size={28} className="text-red-600" />
           </div>
           <div className="flex items-center flex-wrap space-x-2">
             <p className="text-red-500 font-bold lg:flex flex-wrap grid items-center overflow-hidden font-serif space-x-2 justify-center">
-              <span className="lg:text-xl text-sm font-bold text-center animate-pulse">
+              <span className="lg:text-xl text-sm font-extrabold text-center animate-pulse">
                 404 ERROR !
               </span>{" "}
-              <span>{`${label} not available ! Try later.`}</span>
+              <span className="lg:text-medium text-sm">{`${label} not found ! Add / Try later.`}</span>
             </p>
           </div>
         </div>

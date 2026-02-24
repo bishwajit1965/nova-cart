@@ -98,7 +98,7 @@ const CartItemList = ({
                 <div className="text-sm">
                   <h3
                     onClick={() => handleNavigate(item)}
-                    className="text-xs font-bold"
+                    className="text-sm font-bold"
                   >
                     {item?.product?.name}
                   </h3>

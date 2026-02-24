@@ -244,7 +244,7 @@ const ClientCartManagementPage = () => {
                       <p className="text-sm text-gray-500">
                         {isExpanded && productId === product?._id
                           ? product?.description
-                          : textShortener(product?.description, 95)}
+                          : textShortener(product?.description, 88)}
 
                         <button
                           onClick={() => handleToggleView(product)}

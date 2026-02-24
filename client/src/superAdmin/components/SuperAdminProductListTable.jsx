@@ -120,7 +120,7 @@ const SuperAdminProductListTable = ({
                                 : product.images[0]
                             }
                             alt={product?.name}
-                            className="w-10 h-10 object-contain rounded-md hover:w-20 hover:h-20 hover:rounded-md"
+                            className="w-10 h-10 object-contain rounded-md transition-all duration-200 hover:rounded-md hover:scale-200"
                           />
                         ) : (
                           product.images[0] && (
@@ -129,7 +129,7 @@ const SuperAdminProductListTable = ({
                                 product.images[0].startsWith("/") ? "" : "/"
                               }${product.images[0]}`}
                               alt={product.name || ""}
-                              className="w-10 h-10 object-contain rounded-md hover:w-20 hover:h-20 hover:rounded-md"
+                              className="w-10 h-10 object-contain rounded-md transition-all duration-200 hover:rounded-md hover:scale-200"
                             />
                           )
                         )}

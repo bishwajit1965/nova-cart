@@ -54,6 +54,8 @@ export const createProduct = async (req, res) => {
       brand,
       tags,
       status,
+      rating,
+      reviewsCount,
     } = bodyData;
 
     // 2️⃣ Basic required checks
@@ -159,6 +161,8 @@ export const createProduct = async (req, res) => {
       createdBy: req.user._id,
       status: status || "active",
       tags: tags || [],
+      rating: rating ?? 0, // ⭐ Default 0
+      reviewsCount: reviewsCount ?? 0, // ⭐ Default 0
     });
 
     // 1️⃣1️⃣ Validate + save
@@ -268,6 +272,8 @@ export const updateProduct = async (req, res) => {
       brand,
       status,
       tags,
+      rating,
+      reviewsCount,
     } = bodyData;
 
     const categoryId =
@@ -399,6 +405,14 @@ export const updateProduct = async (req, res) => {
         categoryName,
         subCategoryName,
       });
+    }
+
+    // ⭐ Optional: Update rating & reviewsCount if provided (though usually these would be managed separately)
+    if (rating !== undefined) {
+      product.rating = rating;
+    }
+    if (reviewsCount !== undefined) {
+      product.reviewsCount = reviewsCount;
     }
 
     // 8️⃣ Save & log

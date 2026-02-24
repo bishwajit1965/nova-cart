@@ -24,6 +24,8 @@ const SuperAdminProductManagementPage = () => {
     brand: "",
     images: [],
     stock: 0,
+    rating: 0,
+    reviewsCount: 0,
     variants: [
       { color: "", size: "", price: 0, discountPrice: 0, SKU: "", stock: 0 },
     ],
@@ -38,6 +40,23 @@ const SuperAdminProductManagementPage = () => {
     },
     category: { required: { message: "Category is required" } },
     brand: { required: { message: "Brand is required" } },
+    rating: {
+      custom: (value) => {
+        if (value < 0 || value > 5) {
+          return "Rating must be between 0 and 5";
+        }
+        return null;
+      },
+    },
+    reviewsCount: {
+      custom: (value) => {
+        if (value < 0) {
+          return "Reviews count must be a positive number";
+        }
+        return null;
+      },
+    },
+
     // stock: { required: { message: "Stock is required" } },
     // Add more rules for variants if needed
 
@@ -110,6 +129,8 @@ const SuperAdminProductManagementPage = () => {
         brand: "",
         images: [],
         stock: 0,
+        rating: 0,
+        reviewsCount: 0,
         variants: [
           {
             color: "",
@@ -186,6 +207,8 @@ const SuperAdminProductManagementPage = () => {
       stock: globalStock || formData.stock,
       brand: formData.brand,
       tags,
+      rating: formData.rating,
+      reviewsCount: formData.reviewsCount,
     };
 
     // 5️⃣ Build FormData

@@ -12,7 +12,9 @@ const ProductCard = ({ product }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [productId, setProductId] = useState(null);
   const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-  const rating = [5, 4, 3, 4.5];
+  // const rating = [5, 4, 3, 4.5];
+
+  console.log("Product=====>", product);
 
   // ✅ Inject JSON-LD for SEO
   useEffect(() => {
@@ -100,7 +102,7 @@ const ProductCard = ({ product }) => {
       <div className="p-4 space-y-2">
         <h4 className="font-bold text-lg">{product.name}</h4>
 
-        <p className="text-sm text-gray-500 max-h-18 overflow-y-auto">
+        <p className="text-sm text-gray-500 max-h-24 overflow-y-auto">
           {isExpanded && productId === product._id
             ? product.description
             : textShortener(product.description, 112)}
@@ -123,13 +125,26 @@ const ProductCard = ({ product }) => {
               minimumFractionPoints: 2,
             })}
           </p>
-          <div className="text-sm">{StarRating(rating)}</div>
+          <div className="flex items-center gap-2 text-sm">
+            <span
+              className={`${product?.rating === 0 ? "text-base-content/25" : "text-base-content/70"} font-bold`}
+            >
+              Rating:
+            </span>
+            <span
+              className={`${product?.rating === 0 ? "text-base-content/25" : "text-base-content/70"} font-bold`}
+            >
+              {product?.rating ?? 0}
+            </span>
+            <span>
+              <StarRating rating={product?.rating ?? 0} />
+            </span>
+          </div>
         </div>
 
         <div className="flex gap-2">
           <Button
             onClick={handleView}
-            // href={`/product-details/${product._id}`}
             icon={LucideIcon.Eye}
             size="xs"
             variant="indigo"

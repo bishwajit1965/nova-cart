@@ -1,16 +1,35 @@
+import { Star, StarHalf, StarOffIcon } from "lucide-react";
+
 const StarRating = ({ rating }) => {
-  const stars = Array(5)
-    .fill(0)
-    .map((_, i) => (
-      <span
-        key={i}
-        className={`text-yellow-500 text-2xl ${
-          i < rating ? "opacity-100" : "opacity-30"
-        }`}
-      >
-        ★
-      </span>
-    ));
-  return <div className="flex justify-center space-x-1">{stars}</div>;
+  const r = Math.round((Number(rating) || 0) * 2) / 2; // rounds to nearest 0.5
+
+  return (
+    <div className="flex justify-center space-x-1">
+      {Array.from({ length: 5 }, (_, i) => {
+        if (i < Math.floor(r)) {
+          return (
+            <Star key={i} size={18} className="text-amber-600 opacity-100" />
+          );
+        } else if (i === Math.floor(r) && r % 1 !== 0) {
+          return (
+            <StarHalf
+              key={i}
+              size={18}
+              className="text-amber-600 opacity-100"
+            />
+          );
+        } else {
+          return (
+            <StarOffIcon
+              key={i}
+              size={18}
+              className="text-amber-600 opacity-50"
+            />
+          );
+        }
+      })}
+    </div>
+  );
 };
+
 export default StarRating;

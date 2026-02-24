@@ -185,6 +185,34 @@ const SuperAdminProductInsertForm = ({
         />
         {errors.brand && <p className="text-red-500 text-sm">{errors.brand}</p>}
 
+        {/* Rating */}
+        <Input
+          type="number"
+          name="rating"
+          min="0"
+          max="5"
+          step="0.5"
+          placeholder="Rating (0-5)..."
+          value={formData.rating}
+          onChange={handleInputChange}
+        />
+        {errors.rating && (
+          <p className="text-red-500 text-sm">{errors.rating}</p>
+        )}
+
+        {/* Reviews Count */}
+        <Input
+          type="number"
+          name="reviewsCount"
+          min="0"
+          placeholder="Reviews Count..."
+          value={formData.reviewsCount}
+          onChange={handleInputChange}
+        />
+        {errors.reviewsCount && (
+          <p className="text-red-500 text-sm">{errors.reviewsCount}</p>
+        )}
+
         {/* Product-level images */}
         <Input
           type="file"

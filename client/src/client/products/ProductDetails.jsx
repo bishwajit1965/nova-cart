@@ -33,7 +33,6 @@ import { useAuth } from "../../common/hooks/useAuth";
 import useRecentlyViewed from "../../common/hooks/useRecentlyViewed";
 import CartItemSummaryPanel from "../../common/components/cartItemSummaryPanel/CartItemSummaryPanel";
 import WishListSummaryPanel from "../../common/wishListItemSummaryPanel/WishListSummaryPanel";
-import NoDataFound from "../../common/components/ui/NoDataFound";
 
 const ProductDetails = () => {
   const { removeRecentlyViewed, recentlyViewed } = useRecentlyViewed();
@@ -48,7 +47,6 @@ const ProductDetails = () => {
   const [isOpenRelatedProducts, setIsOpenRelatedProducts] = useState(false);
   const [openCartSummary, setOpenCartSummary] = useState(false);
   const [wishListSummary, setWishListSummary] = useState(false);
-  const [reset, setReset] = useState(false);
   const { user } = useAuth();
 
   // Global cart data
@@ -279,7 +277,6 @@ const ProductDetails = () => {
     setOpenCartSummary(false);
     setOpenViewPanel(false);
     setIsOpenRelatedProducts(false);
-    removeRecentlyViewed();
     toast.success("Recently viewed products cleared!");
   };
 
