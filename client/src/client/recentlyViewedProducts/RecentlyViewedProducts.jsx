@@ -10,6 +10,7 @@ import useGlobalContext from "../../common/hooks/useGlobalContext";
 import Modal from "../../common/components/ui/Modal";
 import textShortener from "../../utils/textShortener";
 import buildUrl from "../../common/hooks/useBuildUrl";
+import StarRating from "../../common/components/ui/StartRating";
 
 // LocalStorage helpers
 export const getFromLocalStorage = () => {
@@ -129,7 +130,7 @@ const RecentlyViewedProducts = ({ viewedProducts, removeRecentlyViewed }) => {
 
         <div
           ref={scrollRef}
-          className="flex overflow-x-auto gap-4 p- scrollbar-thin scrollbar-thumb-gray-400 min-h-[350px] py-2"
+          className="flex overflow-x-auto gap-4 p- scrollbar-thin scrollbar-thumb-gray-400 lg:min-h-[380px] min-h-[365px] py-2 "
         >
           {viewedProducts?.map((p) => {
             //🎯 Helper implementation
@@ -141,7 +142,7 @@ const RecentlyViewedProducts = ({ viewedProducts, removeRecentlyViewed }) => {
             return (
               <div
                 key={p._id}
-                className="lg:min-w-[243px] min-w-[295px] border border-base-content/15 rounded-md shadow hover:shadow-lg flex-shrink-0 relative min-h-40"
+                className="lg:min-w-[243px] min-w-[295px] border border-base-content/15 rounded-md shadow hover:shadow-lg flex-shrink-0 relative"
               >
                 <div className="bg-base-100 mb-2">
                   <img
@@ -169,6 +170,26 @@ const RecentlyViewedProducts = ({ viewedProducts, removeRecentlyViewed }) => {
                           maximumFractionDigits: 2,
                         })}`}
                   </p>
+
+                  <div className="text-medium font-bold">
+                    <div className="flex items-center justify-between gap-1">
+                      <span>
+                        <span
+                          className={` justify-items-end-safe${p?.rating === 0 ? "text-base-content/25" : "text-base-content/70"} `}
+                        >
+                          Rating:{" "}
+                        </span>
+                        <span
+                          className={`${p?.rating === 0 ? "text-base-content/25" : "text-base-content/70"}`}
+                        >
+                          {p?.rating ?? 0}
+                        </span>
+                      </span>
+                      <span>
+                        <StarRating rating={p?.rating ?? 0} />
+                      </span>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Buttons */}

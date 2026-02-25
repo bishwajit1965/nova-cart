@@ -69,6 +69,7 @@ import clientRecentlyViewedProductsRoutes from "./routes/client/clientRecentlyVi
 import useActivityRoutes from "./routes/client/userActivityRoutes.js";
 import clientRelatedProductsRoutes from "./routes/client/clientRelatedProductsRoutes.js";
 import supAdminTestimonialRoutes from "./routes/superAdmin/supAdminTestimonialRoutes.js";
+import clientProductReviewRoutes from "./routes/client/clientReviewRoutes.js";
 
 /**==========================================
  * Essential configurations section
@@ -117,7 +118,7 @@ app.use(
       }
     },
     credentials: true,
-  })
+  }),
 );
 app.use((req, res, next) => {
   res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
@@ -152,11 +153,11 @@ app.use("/api/superAdmin/plans", supAdminPlanRoutes);
 app.use("/api/superAdmin/billing", supAdminBillingRoutes);
 app.use(
   "/api/superAdmin/revenue-analytics/weekly",
-  supAdminRevenueAnalyticsRoutes
+  supAdminRevenueAnalyticsRoutes,
 );
 app.use(
   "/api/superAdmin/revenue-analytics/monthly",
-  supAdminMonthlyRevenueRoutes
+  supAdminMonthlyRevenueRoutes,
 );
 app.use("/api/superAdmin/plan-histories", supAdminPlanHistoryRoutes);
 app.use("/api/superAdmin/vendors", supAdminVendorsRoutes);
@@ -205,17 +206,18 @@ app.use("/api/client/project", clientSupAdminProjectRoutes);
 app.use("/api/client/client-slides-banner", clientHeroSlidesRoutes);
 app.use(
   "/api/client/client-featured-promotion-banner",
-  clientFeaturedPromotionBannerRoutes
+  clientFeaturedPromotionBannerRoutes,
 );
 app.use("/api/client/faqs", clientFaqRoutes);
 app.use("/api/client/client-announcements", clientAnnouncementRoutes);
 app.use(
   "/api/client/client-system-settings/preference",
-  clientSystemSettingsRoutes
+  clientSystemSettingsRoutes,
 );
 app.use("/api/client/recently-viewed", clientRecentlyViewedProductsRoutes);
 app.use("/api/client/recent-activity", useActivityRoutes);
 app.use("/api/client/related-products", clientRelatedProductsRoutes);
+app.use("/api/client/reviews", clientProductReviewRoutes); // ✅ Client Product Reviews Routes
 
 /***===================================
  * Sitemap Routes Mounting for SEO

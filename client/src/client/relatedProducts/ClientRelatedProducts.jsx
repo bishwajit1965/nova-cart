@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight, Loader, Package } from "lucide-react";
 import { useRef } from "react";
 import buildUrl from "../../common/hooks/useBuildUrl";
 import textShortener from "../../utils/textShortener";
+import StarRating from "../../common/components/ui/StartRating";
 
 const ClientRelatedProducts = ({ relatedProducts }) => {
   const navigate = useNavigate();
@@ -78,7 +79,7 @@ const ClientRelatedProducts = ({ relatedProducts }) => {
           return (
             <div
               key={p._id}
-              className="lg:min-w-[243px] min-w-[295px] border border-base-content/15 rounded-md shadow hover:shadow-lg flex-shrink-0 relative"
+              className="lg:min-w-[243px] min-w-[295px] border border-base-content/15 rounded-md shadow hover:shadow-lg flex-shrink-0 relative min-h-[350px]"
             >
               <div className="bg-base-100 mb-2">
                 <img
@@ -105,6 +106,29 @@ const ClientRelatedProducts = ({ relatedProducts }) => {
                         maximumFractionDigits: 2,
                       })}`}
                 </p>
+
+                <div className="text-medium font-bold">
+                  <div className="flex items-center justify-between gap-1 text-sm">
+                    <span
+                      className={`${p?.rating === 0 ? "text-base-content/25" : "text-base-content/70"} font-bold`}
+                    >
+                      <span
+                        className={`${p?.rating === 0 ? "text-base-content/25" : "text-base-content/70"}`}
+                      >
+                        Rating:{" "}
+                      </span>
+                      <span
+                        className={`${p?.rating === 0 ? "text-base-content/25" : "text-base-content/70"} font-bold`}
+                      >
+                        {p?.rating ?? 0}
+                      </span>
+                    </span>
+
+                    <span>
+                      <StarRating rating={p?.rating ?? 0} />
+                    </span>
+                  </div>
+                </div>
               </div>
 
               {/* Buttons */}

@@ -35,6 +35,7 @@ const productSchema = new mongoose.Schema(
     // ⭐ NEW: Product rating (0–5)
     rating: { type: Number, default: 0, min: 0, max: 5 },
     reviewsCount: { type: Number, default: 0 }, // optional for showing number of reviews
+    totalRatingSum: { type: Number, default: 0 }, // optional, for fast calculation
   },
   { timestamps: true },
 );

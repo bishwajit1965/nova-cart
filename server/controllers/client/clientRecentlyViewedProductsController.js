@@ -104,7 +104,8 @@ export const getRecentlyViewedProductsFromDB = async (req, res) => {
       .select("recentlyViewedProducts")
       .populate({
         path: "recentlyViewedProducts.productId",
-        select: "name title price images slug description variants brand",
+        select:
+          "name title price images slug description variants brand rating reviewsCount",
       });
 
     if (!user || !user.recentlyViewedProducts?.length) {

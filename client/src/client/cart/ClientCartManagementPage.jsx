@@ -14,6 +14,7 @@ import useGlobalContext from "../../common/hooks/useGlobalContext";
 import useRecentlyViewed from "../../common/hooks/useRecentlyViewed";
 import CartItemSummaryPanel from "../../common/components/cartItemSummaryPanel/CartItemSummaryPanel";
 import WishListSummaryPanel from "../../common/wishListItemSummaryPanel/WishListSummaryPanel";
+import StarRating from "../../common/components/ui/StartRating";
 const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 const ClientCartManagementPage = () => {
@@ -218,7 +219,7 @@ const ClientCartManagementPage = () => {
                 return (
                   <div
                     key={product?._id}
-                    className="border border-base-content/10 lg:p-2 p-2 rounded-lg shadow min-h-[360px] relative"
+                    className="border border-base-content/10 lg:p-2 p-2 rounded-lg shadow min-h-[390px] relative"
                   >
                     <div className="mb-2">
                       {product?.images && (
@@ -233,7 +234,7 @@ const ClientCartManagementPage = () => {
                       )}
                     </div>
 
-                    <div className="max-h-32 overflow-y-auto space-y-1 mb-3">
+                    <div className="max-h-40 overflow-y-auto space-y-1 mb-3">
                       <h3
                         onClick={() => handleItemClick(product)}
                         className="font-semibold cursor-pointer"
@@ -259,6 +260,28 @@ const ClientCartManagementPage = () => {
                       <p className="font-bold mt-1">
                         ${product?.price?.toFixed(2)}
                       </p>
+                      <div className="text-medium font-bold">
+                        <div className="flex items-center justify-between gap-1 text-sm">
+                          <span
+                            className={`${product?.rating === 0 ? "text-base-content/25" : "text-base-content/70"} font-bold`}
+                          >
+                            <span
+                              className={`${product?.rating === 0 ? "text-base-content/25" : "text-base-content/70"}`}
+                            >
+                              Rating:{" "}
+                            </span>
+                            <span
+                              className={`${product?.rating === 0 ? "text-base-content/25" : "text-base-content/70"} font-bold`}
+                            >
+                              {product?.rating ?? 0}
+                            </span>
+                          </span>
+
+                          <span>
+                            <StarRating rating={product?.rating ?? 0} />
+                          </span>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="flex items-center justify-between w-full left-0">

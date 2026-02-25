@@ -572,11 +572,11 @@ const CategoriesPage = () => {
                           {textShortener(p.description, 100)}
                         </p>
 
-                        <div className="flex items-center justify-between gap-1 text-medium font-extrabold">
+                        <div className="flex items-center justify-between gap-1 text-medium font-bold">
                           <div className="">${p.price.toFixed(2)}</div>
                           <div className="flex items-center gap-1 text-sm">
                             <span
-                              className={`${p?.rating === 0 ? "text-base-content/25" : "text-base-content/70"} font-bold`}
+                              className={`${p?.rating === 0 ? "text-base-content/25" : "text-base-content/70"}`}
                             >
                               Rating:
                             </span>

@@ -15,12 +15,19 @@ import {
   AlertTriangle,
   ArrowDownAZ,
   Boxes,
+  Calendar,
+  CommandIcon,
   Diff,
   Layers3,
   Loader,
+  Loader2,
   Package,
   ShoppingCart,
   ShoppingCartIcon,
+  Star,
+  User2,
+  UserCheck2Icon,
+  Users2,
 } from "lucide-react";
 import CartSummaryPanel from "../cart/components/CartSummaryPanel";
 import useGlobalContext from "../../common/hooks/useGlobalContext";
@@ -33,6 +40,12 @@ import { useAuth } from "../../common/hooks/useAuth";
 import useRecentlyViewed from "../../common/hooks/useRecentlyViewed";
 import CartItemSummaryPanel from "../../common/components/cartItemSummaryPanel/CartItemSummaryPanel";
 import WishListSummaryPanel from "../../common/wishListItemSummaryPanel/WishListSummaryPanel";
+import StarRating from "../../common/components/ui/StartRating";
+import Modal from "../../common/components/ui/Modal";
+import Textarea from "../../common/components/ui/Textarea";
+import { useApiMutation } from "../../superAdmin/services/hooks/useApiMutation";
+import { FaComment } from "react-icons/fa";
+import NoDataFound from "../../common/components/ui/NoDataFound";
 
 const ProductDetails = () => {
   const { removeRecentlyViewed, recentlyViewed } = useRecentlyViewed();
@@ -47,7 +60,13 @@ const ProductDetails = () => {
   const [isOpenRelatedProducts, setIsOpenRelatedProducts] = useState(false);
   const [openCartSummary, setOpenCartSummary] = useState(false);
   const [wishListSummary, setWishListSummary] = useState(false);
+  const [isReviewSectionOpen, setIsReviewSectionOpen] = useState(false);
   const { user } = useAuth();
+  // For review form
+  const [rating, setRating] = useState(0);
+  const [hover, setHover] = useState(null);
+  const [comment, setComment] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // Global cart data
   const {
@@ -126,6 +145,9 @@ const ProductDetails = () => {
     description: product.data.description,
     price: product.data.price,
     stock: product.data.stock,
+    rating: product.data.rating,
+    reviewsCount: product.data.reviewsCount,
+    totalRatingSum: product.data.totalRatingSum,
   };
 
   // Variant color set
@@ -212,6 +234,46 @@ const ProductDetails = () => {
     );
   }, [selectedColor]);
 
+  const renderStars = (rating) => {
+    return "⭐".repeat(rating);
+  };
+
+  /*** ========> REVIEW QUERY ========> */
+  const {
+    data: reviews,
+    isLoading: isLoadingReviews,
+    isError: isErrorReviews,
+    error: errorReviews,
+  } = useApiQuery({
+    url: `${API_PATHS.CLIENT_PRODUCT_REVIEWS.ENDPOINT}/${product?.data?._id}`,
+    queryKey: API_PATHS.CLIENT_PRODUCT_REVIEWS.KEY,
+    options: {
+      staleTime: 0,
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
+    },
+  });
+
+  console.log("Reviews", reviews);
+
+  /*** ========> REVIEW MUTATION ========> */
+  const reviewMutation = useApiMutation({
+    method: "create",
+    path: API_PATHS.CLIENT_PRODUCT_REVIEWS.ENDPOINT,
+    key: API_PATHS.CLIENT_PRODUCT_REVIEWS.KEY,
+    showToast: false,
+    onSuccess: (res) => {
+      toast.success("Review submitted successfully!");
+      setRating(0);
+      setComment("");
+      setIsReviewSectionOpen(false);
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Failed to submit review");
+      console.error(err);
+    },
+  });
+
   /*** ========> HANDLER METHODS ========> */
 
   const onAddToCart = () => {
@@ -280,6 +342,42 @@ const ProductDetails = () => {
     toast.success("Recently viewed products cleared!");
   };
 
+  const handleOpenReviewSection = () => {
+    setIsReviewSectionOpen((prev) => !prev);
+  };
+
+  const handleSubmitReview = (e) => {
+    e.preventDefault();
+
+    if (!rating) {
+      toast.error("Please select a rating");
+      return;
+    }
+
+    if (!comment.trim()) {
+      toast.error("Please write a review");
+      return;
+    }
+    try {
+      setLoading(true);
+      const payload = {
+        data: {
+          productId: productData?._id,
+          rating: rating,
+          comment: comment.trim(),
+        },
+      };
+
+      console.log("Payload=>", payload);
+
+      reviewMutation.mutate(payload);
+    } catch (error) {
+      console.error("Error submitting review:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   /*** ========> DATA FETCHED STATUS ========> */
 
   const viewedProductsDataStatus = useFetchedDataStatusHandler({
@@ -294,6 +392,13 @@ const ProductDetails = () => {
     isError: isErrorRelatedProducts,
     error: errorRelatedProducts,
     label: "Related Products",
+  });
+
+  const reviewDataStatus = useFetchedDataStatusHandler({
+    isLoading: isLoadingReviews,
+    isError: isErrorReviews,
+    error: errorReviews,
+    label: "Reviews",
   });
 
   return (
@@ -632,7 +737,7 @@ const ProductDetails = () => {
                           : "border-base-content/10"
                       }`}
                     >
-                      <p className="text-xs">{productDetail._id}</p>
+                      <p className="text-xs">{productDetail?._id}</p>
                       <img
                         src={buildUrl(img)}
                         alt={`thumb-${idx}`}
@@ -689,372 +794,548 @@ const ProductDetails = () => {
               </h2>
             </div>
 
-            <div className="lg:p-4 p-2 lg:space-y-5 space-y-3">
-              <h2 className="lg:text-xl text-xl lg:font-extrabold font-bold font-sans">
-                Product ➡️ {productDetail?.name}
-              </h2>
-              <h3 className="lg:text-xl text-xl lg:font-extrabold font-bold font-sans">
-                Brand ➡️ {productDetail?.brand}
-              </h3>
-              <p className="text-justify">
-                <strong>Description: </strong>
-                {isExpanded
-                  ? productDetail?.description
-                  : textShortener(productDetail?.description, 165)}
-                {productDetail?.description &&
-                productDetail?.description.length >= 165 ? (
-                  <button
-                    onClick={() => setIsExpanded(!isExpanded)}
-                    className="text-indigo-500 link ml-1 text-sm font-semibold"
-                  >
-                    {isExpanded ? "Read Less" : "Read More"}
-                  </button>
-                ) : null}
-              </p>
-              <p className="font-bold">
-                Price: $ {productDetail?.price.toFixed(2)}
-              </p>
-
-              {/* ----> VARIANT CONTROLS FOLLOW --> */}
-              {/* Variant wise price display */}
-              <p className="text-xl font-bold">
-                Variant Price: $ {selectedVariant?.price.toFixed(2)}
-              </p>
-              {/* Stock display */}
-              {selectedVariant?.stock && (
-                <p
-                  className={`font-semibold ${
-                    selectedVariant?.stock > 0
-                      ? "text-green-600"
-                      : "text-red-600"
-                  }`}
-                >
-                  {selectedVariant.stock > 0
-                    ? `Product: ${productDetail?.name} || Brand: ${productDetail?.brand} || In stock ➡️ ${selectedVariant?.stock}`
-                    : "Out of stock!"}
+            <div className="px-2 space-y-4">
+              <div className="lg:space-y-4 space-y-3 lg:mt-4 mt-2">
+                <h2 className="lg:text-xl text-xl lg:font-extrabold font-bold font-sans">
+                  Product ➡️ {productDetail?.name}
+                </h2>
+                <h3 className="lg:text-xl text-xl lg:font-extrabold font-bold font-sans">
+                  Brand ➡️ {productDetail?.brand}
+                </h3>
+                <p className="text-justify">
+                  <strong>Description: </strong>
+                  {isExpanded
+                    ? productDetail?.description
+                    : textShortener(productDetail?.description, 165)}
+                  {productDetail?.description &&
+                  productDetail?.description?.length >= 165 ? (
+                    <button
+                      onClick={() => setIsExpanded(!isExpanded)}
+                      className="text-indigo-500 link ml-1 text-sm font-semibold"
+                    >
+                      {isExpanded ? "Read Less" : "Read More"}
+                    </button>
+                  ) : null}
                 </p>
-              )}
 
-              {/* SELECTED VARIANTS DETAILS */}
-              {selectedVariant && (
-                <div className="flex flex-col border border-base-content/15 shadow hover:shadow-lg lg:p-2 p-2 rounded-md bg-base-100">
-                  <div className="">
-                    <h2 className="lg:text-xl text-xl font-extrabold flex items-center gap-2">
-                      <ShoppingCart /> Selected Variant Details
-                    </h2>
+                <div className="flex flex-wrap items-center justify-between font-bold">
+                  <p className="">
+                    Product Price: ${productDetail?.price?.toFixed(2) ?? "0.00"}
+                  </p>
+                  <div className="flex items-center gap-1">
+                    <span
+                      className={`${productDetail?.rating === 0 ? "text-base-content/25" : "text-base-content/70"}`}
+                    >
+                      Rating:
+                    </span>
+                    <span
+                      className={`${productDetail?.rating === 0 ? "text-base-content/25" : "text-base-content/70"} font-bold w-5 h-5 rounded-full bg-emerald-500 text-xs flex items-center justify-center border-2 text-white shadow`}
+                    >
+                      {productDetail?.rating ?? 0}
+                    </span>
+                    <span>
+                      <StarRating rating={productDetail?.rating ?? 0} />
+                    </span>
+                    <span className="text-sm">{`(${productDetail?.reviewsCount || 0} reviews)`}</span>
                   </div>
-                  <div
-                    className={`${
-                      selectedVariant?.images?.length > 0
-                        ? "flex items-center flex-wrap"
-                        : "grid lg:grid-cols-12 grid-cols-1 justify-between gap-4"
+                </div>
+              </div>
+
+              {/* ------> REVIEW & RATING RELATED ------> */}
+              <div className="space-y-4">
+                <div className=" gap-1 text-medium font-bold">
+                  {/* Review details */}
+                  {reviews && reviews.length > 0 ? (
+                    <>
+                      <div className="">
+                        <h2 className="font-bold flex items-center justify-between gap-2 text-lg">
+                          <span>
+                            <Users2 size={20} className="inline mr-1" />
+                            Reviews & Ratings
+                          </span>
+                          <span className="w-5 h-5 rounded-full bg-emerald-500 text-xs font-normal flex items-center justify-center border-2 text-white shadow">
+                            {reviews ? reviews?.length : 0}
+                          </span>
+                        </h2>
+                      </div>
+
+                      {reviews?.map((review) => (
+                        <div
+                          key={review?._id}
+                          className="p-2 border border-base-content/15 rounded-md bg-base-100 space-y-1 shadow mb-2 text-sm"
+                        >
+                          <div className="flex justify-between items-center">
+                            <h4 className="font-bold flex items-center gap-1">
+                              <User2 size={15} /> {review?.user?.name}
+                            </h4>
+                            <span>
+                              {<StarRating rating={review?.rating ?? 0} />}
+                            </span>
+                          </div>
+                          <small className="text-sm flex items-center gap-1">
+                            <Calendar size={15} className="inline mr-1" />{" "}
+                            <span>
+                              {new Date(review?.createdAt).toLocaleDateString(
+                                "en-US",
+                                {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                },
+                              )}
+                            </span>
+                          </small>
+                          <p className="text-xs text-normal text-justify">
+                            <FaComment size={15} className="inline mr-1" />
+                            <span className="text-medium text-thin">
+                              {review?.comment}
+                            </span>
+                          </p>
+                        </div>
+                      ))}
+                    </>
+                  ) : (
+                    <NoDataFound label="Reviews" />
+                  )}
+
+                  {/* Client Review submit button */}
+                  <div className="flex justify-end mt-2.5">
+                    {user ? (
+                      <Button
+                        onClick={handleOpenReviewSection}
+                        size="xs"
+                        className=""
+                        icon={
+                          loading ? (
+                            <LucideIcon.Loader2
+                              size={25}
+                              className="animate-spin"
+                            />
+                          ) : (
+                            LucideIcon.UploadCloudIcon
+                          )
+                        }
+                        type="submit"
+                        disabled={loading}
+                        label={loading ? "Submitting..." : "Write Review"}
+                      />
+                    ) : (
+                      <Link to="/login">
+                        <Button size="xs" className="btn-sm">
+                          Login to Review
+                        </Button>
+                      </Link>
+                    )}
+                  </div>
+
+                  {/* Review Modal Toggler */}
+                  {isReviewSectionOpen && (
+                    <Modal
+                      isOpen={!!isReviewSectionOpen}
+                      onClose={() => setIsReviewSectionOpen(false)}
+                      title="Submit Product Review"
+                    >
+                      <form onSubmit={handleSubmitReview}>
+                        <div className="flex flex-col gap-4">
+                          <div className="flex flex-col gap-1">
+                            <label htmlFor="rating" className="font-semibold">
+                              Your Rating:
+                            </label>
+
+                            <div className="flex items-center gap-2">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <Star
+                                  key={star}
+                                  size={24}
+                                  className={`cursor-pointer transition ${
+                                    (hover || rating) >= star
+                                      ? "text-yellow-500 fill-yellow-500"
+                                      : "text-gray-400"
+                                  }`}
+                                  onClick={() => setRating(star)}
+                                  onMouseEnter={() => setHover(star)}
+                                  onMouseLeave={() => setHover(null)}
+                                />
+                              ))}
+                            </div>
+
+                            <Textarea
+                              name="review"
+                              id="review"
+                              label="Your Review"
+                              rows="4"
+                              placeholder="Share your experience..."
+                              className="textarea textarea-bordered w-full"
+                              value={comment}
+                              onChange={(e) => setComment(e.target.value)}
+                            />
+                          </div>
+                          <Button
+                            variant="success"
+                            size="sm"
+                            icon={
+                              loading ? (
+                                <Loader2 size={25} className="animate-spin" />
+                              ) : (
+                                LucideIcon.UploadCloudIcon
+                              )
+                            }
+                            type="submit"
+                            disabled={loading}
+                            label={loading ? "Submitting..." : "Write Review"}
+                          />
+                        </div>
+                      </form>
+                    </Modal>
+                  )}
+                </div>
+
+                {/* ----> VARIANT CONTROLS FOLLOW --> */}
+                {/* Stock display */}
+                {selectedVariant?.stock && (
+                  <p
+                    className={`font-semibold ${
+                      selectedVariant?.stock > 0
+                        ? "text-green-600"
+                        : "text-red-600"
                     }`}
                   >
-                    {/*Variant Image */}
-                    <div className="lg:col-span-2 col-span-12">
-                      {selectedVariant?.images?.length > 0 && (
-                        <div className="mt-2">
-                          <div className="flex gap-3 flex-wrap">
-                            {selectedVariant.images.map((img, idx) => (
-                              <div
-                                key={`sv-img-${idx}`}
-                                className="w-20 h-20 rounded-lg overflow-hidden border border-base-content/10"
-                              >
-                                <img
-                                  src={buildUrl(img)}
-                                  alt={`selected-variant-img-${idx}`}
-                                  className="w-full h-full object-cover"
-                                />
+                    {selectedVariant.stock > 0
+                      ? `Product: ${productDetail?.name} || Brand: ${productDetail?.brand} || In stock ➡️ ${selectedVariant?.stock}`
+                      : "Out of stock!"}
+                  </p>
+                )}
+
+                {/* SELECTED VARIANTS DETAILS */}
+                {selectedVariant && (
+                  <div className="flex flex-col border border-base-content/15 shadow hover:shadow-lg lg:p-2 p-2 rounded-md bg-base-100">
+                    <div className="">
+                      <h2 className="lg:text-xl text-xl font-extrabold flex items-center gap-2">
+                        <ShoppingCart /> Selected Variant Details
+                      </h2>
+                    </div>
+                    <div
+                      className={`${
+                        selectedVariant?.images?.length > 0
+                          ? "flex items-center justify-between lg:gap-4 gap-2"
+                          : "grid lg:grid-cols-12 grid-cols-1 justify-between gap-4"
+                      }`}
+                    >
+                      {/*Variant Image */}
+                      <div className="lg:col-span-2 col-span-12">
+                        {selectedVariant?.images?.length > 0 && (
+                          <div className="mt-2">
+                            <div className="flex gap-1 flex-wrap">
+                              {selectedVariant.images.map((img, idx) => (
+                                <div
+                                  key={`sv-img-${idx}`}
+                                  className="w-20 h-20 rounded-lg overflow-hidden border border-base-content/10"
+                                >
+                                  <img
+                                    src={buildUrl(img)}
+                                    alt={`selected-variant-img-${idx}`}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Variant Name */}
+                      <div className="lg:col-span-10 col-span-12">
+                        <div className="flex flex-col">
+                          <div className="">
+                            {productDetail && (
+                              <div className="mt-2">
+                                <h2 className="font-bold mb-1 text-lg">
+                                  Product ➡️ {productDetail?.name}
+                                </h2>
                               </div>
-                            ))}
+                            )}
+                          </div>
+
+                          {/* Variant details */}
+                          <div className="">
+                            {selectedVariant && (
+                              <p className="font-semibold">
+                                {selectedVariant?.stock !== undefined
+                                  ? `Stock: ${selectedVariant?.stock}`
+                                  : ""}{" "}
+                                ⏺️ Price: ${selectedVariant?.price.toFixed(2)}{" "}
+                                ⏺️ Color: {selectedVariant?.color} ⏺️ Size:{" "}
+                                {selectedVariant?.size}
+                              </p>
+                            )}
                           </div>
                         </div>
-                      )}
-                    </div>
-
-                    {/* Variant Name */}
-                    <div className="lg:col-span-10 col-span-12">
-                      <div className="flex flex-col">
-                        <div className="">
-                          {productDetail && (
-                            <div className="mt-2">
-                              <h2 className="font-bold mb-1 text-lg">
-                                Product ➡️ {productDetail?.name}
-                              </h2>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Variant details */}
-                        <div className="">
-                          {selectedVariant && (
-                            <p className="font-semibold">
-                              {selectedVariant?.stock !== undefined
-                                ? `Stock: ${selectedVariant?.stock}`
-                                : ""}{" "}
-                              ⏺️ Price: ${selectedVariant?.price.toFixed(2)} ⏺️
-                              Color: {selectedVariant?.color} ⏺️ Size:{" "}
-                              {selectedVariant?.size}
-                            </p>
-                          )}
-                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* Variants display */}
-              <div className="">
-                {instruction && (
-                  <div className="bg-black text-white p-3 rounded-lg mb-2 animate-pulse border-amber-500 border-l-8">
-                    <p className="">
-                      Click any color dot value to select product you prefer,
-                      then add to cart. You can increase or decrease quantity
-                      and can also delete your added product to cart. Thank you
-                      for choosing our Nova Cart E-commerce site.
-                      <br />
-                      <span className="text-amber-500 font-bold">N.B. </span>
-                      If you select product from Your Viewed List or Related
-                      Products above you have to select a variant from the color
-                      dots to add to cart or it will fail.
+                {/* Variants display */}
+                <div className="">
+                  {instruction && (
+                    <div className="bg-black text-white p-3 rounded-lg mb-2 animate-pulse border-amber-500 border-l-8">
+                      <p className="">
+                        Click any color dot value to select product you prefer,
+                        then add to cart. You can increase or decrease quantity
+                        and can also delete your added product to cart. Thank
+                        you for choosing our Nova Cart E-commerce site.
+                        <br />
+                        <span className="text-amber-500 font-bold">N.B. </span>
+                        If you select product from Your Viewed List or Related
+                        Products above you have to select a variant from the
+                        color dots to add to cart or it will fail.
+                      </p>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-xl font-extrabold mb-1 flex items-center gap-2">
+                      <Package /> Select Product Variant
+                    </h2>
+                    <button
+                      onMouseOver={handleInstruct}
+                      className="text-indigo-500 link ml-4"
+                    >
+                      Guidance
+                    </button>
+                  </div>
+
+                  <div className="flex items-center lg:space-x-2 space-x-2 gap-1 flex-wrap border border-base-content/15 rounded-lg shadow hover:shadow-lg px-2 py-4 bg-base-100 lg:space-y-0 space-y-2">
+                    {/* Color display & Variant Selector */}
+                    <h3 className="font-semibold hidden lg:block">Color:</h3>
+                    {colors.map((color, index) => (
+                      <div
+                        key={index}
+                        className={`w-6 h-6 rounded-full cursor-pointer shadow-md ${
+                          selectedColor === color
+                            ? "border-4 border-cyan-400 p-1 ring-2 ring-blue-400 ring-offset-2 ring-offset-cyan-400 shadow-md"
+                            : "border-base-200 shadow-md"
+                        }`}
+                        style={{ backgroundColor: color }}
+                        onClick={() => handleColorSelect(color)}
+                        title={color}
+                      />
+                    ))}
+
+                    {/* Size display */}
+                    <div className="flex items-center gap-2 flex-wrap lg:pl- pl-">
+                      <h3 className="font-semibold hidden lg:block">Size:</h3>
+                      {sizes.map((size, index) => (
+                        <button
+                          key={index}
+                          className={`px-2 py-0.5 border border-base-content/30 rounded-md cursor-pointer shadow ${
+                            selectedSize === size
+                              ? "bg-black text-white"
+                              : "bg-white text-black"
+                          }`}
+                          onClick={() => handleSizeSelect(size)}
+                        >
+                          {size}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Quantity selector */}
+                <div className="">
+                  <div className="mb-1">
+                    <h2 className="lg:text-xl text-lg font-extrabold flex items-center gap-2">
+                      <Diff />
+                      Select Product Quantity
+                    </h2>
+                  </div>
+                  <div className="flex items-center gap-4 border border-base-content/15 rounded-md shadow lg:py-4 lg:px-3 p-2 hover:shadow-lg">
+                    <button
+                      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                      className="btn btn-sm text-xl border border-base-content/15"
+                    >
+                      -
+                    </button>
+                    <span className="font-semibold text-xl border border-base-content/40 px-3 py-0.5 rounded-md shadow">
+                      {quantity}{" "}
+                    </span>
+                    <button
+                      className={
+                        quantity >= (selectedVariant?.stock || 1)
+                          ? "btn btn-sm text-xl opacity-20 cursor-not-allowed border-red-500"
+                          : "btn btn-sm text-xl border border-base-content/15"
+                      }
+                      onClick={() =>
+                        setQuantity((q) =>
+                          Math.min(selectedVariant.stock || 1, q + 1),
+                        )
+                      }
+                      disabled={quantity >= (selectedVariant?.stock || 1)}
+                    >
+                      +
+                    </button>
+                    <p className="text-xs font-bold">
+                      {quantity >= (selectedVariant?.stock || 1) ? (
+                        <span className="text-red-500 flex items-center gap-1">
+                          <AlertTriangle size={18} /> Can not buy more than in
+                          stock.
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-1 lg:text-sm text-xs">
+                          <ShoppingCart size={18} />
+                          Add more quantity
+                        </span>
+                      )}
                     </p>
                   </div>
-                )}
-                <div className="flex items-center gap-2">
-                  <h2 className="text-xl font-extrabold mb-1 flex items-center gap-2">
-                    <Package /> Select Product Variant
-                  </h2>
-                  <button
-                    onMouseOver={handleInstruct}
-                    className="text-indigo-500 link ml-4"
-                  >
-                    Guidance
-                  </button>
                 </div>
 
-                <div className="flex items-center lg:space-x-2 space-x-2 gap-1 flex-wrap border border-base-content/15 rounded-lg shadow hover:shadow-lg px-2 py-4 bg-base-100 lg:space-y-0 space-y-2">
-                  {/* Color display & Variant Selector */}
-                  <h3 className="font-semibold hidden lg:block">Color:</h3>
-                  {colors.map((color, index) => (
-                    <div
-                      key={index}
-                      className={`w-6 h-6 rounded-full cursor-pointer shadow-md ${
-                        selectedColor === color
-                          ? "border-4 border-cyan-400 p-1 ring-2 ring-blue-400 ring-offset-2 ring-offset-cyan-400 shadow-md"
-                          : "border-base-200 shadow-md"
-                      }`}
-                      style={{ backgroundColor: color }}
-                      onClick={() => handleColorSelect(color)}
-                      title={color}
-                    />
-                  ))}
+                {/* ------> CARTS LIST DATA DISPLAYED ------> */}
 
-                  {/* Size display */}
-                  <div className="flex items-center gap-2 flex-wrap lg:pl- pl-">
-                    <h3 className="font-semibold hidden lg:block">Size:</h3>
-                    {sizes.map((size, index) => (
-                      <button
-                        key={index}
-                        className={`px-2 py-0.5 border border-base-content/30 rounded-md cursor-pointer shadow ${
-                          selectedSize === size
-                            ? "bg-black text-white"
-                            : "bg-white text-black"
-                        }`}
-                        onClick={() => handleSizeSelect(size)}
-                      >
-                        {size}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Quantity selector */}
-              <div className="">
-                <div className="mb-1">
-                  <h2 className="lg:text-xl text-lg font-extrabold flex items-center gap-2">
-                    <Diff />
-                    Select Product Quantity
-                  </h2>
-                </div>
-                <div className="flex items-center gap-4 border border-base-content/15 rounded-md shadow lg:py-4 lg:px-3 p-2 hover:shadow-lg">
-                  <button
-                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    className="btn btn-sm text-xl border border-base-content/15"
-                  >
-                    -
-                  </button>
-                  <span className="font-semibold text-xl border border-base-content/40 px-3 py-0.5 rounded-md shadow">
-                    {quantity}{" "}
-                  </span>
-                  <button
-                    className={
-                      quantity >= (selectedVariant?.stock || 1)
-                        ? "btn btn-sm text-xl opacity-20 cursor-not-allowed border-red-500"
-                        : "btn btn-sm text-xl border border-base-content/15"
-                    }
-                    onClick={() =>
-                      setQuantity((q) =>
-                        Math.min(selectedVariant.stock || 1, q + 1),
-                      )
-                    }
-                    disabled={quantity >= (selectedVariant?.stock || 1)}
-                  >
-                    +
-                  </button>
-                  <p className="text-xs font-bold">
-                    {quantity >= (selectedVariant?.stock || 1) ? (
-                      <span className="text-red-500 flex items-center gap-1">
-                        <AlertTriangle size={18} /> Can not buy more than in
-                        stock.
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-1 lg:text-sm text-xs">
-                        <ShoppingCart size={18} />
-                        Add more quantity
-                      </span>
-                    )}
-                  </p>
-                </div>
-              </div>
-
-              {/* ------> CARTS LIST DATA DISPLAYED ------> */}
-
-              <div className="">
-                {cartsDataStatus.status !== "success" ? (
-                  cartsDataStatus.content
-                ) : (
-                  <CartItemList
-                    cart={cart}
-                    handleIncreaseQuantity={handleIncreaseQuantity}
-                    handleDecreaseQuantity={handleDecreaseQuantity}
-                    deleteModalData={deleteModalData}
-                    onDeleteRequest={handleRequestCartItemDelete}
-                    onDelete={handleRemoveCartItem}
-                    setDeleteModalData={setDeleteModalData}
-                  />
-                )}
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex items-center gap-2 flex-wrap justify-between">
-                <div
-                  className={`${
-                    loadingCartId === product?.data?._id
-                      ? "cursor-not-allowed bg-purple-500 rounded-md"
-                      : ""
-                  }`}
-                >
-                  <Button
-                    variant="indigo"
-                    className="btn lg:btn-md btn-sm"
-                    onClick={onAddToCart}
-                    disabled={loadingCartId === product?.data?._id}
-                  >
-                    {loadingCartId === product?.data?._id ? (
-                      <Loader className="animate-spin" size={16} />
-                    ) : (
-                      <LucideIcon.ShoppingCart size={16} />
-                    )}
-
-                    {loadingCartId ? "Processing..." : "Add to Cart"}
-                  </Button>
-                </div>
-
-                <div
-                  className={`${
-                    loadingWishListId === product?.data?._id
-                      ? "cursor-not-allowed bg-purple-500 rounded-md"
-                      : ""
-                  }`}
-                >
-                  <Button
-                    variant="primary"
-                    disabled={loadingWishListId === product?.data?._id}
-                    className="btn lg:btn-md btn-sm"
-                    onClick={onAddToWishList}
-                  >
-                    {loadingWishListId === product?.data?._id ? (
-                      <Loader className="animate-spin" size={16} />
-                    ) : (
-                      <LucideIcon.Heart size={16} />
-                    )}
-                    {loadingWishListId ? "Processing..." : "Add to Wishlist"}
-                  </Button>
-                </div>
                 <div className="">
-                  <Link to="/client-product-wishlist">
-                    <Button variant="success" className="btn lg:btn-md btn-sm">
-                      <LucideIcon.Heart size={16} /> Go to Wish List
-                    </Button>
-                  </Link>
+                  {cartsDataStatus.status !== "success" ? (
+                    cartsDataStatus.content
+                  ) : (
+                    <CartItemList
+                      cart={cart}
+                      handleIncreaseQuantity={handleIncreaseQuantity}
+                      handleDecreaseQuantity={handleDecreaseQuantity}
+                      deleteModalData={deleteModalData}
+                      onDeleteRequest={handleRequestCartItemDelete}
+                      onDelete={handleRemoveCartItem}
+                      setDeleteModalData={setDeleteModalData}
+                    />
+                  )}
                 </div>
-                <div className="lg:w-full">
-                  <Link to="/" className="w-full">
-                    <Button
-                      variant="primary"
-                      icon={LucideIcon.Home}
-                      className="btn lg:btn-md btn-sm w-full"
-                    >
-                      Go Home
-                    </Button>
-                  </Link>
-                </div>
-              </div>
 
-              {/* Mobile Sticky Add to Cart */}
-              <AnimatePresence>
-                {showSticky && (
-                  <motion.div
-                    initial={{ y: 120, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: 120, opacity: 0 }}
-                    transition={{ type: "spring", stiffness: 120, damping: 16 }}
-                    className={`fixed left-0 right-0 bottom-0 z-40 lg:hidden transition-transform duration-300 ${
-                      showSticky ? "translate-y-0" : "translate-y-full"
+                {/* Action Buttons */}
+                <div className="flex items-center gap-2 flex-wrap justify-between">
+                  <div
+                    className={`${
+                      loadingCartId === product?.data?._id
+                        ? "cursor-not-allowed bg-purple-500 rounded-md"
+                        : ""
                     }`}
                   >
-                    <div className="bg-base-200 p-3 border-t border-base-content/15 flex items-center justify-between">
-                      <div>
-                        <div className="font-bold">
-                          ${selectedVariant?.price ?? productDetail.price}
-                        </div>
-                        <div className="text-xs text-muted">
-                          {productDetail.name}
-                        </div>{" "}
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <button
-                          onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                          className="btn btn-sm"
-                        >
-                          -
-                        </button>
+                    <Button
+                      variant="indigo"
+                      className="btn lg:btn-md btn-sm"
+                      onClick={onAddToCart}
+                      disabled={loadingCartId === product?.data?._id}
+                    >
+                      {loadingCartId === product?.data?._id ? (
+                        <Loader className="animate-spin" size={16} />
+                      ) : (
+                        <LucideIcon.ShoppingCart size={16} />
+                      )}
 
-                        <div className="px-3 py-1 border rounded">
-                          {quantity}
-                        </div>
+                      {loadingCartId ? "Processing..." : "Add to Cart"}
+                    </Button>
+                  </div>
 
-                        <button
-                          onClick={() => setQuantity((q) => q + 1)}
-                          className="btn btn-sm"
-                        >
-                          +
-                        </button>
-                        <button
-                          onClick={onAddToCart}
-                          disabled={selectedVariant?.stock <= 0}
-                          className="bg-black text-white px-2 py-2 rounded flex items-center gap-1"
-                          aria-label="Add to cart sticky"
-                        >
-                          <ShoppingCartIcon size={15} /> Add
-                        </button>
+                  <div
+                    className={`${
+                      loadingWishListId === product?.data?._id
+                        ? "cursor-not-allowed bg-purple-500 rounded-md"
+                        : ""
+                    }`}
+                  >
+                    <Button
+                      variant="primary"
+                      disabled={loadingWishListId === product?.data?._id}
+                      className="btn lg:btn-md btn-sm"
+                      onClick={onAddToWishList}
+                    >
+                      {loadingWishListId === product?.data?._id ? (
+                        <Loader className="animate-spin" size={16} />
+                      ) : (
+                        <LucideIcon.Heart size={16} />
+                      )}
+                      {loadingWishListId ? "Processing..." : "Add to Wishlist"}
+                    </Button>
+                  </div>
+                  <div className="">
+                    <Link to="/client-product-wishlist">
+                      <Button
+                        variant="success"
+                        className="btn lg:btn-md btn-sm"
+                      >
+                        <LucideIcon.Heart size={16} /> Go to Wish List
+                      </Button>
+                    </Link>
+                  </div>
+                  <div className="lg:w-full">
+                    <Link to="/" className="w-full">
+                      <Button
+                        variant="primary"
+                        icon={LucideIcon.Home}
+                        className="btn lg:btn-md btn-sm w-full"
+                      >
+                        Go Home
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Mobile Sticky Add to Cart */}
+                <AnimatePresence>
+                  {showSticky && (
+                    <motion.div
+                      initial={{ y: 120, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: 120, opacity: 0 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 120,
+                        damping: 16,
+                      }}
+                      className={`fixed left-0 right-0 bottom-0 z-40 lg:hidden transition-transform duration-300 ${
+                        showSticky ? "translate-y-0" : "translate-y-full"
+                      }`}
+                    >
+                      <div className="bg-base-200 p-3 border-t border-base-content/15 flex items-center justify-between">
+                        <div>
+                          <div className="font-bold">
+                            ${selectedVariant?.price ?? productDetail.price}
+                          </div>
+                          <div className="text-xs text-muted">
+                            {productDetail.name}
+                          </div>{" "}
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() =>
+                              setQuantity((q) => Math.max(1, q - 1))
+                            }
+                            className="btn btn-sm"
+                          >
+                            -
+                          </button>
+
+                          <div className="px-3 py-1 border rounded">
+                            {quantity}
+                          </div>
+
+                          <button
+                            onClick={() => setQuantity((q) => q + 1)}
+                            className="btn btn-sm"
+                          >
+                            +
+                          </button>
+                          <button
+                            onClick={onAddToCart}
+                            disabled={selectedVariant?.stock <= 0}
+                            className="bg-black text-white px-2 py-2 rounded flex items-center gap-1"
+                            aria-label="Add to cart sticky"
+                          >
+                            <ShoppingCartIcon size={15} /> Add
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
           </motion.div>
 

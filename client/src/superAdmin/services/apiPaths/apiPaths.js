@@ -361,6 +361,12 @@ const API_PATHS = {
     KEY: ["recently-viewed-ids"],
   },
 
+  // Client Product Reviews API Paths
+  CLIENT_PRODUCT_REVIEWS: {
+    ENDPOINT: "client/reviews",
+    KEY: ["product-reviews"],
+  },
+
   // Extend this for other features.....
 };
 

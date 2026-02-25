@@ -95,6 +95,7 @@ import {
   RefreshCcw,
   RefreshCcwDot,
   RefreshCcwDotIcon,
+  UploadCloudIcon,
 } from "lucide-react";
 import { FaTimesCircle } from "react-icons/fa";
 import { Layer } from "recharts";
@@ -196,6 +197,7 @@ export const LucideIcon = {
   UserRoundPen,
   Upload,
   UploadCloud,
+  UploadCloudIcon,
   UploadIcon,
   User,
   UserRoundPen,
