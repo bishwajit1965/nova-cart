@@ -2,7 +2,6 @@ import Review from "../../models/Review.js";
 import Product from "../../models/Product.js";
 
 export const submitReview = async (req, res) => {
-  console.log("🎯Submit review method is hit");
   const { productId, rating, comment } = req.body;
   const userId = req.user._id;
   console.log("REQ>BODY", req.body);
@@ -35,7 +34,8 @@ export const submitReview = async (req, res) => {
     rating,
     comment,
   });
-  console.log("Review created:", review._id); // this will confirm the insert
+
+  // this will confirm the insert
   // ⭐ Update product aggregates
   product.reviewsCount += 1;
   product.totalRatingSum += rating;
@@ -51,7 +51,6 @@ export const submitReview = async (req, res) => {
 
 // Get reviews for a product
 export const getReviewsByProductId = async (req, res) => {
-  console.log("🎯 Get review by product Id method is hit");
   const { productId } = req.params;
   try {
     const reviews = await Review.find({
@@ -65,7 +64,6 @@ export const getReviewsByProductId = async (req, res) => {
 
 export const getProductWithReviews = async (req, res) => {
   try {
-    console.log("🎯 getProductWithReviews method is hit");
     const { productId } = req.params;
 
     // Fetch product and populate reviews
