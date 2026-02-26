@@ -1,12 +1,10 @@
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import { containerVariants, itemVariants } from "../service/animations";
-
 import API_PATHS from "../../superAdmin/services/apiPaths/apiPaths";
 import Button from "../../common/components/ui/Button";
 import DynamicPageTitle from "../../common/utils/pageTitle/DynamicPageTitle";
 import { LucideIcon } from "../../common/lib/LucideIcons";
 import { AnimatePresence, motion } from "framer-motion";
-import textShortener from "../../utils/textShortener";
 import toast from "react-hot-toast";
 import usePageTitle from "../../superAdmin/services/hooks/usePageTitle";
 import { useState } from "react";
@@ -14,21 +12,14 @@ import { useEffect } from "react";
 import {
   AlertTriangle,
   ArrowDownAZ,
-  Boxes,
-  Calendar,
-  CommandIcon,
   Diff,
   Layers3,
   Loader,
-  Loader2,
   Package,
   ShoppingCart,
   ShoppingCartIcon,
-  Star,
-  User2,
-  UserCheck2Icon,
-  Users2,
 } from "lucide-react";
+
 import CartSummaryPanel from "../cart/components/CartSummaryPanel";
 import useGlobalContext from "../../common/hooks/useGlobalContext";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
@@ -40,12 +31,9 @@ import { useAuth } from "../../common/hooks/useAuth";
 import useRecentlyViewed from "../../common/hooks/useRecentlyViewed";
 import CartItemSummaryPanel from "../../common/components/cartItemSummaryPanel/CartItemSummaryPanel";
 import WishListSummaryPanel from "../../common/wishListItemSummaryPanel/WishListSummaryPanel";
-import StarRating from "../../common/components/ui/StartRating";
-import Modal from "../../common/components/ui/Modal";
-import Textarea from "../../common/components/ui/Textarea";
-import { useApiMutation } from "../../superAdmin/services/hooks/useApiMutation";
-import { FaComment } from "react-icons/fa";
-import NoDataFound from "../../common/components/ui/NoDataFound";
+import ClientReviewRatings from "../../common/components/clientReviewRatings/ClientReviewRatings";
+import ClientProductDetailsMainAndVariantImage from "../../common/components/productDetailsMainAndVariantImage/ClientProductDetailsMainAndVariantImage";
+import ClientProductDetailsSection from "../../common/components/productDetailsSection/ClientProductDetailsSection";
 
 const ProductDetails = () => {
   const { removeRecentlyViewed, recentlyViewed } = useRecentlyViewed();
@@ -54,19 +42,13 @@ const ProductDetails = () => {
   const pageTitle = usePageTitle();
   const product = useLoaderData();
   const productData = product?.data;
-  const [isExpanded, setIsExpanded] = useState(false);
+
   const [instruction, setInstruction] = useState(false);
   const [openViewPanel, setOpenViewPanel] = useState(false);
   const [isOpenRelatedProducts, setIsOpenRelatedProducts] = useState(false);
   const [openCartSummary, setOpenCartSummary] = useState(false);
   const [wishListSummary, setWishListSummary] = useState(false);
-  const [isReviewSectionOpen, setIsReviewSectionOpen] = useState(false);
   const { user } = useAuth();
-  // For review form
-  const [rating, setRating] = useState(0);
-  const [hover, setHover] = useState(null);
-  const [comment, setComment] = useState("");
-  const [loading, setLoading] = useState(false);
 
   // Global cart data
   const {
@@ -191,13 +173,6 @@ const ProductDetails = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // animations
-  const mainImgVariants = {
-    enter: { opacity: 0, scale: 0.98 },
-    center: { opacity: 1, scale: 1, transition: { duration: 0.22 } },
-    exit: { opacity: 0, scale: 0.98, transition: { duration: 0.18 } },
-  };
-
   // update selectedVariant when selectedColor changes (keep size preference)
   useEffect(() => {
     if (!selectedColor) return;
@@ -233,46 +208,6 @@ const ProductDetails = () => {
       ) || null,
     );
   }, [selectedColor]);
-
-  const renderStars = (rating) => {
-    return "⭐".repeat(rating);
-  };
-
-  /*** ========> REVIEW QUERY ========> */
-  const {
-    data: reviews,
-    isLoading: isLoadingReviews,
-    isError: isErrorReviews,
-    error: errorReviews,
-  } = useApiQuery({
-    url: `${API_PATHS.CLIENT_PRODUCT_REVIEWS.ENDPOINT}/${product?.data?._id}`,
-    queryKey: API_PATHS.CLIENT_PRODUCT_REVIEWS.KEY,
-    options: {
-      staleTime: 0,
-      refetchOnWindowFocus: true,
-      refetchOnReconnect: true,
-    },
-  });
-
-  console.log("Reviews", reviews);
-
-  /*** ========> REVIEW MUTATION ========> */
-  const reviewMutation = useApiMutation({
-    method: "create",
-    path: API_PATHS.CLIENT_PRODUCT_REVIEWS.ENDPOINT,
-    key: API_PATHS.CLIENT_PRODUCT_REVIEWS.KEY,
-    showToast: false,
-    onSuccess: (res) => {
-      toast.success("Review submitted successfully!");
-      setRating(0);
-      setComment("");
-      setIsReviewSectionOpen(false);
-    },
-    onError: (error) => {
-      toast.error(error?.response?.data?.message || "Failed to submit review");
-      console.error(err);
-    },
-  });
 
   /*** ========> HANDLER METHODS ========> */
 
@@ -342,42 +277,6 @@ const ProductDetails = () => {
     toast.success("Recently viewed products cleared!");
   };
 
-  const handleOpenReviewSection = () => {
-    setIsReviewSectionOpen((prev) => !prev);
-  };
-
-  const handleSubmitReview = (e) => {
-    e.preventDefault();
-
-    if (!rating) {
-      toast.error("Please select a rating");
-      return;
-    }
-
-    if (!comment.trim()) {
-      toast.error("Please write a review");
-      return;
-    }
-    try {
-      setLoading(true);
-      const payload = {
-        data: {
-          productId: productData?._id,
-          rating: rating,
-          comment: comment.trim(),
-        },
-      };
-
-      console.log("Payload=>", payload);
-
-      reviewMutation.mutate(payload);
-    } catch (error) {
-      console.error("Error submitting review:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   /*** ========> DATA FETCHED STATUS ========> */
 
   const viewedProductsDataStatus = useFetchedDataStatusHandler({
@@ -392,13 +291,6 @@ const ProductDetails = () => {
     isError: isErrorRelatedProducts,
     error: errorRelatedProducts,
     label: "Related Products",
-  });
-
-  const reviewDataStatus = useFetchedDataStatusHandler({
-    isLoading: isLoadingReviews,
-    isError: isErrorReviews,
-    error: errorReviews,
-    label: "Reviews",
   });
 
   return (
@@ -667,123 +559,17 @@ const ProductDetails = () => {
           viewport={{ once: false }}
           variants={containerVariants}
         >
-          {/* ------> LEFT SIDE MAIN IMAGE ------> */}
-          <div
-            className="lg:col-span-4 col-span-12 rounded-lg border border-base-content/15 shadow sticky lg:top-20 pointer-events-auto max-h-max bg-base-100"
-            variant={itemVariants}
-          >
-            <div className="">
-              <div className="bg-base-300 p-2 border-b border-base-content/15">
-                <h2 className="lg:text-xl text-lg font-bold flex items-center gap-2">
-                  <Boxes size={20} /> Product & Variant Images
-                </h2>
-              </div>
+          {/* ========> LEFT SIDE MAIN IMAGE SECTION BEGINS lg:col-span-4 col-span-12 ========> */}
 
-              {/* Main image */}
-              <div className="relative">
-                <div className="w-full h-full flex items-center justify-center bg-base-100 rounded-xl p-4">
-                  <AnimatePresence mode="wait"></AnimatePresence>
-                  {mainImage ? (
-                    <motion.img
-                      key={selectedVariant?._id || mainImage} // triggers animation on change
-                      initial="enter"
-                      animate="center"
-                      exit="exit"
-                      variants={mainImgVariants}
-                      src={buildUrl(mainImage)}
-                      alt={productDetail?.name}
-                      className="w-full object-contain cursor-pointer transition-transform duration-300 rounded-xl mx-auto"
-                      style={{
-                        transform: "scale(1)",
-                        transition: "transform 0.3s ease",
-                      }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.transform = "scale(1.1)")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.transform = "scale(1)")
-                      }
-                    />
-                  ) : (
-                    <motion.div
-                      key="no-img"
-                      className="w-full h-[320px] flex items-center justify-center text-sm text-muted"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                    >
-                      No image available
-                    </motion.div>
-                  )}
-                </div>
-              </div>
+          {/*  Product Details Main Image section Begins */}
+          <ClientProductDetailsMainAndVariantImage
+            product={product}
+            mainImage={mainImage}
+            selectedVariant={selectedVariant}
+          />
+          {/*  Product Details Main Image section Ends */}
 
-              {/* THUMBNAILS OFF ALL PRODUCT IMAGES */}
-              <div className="lg:p-4 p-2">
-                <div className="font-semi-bold mb-2">
-                  {productDetail.images.length > 0 && (
-                    <h3 className="font-semibold mb-2">Product Images:</h3>
-                  )}
-                </div>
-                <div className="flex gap-3 flex-wrap">
-                  {productDetail.images?.map((img, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setMainImage(img)}
-                      aria-label={`Thumbnail ${idx + 1}`}
-                      className={`w-20 h-20 rounded-lg overflow-hidden border ${
-                        mainImage === img
-                          ? "border-black ring-2 ring-offset-1 ring-black"
-                          : "border-base-content/10"
-                      }`}
-                    >
-                      <p className="text-xs">{productDetail?._id}</p>
-                      <img
-                        src={buildUrl(img)}
-                        alt={`thumb-${idx}`}
-                        className="w-full h-full object-cover cursor-pointer transition-transform duration-300"
-                      />
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/*VARIANT IMAGES IF EXISTS */}
-              <div className="lg:p-4 p-2">
-                <div className="">
-                  {selectedVariant?.images?.length > 0 && (
-                    <h3 className="font-semibold mb-2">Variant Images:</h3>
-                  )}
-                </div>
-                <div className="flex gap-3 flex-wrap">
-                  {/* Show all variant images from variants of selected color, else selectedVariant only */}
-                  {selectedVariant?.images?.length > 0 ? (
-                    selectedVariant.images.map((img, idx) => (
-                      <button
-                        key={`v-${idx}`}
-                        onClick={() => setMainImage(img)}
-                        className={`w-20 h-20 rounded-lg overflow-hidden border cursor-pointer ${
-                          mainImage === img
-                            ? "border-black ring-2 ring-offset-1 ring-black"
-                            : "border-base-content/10"
-                        }`}
-                      >
-                        <img
-                          src={buildUrl(img)}
-                          alt={`variant-thumb-${idx}`}
-                          className="w-full h-full object-cover"
-                        />
-                      </button>
-                    ))
-                  ) : (
-                    <div className="text-sm text-muted">No variant images</div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* ------> MIDDLE COLUMN DETAILS DATA ------> */}
+          {/* ========> MIDDLE COLUMN DETAILS DATA ========> */}
           <motion.div
             className="lg:col-span-5 col-span-12 border border-base-content/15 shadow rounded-lg pointer-events-auto"
             variant={itemVariants}
@@ -795,200 +581,19 @@ const ProductDetails = () => {
             </div>
 
             <div className="px-2 space-y-4">
-              <div className="lg:space-y-4 space-y-3 lg:mt-4 mt-2">
-                <h2 className="lg:text-xl text-xl lg:font-extrabold font-bold font-sans">
-                  Product ➡️ {productDetail?.name}
-                </h2>
-                <h3 className="lg:text-xl text-xl lg:font-extrabold font-bold font-sans">
-                  Brand ➡️ {productDetail?.brand}
-                </h3>
-                <p className="text-justify">
-                  <strong>Description: </strong>
-                  {isExpanded
-                    ? productDetail?.description
-                    : textShortener(productDetail?.description, 165)}
-                  {productDetail?.description &&
-                  productDetail?.description?.length >= 165 ? (
-                    <button
-                      onClick={() => setIsExpanded(!isExpanded)}
-                      className="text-indigo-500 link ml-1 text-sm font-semibold"
-                    >
-                      {isExpanded ? "Read Less" : "Read More"}
-                    </button>
-                  ) : null}
-                </p>
+              {/* ------> PRODUCT DETAILS SECTION ------> */}
+              <ClientProductDetailsSection productDetail={productDetail} />
+              {/* ------> PRODUCT DETAILS SECTION ------> */}
 
-                <div className="flex flex-wrap items-center justify-between font-bold">
-                  <p className="">
-                    Product Price: ${productDetail?.price?.toFixed(2) ?? "0.00"}
-                  </p>
-                  <div className="flex items-center gap-1">
-                    <span
-                      className={`${productDetail?.rating === 0 ? "text-base-content/25" : "text-base-content/70"}`}
-                    >
-                      Rating:
-                    </span>
-                    <span
-                      className={`${productDetail?.rating === 0 ? "text-base-content/25" : "text-base-content/70"} font-bold w-5 h-5 rounded-full bg-emerald-500 text-xs flex items-center justify-center border-2 text-white shadow`}
-                    >
-                      {productDetail?.rating ?? 0}
-                    </span>
-                    <span>
-                      <StarRating rating={productDetail?.rating ?? 0} />
-                    </span>
-                    <span className="text-sm">{`(${productDetail?.reviewsCount || 0} reviews)`}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* ------> REVIEW & RATING RELATED ------> */}
               <div className="space-y-4">
-                <div className=" gap-1 text-medium font-bold">
-                  {/* Review details */}
-                  {reviews && reviews.length > 0 ? (
-                    <>
-                      <div className="">
-                        <h2 className="font-bold flex items-center justify-between gap-2 text-lg">
-                          <span>
-                            <Users2 size={20} className="inline mr-1" />
-                            Reviews & Ratings
-                          </span>
-                          <span className="w-5 h-5 rounded-full bg-emerald-500 text-xs font-normal flex items-center justify-center border-2 text-white shadow">
-                            {reviews ? reviews?.length : 0}
-                          </span>
-                        </h2>
-                      </div>
-
-                      {reviews?.map((review) => (
-                        <div
-                          key={review?._id}
-                          className="p-2 border border-base-content/15 rounded-md bg-base-100 space-y-1 shadow mb-2 text-sm"
-                        >
-                          <div className="flex justify-between items-center">
-                            <h4 className="font-bold flex items-center gap-1">
-                              <User2 size={15} /> {review?.user?.name}
-                            </h4>
-                            <span>
-                              {<StarRating rating={review?.rating ?? 0} />}
-                            </span>
-                          </div>
-                          <small className="text-sm flex items-center gap-1">
-                            <Calendar size={15} className="inline mr-1" />{" "}
-                            <span>
-                              {new Date(review?.createdAt).toLocaleDateString(
-                                "en-US",
-                                {
-                                  year: "numeric",
-                                  month: "short",
-                                  day: "numeric",
-                                },
-                              )}
-                            </span>
-                          </small>
-                          <p className="text-xs text-normal text-justify">
-                            <FaComment size={15} className="inline mr-1" />
-                            <span className="text-medium text-thin">
-                              {review?.comment}
-                            </span>
-                          </p>
-                        </div>
-                      ))}
-                    </>
-                  ) : (
-                    <NoDataFound label="Reviews" />
-                  )}
-
-                  {/* Client Review submit button */}
-                  <div className="flex justify-end mt-2.5">
-                    {user ? (
-                      <Button
-                        onClick={handleOpenReviewSection}
-                        size="xs"
-                        className=""
-                        icon={
-                          loading ? (
-                            <LucideIcon.Loader2
-                              size={25}
-                              className="animate-spin"
-                            />
-                          ) : (
-                            LucideIcon.UploadCloudIcon
-                          )
-                        }
-                        type="submit"
-                        disabled={loading}
-                        label={loading ? "Submitting..." : "Write Review"}
-                      />
-                    ) : (
-                      <Link to="/login">
-                        <Button size="xs" className="btn-sm">
-                          Login to Review
-                        </Button>
-                      </Link>
-                    )}
-                  </div>
-
-                  {/* Review Modal Toggler */}
-                  {isReviewSectionOpen && (
-                    <Modal
-                      isOpen={!!isReviewSectionOpen}
-                      onClose={() => setIsReviewSectionOpen(false)}
-                      title="Submit Product Review"
-                    >
-                      <form onSubmit={handleSubmitReview}>
-                        <div className="flex flex-col gap-4">
-                          <div className="flex flex-col gap-1">
-                            <label htmlFor="rating" className="font-semibold">
-                              Your Rating:
-                            </label>
-
-                            <div className="flex items-center gap-2">
-                              {[1, 2, 3, 4, 5].map((star) => (
-                                <Star
-                                  key={star}
-                                  size={24}
-                                  className={`cursor-pointer transition ${
-                                    (hover || rating) >= star
-                                      ? "text-yellow-500 fill-yellow-500"
-                                      : "text-gray-400"
-                                  }`}
-                                  onClick={() => setRating(star)}
-                                  onMouseEnter={() => setHover(star)}
-                                  onMouseLeave={() => setHover(null)}
-                                />
-                              ))}
-                            </div>
-
-                            <Textarea
-                              name="review"
-                              id="review"
-                              label="Your Review"
-                              rows="4"
-                              placeholder="Share your experience..."
-                              className="textarea textarea-bordered w-full"
-                              value={comment}
-                              onChange={(e) => setComment(e.target.value)}
-                            />
-                          </div>
-                          <Button
-                            variant="success"
-                            size="sm"
-                            icon={
-                              loading ? (
-                                <Loader2 size={25} className="animate-spin" />
-                              ) : (
-                                LucideIcon.UploadCloudIcon
-                              )
-                            }
-                            type="submit"
-                            disabled={loading}
-                            label={loading ? "Submitting..." : "Write Review"}
-                          />
-                        </div>
-                      </form>
-                    </Modal>
-                  )}
+                {/* ------> REVIEW & RATING RELATED BEGINS ------> */}
+                <div className="">
+                  <ClientReviewRatings
+                    productData={productData}
+                    product={product}
+                  />
                 </div>
+                {/* ------> REVIEW & RATING RELATED ENDS //------> */}
 
                 {/* ----> VARIANT CONTROLS FOLLOW --> */}
                 {/* Stock display */}

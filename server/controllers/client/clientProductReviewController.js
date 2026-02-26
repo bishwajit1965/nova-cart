@@ -4,7 +4,7 @@ import Product from "../../models/Product.js";
 export const submitReview = async (req, res) => {
   const { productId, rating, comment } = req.body;
   const userId = req.user._id;
-  console.log("REQ>BODY", req.body);
+
   if (!productId || !rating) {
     return res.status(400).json({ message: "Missing required fields" });
   }
