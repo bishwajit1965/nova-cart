@@ -8,21 +8,9 @@ const SuperAdminFeatureCard = ({ feature, onEdit, onDelete }) => {
         <p className="text-sm text-gray-500">Key: {feature.key}</p>
         <p className="text-sm text-gray-400">{feature.description}</p>
         <div className="flex gap-2 mt-2">
-          <MiniIconButton
-            variant="indigo"
-            icon="edit"
-            label="Edit"
-            className=""
-            onClick={onEdit}
-          />
+          <MiniIconButton variant="indigo" icon="edit" onClick={onEdit} />
 
-          <MiniIconButton
-            icon="delete"
-            variant="danger"
-            label="Delete"
-            className=""
-            onClick={onDelete}
-          />
+          <MiniIconButton icon="delete" variant="danger" onClick={onDelete} />
         </div>
       </div>
     </div>

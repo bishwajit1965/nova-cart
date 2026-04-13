@@ -46,7 +46,7 @@ const ClientProductDetailsSection = ({ productDetail }) => {
           <span>
             <StarRating rating={productDetail?.rating ?? 0} />
           </span>
-          <span className="text-sm">{`(${productDetail?.reviewsCount || 0} reviews)`}</span>
+          <span className="text-sm">{`(${productDetail?.reviewsCount || "No"} reviews)`}</span>
         </div>
       </div>
     </div>

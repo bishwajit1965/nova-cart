@@ -124,21 +124,21 @@ const SuperAdminAnnouncementManagementPage = () => {
                 Type: {a.type} | Active: {a.isActive ? "Yes" : "No"}
               </p>
 
-              <div className="flex justify-between mt-2">
+              <div className="flex items-center mt-2 space-x-4">
                 <Button
                   variant="indigo"
+                  size="xs"
                   onClick={() => {
                     setEditingAnnouncement(a);
                     setIsFormOpen(true);
                   }}
-                  className="btn btn-sm"
                 >
                   <Edit size={20} /> Edit
                 </Button>
                 <Button
                   variant="danger"
+                  size="xs"
                   onClick={() => handleToggleConfirmDialogue(a)}
-                  className="btn btn-sm"
                 >
                   <Trash2 size={20} /> Delete
                 </Button>

@@ -187,7 +187,7 @@ const PublicNavBar = () => {
                 role="button"
                 className="btn btn-ghost btn-circle"
               >
-                <ArrowDown /> ||
+                <ArrowDown />
                 <img src={Image} alt="" className="w-10 h-10 rounded-full" />
               </div>
               <ul

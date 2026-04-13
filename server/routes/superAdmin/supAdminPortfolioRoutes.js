@@ -31,9 +31,25 @@ router.get("/:id", getPortfolioById);
 router.get("/:id/pdf", generatePortfolioPDF);
 
 // Protected: create / update / delete
-router.post("/add", upload.single("profileImage"), createPortfolio);
+router.post(
+  "/add",
+  upload.fields([
+    { name: "profileImage", maxCount: 1 },
+    { name: "demoVideo", maxCount: 1 },
+  ]),
+  createPortfolio,
+);
 
-router.patch("/:id/edit", upload.single("profileImage"), updatePortfolio);
+// router.post("/add", upload.single("profileImage"), createPortfolio);
+
+router.patch(
+  "/:id/edit",
+  upload.fields([
+    { name: "profileImage", maxCount: 1 },
+    { name: "demoVideo", maxCount: 1 },
+  ]),
+  updatePortfolio,
+);
 
 router.delete("/:id/delete-portfolio", deletePortfolio);
 

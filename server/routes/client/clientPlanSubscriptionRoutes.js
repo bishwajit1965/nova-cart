@@ -20,37 +20,37 @@ router.use(authenticationMiddleware);
 router.get(
   "/all-plans",
   authorizeRole("user", "admin", "editor", "super-admin"),
-  getAllPlans
+  getAllPlans,
 );
 
 router.get(
   "/my-plan",
   authorizeRole("user", "admin", "editor", "super-admin"),
-  getUserPlan
+  getUserPlan,
 );
 
 router.post(
   "/subscribe",
   authorizeRole("user", "admin", "editor", "super-admin"),
-  subscribePlan
+  subscribePlan,
 );
 
 router.patch(
   "/:userId/upgrade/:newPlanId",
   authorizeRole("user", "admin", "editor", "super-admin"),
-  upgradePlan
+  upgradePlan,
 );
 
 router.patch(
   "/:userId/downgrade/:newPlanId",
   authorizeRole("user", "admin", "editor", "super-admin"),
-  downgradePlan
+  downgradePlan,
 );
 
 router.patch(
   "/cancel/:userId",
   authorizeRole("user", "admin", "editor", "super-admin"),
-  cancelPlan
+  cancelPlan,
 );
 
 export default router;

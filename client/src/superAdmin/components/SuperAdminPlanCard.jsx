@@ -14,19 +14,9 @@ const SuperAdminPlanCard = ({ plan, onEdit, onDelete, isCurrent }) => {
 
         <p>{plan.description}</p>
         <div className="flex gap-2 mt-2">
-          <MiniIconButton
-            variant="indigo"
-            icon="edit"
-            label="Edit"
-            onClick={onEdit}
-          />
+          <MiniIconButton variant="indigo" icon="edit" onClick={onEdit} />
 
-          <MiniIconButton
-            variant="danger"
-            label="Delete"
-            icon="delete"
-            onClick={onDelete}
-          />
+          <MiniIconButton variant="danger" icon="delete" onClick={onDelete} />
         </div>
       </div>
     </div>

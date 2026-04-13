@@ -30,10 +30,7 @@ export const createPaymentIntent = async (req, res) => {
 
 // Capture Stripe payment after client confirmation (optional)
 export const capturePayment = async (req, res) => {
-  console.log("🎯 REQ>BODY", req.body);
   // const { paymentIntentId, orderId } = req.body;
-  console.log("🎯 Capture Payment method is hit");
-  console.log("🎯 REQ>BODY", req.body); // Should show { orderId, paymentIntentId }
   if (!req.body || !req.body.orderId || !req.body.paymentIntentId) {
     return res
       .status(400)
@@ -53,7 +50,7 @@ export const capturePayment = async (req, res) => {
           status: "confirmed",
           stripePaymentIntentId: paymentIntent.id,
         },
-        { new: true }
+        { new: true },
       );
       res.status(200).json({
         success: true,

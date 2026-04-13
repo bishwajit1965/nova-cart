@@ -42,8 +42,6 @@ const SuperAdminProjectManagementPage = () => {
     createdAt: "",
   });
 
-  console.log("Tech stack", techStack);
-  console.log("Edit project", editProject);
   // Prefill form when editing
   useEffect(() => {
     if (!editProject) return;

@@ -192,50 +192,72 @@ const SuperAdminPublicPortfolioViewPage = () => {
               </div>
             </div>
 
-            {/* SKILLS */}
-            <div className="bg-base-100 rounded-2xl p-6 shadow-md">
-              <h3 className="text-2xl font-semibold mb-4">Skills</h3>
-              <div className="flex flex-wrap gap-3">
-                {pf.skills && pf.skills.length > 0 ? (
-                  pf.skills.map((s, i) => <Badge key={i}>{s}</Badge>)
-                ) : (
-                  <p className="text-sm text-base-content/70">
-                    No skills listed.
-                  </p>
-                )}
+            <div className="grid lg:grid-cols-12 grid-cols-1 justify-between lg:gap-6 gap-2">
+              <div className="lg:col-span-6 col-span-12">
+                {/* SKILLS */}
+                <div className="bg-base-100 rounded-2xl p-6 shadow-md">
+                  <h3 className="text-2xl font-semibold mb-4">Skills</h3>
+                  <div className="flex flex-wrap gap-3">
+                    {pf.skills && pf.skills.length > 0 ? (
+                      pf.skills.map((s, i) => <Badge key={i}>{s}</Badge>)
+                    ) : (
+                      <p className="text-sm text-base-content/70">
+                        No skills listed.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="lg:col-span-6 col-span-12">
+                {/* Experience */}
+                <div className="">
+                  <div className="lg:col-span-1 bg-base-100 rounded-2xl lg:p-6 p-2 shadow-md">
+                    <h3 className="text-2xl font-semibold mb-4">Experience</h3>
+                    {pf.experience && pf.experience.length ? (
+                      <div className="grid lg:grid-cols-12 grid-cols-1 gap-4 justify-between">
+                        {pf.experience.map((exp, i) => (
+                          <article
+                            key={i}
+                            className="lg:col-span-6 col-span-12 p-4 border border-base-content/10 hover:shadow-sm transition rounded-2xl"
+                          >
+                            <h4 className="font-semibold">{exp.title}</h4>
+                            <div className="text-sm text-base-content/70">
+                              {exp.company} • {exp.duration}
+                            </div>
+                            {exp.description && (
+                              <p className="mt-2 text-sm text-base-content/70">
+                                {exp.description}
+                              </p>
+                            )}
+                          </article>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-base-content/70">
+                        No experience listed.
+                      </p>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Experience */}
-            <div className="">
-              <div className="lg:col-span-1 bg-base-100 rounded-2xl lg:p-6 p-2 shadow-md">
-                <h3 className="text-2xl font-semibold mb-4">Experience</h3>
-                {pf.experience && pf.experience.length ? (
-                  <div className="grid lg:grid-cols-12 grid-cols-1 gap-4 justify-between">
-                    {pf.experience.map((exp, i) => (
-                      <article
-                        key={i}
-                        className="lg:col-span-6 col-span-12 p-4 border border-base-content/10 hover:shadow-sm transition rounded-2xl"
-                      >
-                        <h4 className="font-semibold">{exp.title}</h4>
-                        <div className="text-sm text-base-content/70">
-                          {exp.company} • {exp.duration}
-                        </div>
-                        {exp.description && (
-                          <p className="mt-2 text-sm text-base-content/70">
-                            {exp.description}
-                          </p>
-                        )}
-                      </article>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-sm text-base-content/70">
-                    No experience listed.
-                  </p>
-                )}
+            {/* VIDEO DEMO */}
+            {pf.demoVideo && (
+              <div className="bg-base-100 rounded-2xl p-6 shadow-md my-6">
+                <h3 className="text-2xl font-semibold mb-4">Project Demo</h3>
+                <video
+                  controls
+                  className="w-full rounded-lg shadow-lg"
+                  src={`${apiURL}${pf.demoVideo}`} // e.g., "/videos/nova-cart-demo.mp4"
+                  poster="/placeholder-video.png"
+                />
+                <p className="mt-2 text-sm text-base-content/70">
+                  Watch the full flow: product selection, variants, cart
+                  updates, wishlist, and checkout simulation.
+                </p>
               </div>
-            </div>
+            )}
 
             {/* PROJECTS */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

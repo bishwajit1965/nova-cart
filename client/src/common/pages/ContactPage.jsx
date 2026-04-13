@@ -202,10 +202,10 @@ const ContactPage = () => {
             className="lg:max-w-4xl mx-auto lg:px-6 px-"
           >
             <motion.h2
-              className="lg:text-3xl text-xl font-extrabold lg:mb-8 mb-4 text-center text-primary"
+              className="lg:text-3xl text-xl font-extrabold lg:mb-8 mb-4 text-center text-primary flex items-center gap-2"
               variants={itemVariants}
             >
-              Contact Form
+              <LucideIcon.MailPlus /> Send Message
             </motion.h2>
             <motion.form
               onSubmit={handleSubmit}
@@ -221,6 +221,7 @@ const ContactPage = () => {
                   placeholder="Your Name..."
                   value={form.name}
                   onChange={handleChange}
+                  icon={LucideIcon.User}
                   className=""
                 />
                 {errors.name && (
@@ -231,6 +232,7 @@ const ContactPage = () => {
                   placeholder="Your Email..."
                   value={form.email}
                   onChange={handleChange}
+                  icon={LucideIcon.Mail}
                   className=""
                 />
                 {errors.email && (
@@ -246,6 +248,7 @@ const ContactPage = () => {
                   placeholder="Subject..."
                   value={form.subject}
                   onChange={handleChange}
+                  icon={LucideIcon.List}
                   className=""
                 />
                 {errors.subject && (
@@ -256,6 +259,7 @@ const ContactPage = () => {
                   placeholder="Phone..."
                   value={form.phone}
                   onChange={handleChange}
+                  icon={LucideIcon.Phone}
                   className=""
                 />
                 {errors.phone && (
@@ -271,6 +275,7 @@ const ContactPage = () => {
                   placeholder="Avatar url..."
                   value={form.avatar}
                   onChange={handleChange}
+                  icon={LucideIcon.Link2Icon}
                   className=" "
                 />
                 {errors.avatar && (
@@ -287,6 +292,7 @@ const ContactPage = () => {
                   value={form.message}
                   onChange={handleChange}
                   rows="5"
+                  icon={LucideIcon.FileText}
                   className=" md:col-span-2 p-3 border rounded-lg focus:outline-none focus:ring border-base-content/15 focus:ring-primary/40"
                 />
                 {errors.message && (

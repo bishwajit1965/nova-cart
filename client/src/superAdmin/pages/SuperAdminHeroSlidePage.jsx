@@ -148,15 +148,15 @@ const SuperAdminHeroSlidePage = () => {
               <div className="flex justify-between mt-2">
                 <Button
                   variant="indigo"
+                  size="xs"
                   onClick={() => setEditingSlideBanner(slide) || toggleForm()}
-                  className="btn btn-sm"
                 >
                   <Edit size={20} /> Edit
                 </Button>
                 <Button
                   variant="danger"
+                  size="xs"
                   onClick={() => handleToggleConfirmDialogue(slide)}
-                  className="btn btn-sm"
                 >
                   <Trash2 size={20} /> Delete
                 </Button>

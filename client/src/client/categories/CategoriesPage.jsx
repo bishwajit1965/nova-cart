@@ -271,7 +271,7 @@ const CategoriesPage = () => {
         ) : (
           <aside
             className={`
-            bg-base-100 shadow
+            bg-base-200 shadow
             lg:col-span-3 col-span-12
             fixed lg:sticky
             self-start

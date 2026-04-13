@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import AuthContext from "../context/authContext";
 import api from "../lib/api";
 import toast from "react-hot-toast";
-// import { initializeGoogleSDK } from "../lib/googleSdk.js";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -23,9 +22,8 @@ export const AuthProvider = ({ children }) => {
 
         // after you get accessToken from refresh or localStorage
         if (newAccessToken) {
-          api.defaults.headers.common[
-            "Authorization"
-          ] = `Bearer ${newAccessToken}`;
+          api.defaults.headers.common["Authorization"] =
+            `Bearer ${newAccessToken}`;
           localStorage.setItem("accessToken", newAccessToken);
         }
 
@@ -38,9 +36,8 @@ export const AuthProvider = ({ children }) => {
         console.log("✅ Full user loaded:", me.data);
 
         // ⬇️ Attach token to Axios instance
-        api.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${newAccessToken}`;
+        api.defaults.headers.common["Authorization"] =
+          `Bearer ${newAccessToken}`;
 
         // setUser(res.data.user);
         console.log("✅ Session refreshed:", res.data.user);
@@ -72,7 +69,7 @@ export const AuthProvider = ({ children }) => {
     const res = await api.post(
       "/auth/register",
       { name, email, password },
-      { withCredentials: true }
+      { withCredentials: true },
     );
     const user = res.data?.user;
     if (!user) {
@@ -90,7 +87,7 @@ export const AuthProvider = ({ children }) => {
     const res = await api.post(
       "/auth/login",
       { email, password },
-      { withCredentials: true }
+      { withCredentials: true },
     );
     const user = res.data?.user;
     if (!user) {

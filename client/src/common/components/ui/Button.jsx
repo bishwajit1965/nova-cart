@@ -90,6 +90,7 @@ const Button = ({
     xs: "px-1 py-1 text-xs h-8",
     sm: "px-2 py-2 text-sm h-9",
     md: "px-3 py-3 text-sm h-10",
+    lg: "px-4 py-4 text-sm h-12",
   };
 
   return (
@@ -102,7 +103,7 @@ const Button = ({
         "disabled:cursor-not-allowed",
         "disabled:opacity-50",
         base,
-        baseSize[size],
+        baseSize[size] || base["md"],
         variants[variant],
         isDisabled && disabledStyles,
         className,

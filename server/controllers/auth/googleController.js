@@ -5,8 +5,6 @@ import { OAuth2Client } from "google-auth-library";
 import generateTokens from "../../utils/generateTokens.js";
 
 export const googleAuth = async (req, res) => {
-  console.log("🎯 Google auth controller is hit!!");
-
   try {
     const { credential } = req.body;
     if (!credential)
@@ -50,7 +48,7 @@ export const googleAuth = async (req, res) => {
     // Prepare roles & permissions for payload
     const roleNames = user.roles.map((r) => r.name);
     const permissions = Array.from(
-      new Set(user.roles.flatMap((r) => r.permissions.map((p) => p.key)))
+      new Set(user.roles.flatMap((r) => r.permissions.map((p) => p.key))),
     );
 
     // Generate tokens

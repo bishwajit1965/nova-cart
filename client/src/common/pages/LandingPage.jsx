@@ -46,50 +46,35 @@ const LandingPage = () => {
         description="Have a look on all in details."
       />
 
-      {/* Top hero Section */}
       <TopHeroSection />
 
       <div className="lg:max-w-7xl mx-auto lg:space-y-12 space-y-6">
-        {/* Announcement Bar */}
         {hasAccess?.isAuthenticated && <AnnouncementBar />}
 
-        {/*Hero section*/}
         {hasAccess?.isAuthenticated && <HeroSection />}
 
-        {/* Products List Section */}
         <ProductsListSection user={user} isAuthenticated={isAuthenticated} />
 
-        {/* banner Section */}
         <BannerSection />
 
-        {/* 🔥 Random Products Section (New) */}
         <RandomProductsSection />
 
-        {/*Why Choose Us Section*/}
         <WhyChooseUsSection />
 
-        {/*Featured Categories Section*/}
         <FeaturedCategoriesSection />
 
-        {/* Categories section */}
         <ShopByCategoriesSection />
 
-        {/*Best Selling Products Section*/}
         <BestSellersSection />
 
-        {/*Seasonal & Promotional Section*/}
         <PromoSection />
 
-        {/*Customer Testimonial Section*/}
         <TestimonialsSection />
 
-        {/* FAQ section */}
         <FAQSection />
 
-        {/*News letter Subscription Section*/}
         <NewsLetterSection />
 
-        {/* Testimonial Form Section */}
         {isFormOpen && <TestimonialFormSection />}
 
         <motion.div
@@ -100,7 +85,7 @@ const LandingPage = () => {
           variants={containerVariants}
         >
           <Button
-            variant=" rounded-full"
+            variant="rounded-full"
             onClick={toggleForm}
             className="bg-primary text-white btn-lg rounded-full px-4 py-2 shadow-lg hover:bg-primary/90"
           >
@@ -109,13 +94,10 @@ const LandingPage = () => {
           </Button>
         </motion.div>
 
-        {/* Welcome subscription modal */}
         {<WelcomeSubscriptionModal />}
 
-        {/* Scroll to top button */}
         <ScrollTopButton />
 
-        {/* Scroll progress bar */}
         <ScrollProgressBar />
       </div>
     </div>

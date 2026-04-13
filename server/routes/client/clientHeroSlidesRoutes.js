@@ -17,14 +17,8 @@ const router = express.Router();
 
 router.use(authenticationMiddleware);
 
-router.use(authorizeRole("super-admin", "admin"));
+router.use(authorizeRole("super-admin", "admin", "user"));
 
 router.get("/", getAllHeroSlides);
-
-// router.post("/", upload.single("image"), createHeroSlide);
-
-// router.patch("/:id", upload.single("image"), updateHeroSlide);
-
-// router.delete("/:id", deleteHeroSlide);
 
 export default router;

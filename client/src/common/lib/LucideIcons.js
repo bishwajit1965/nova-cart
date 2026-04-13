@@ -96,8 +96,12 @@ import {
   RefreshCcwDot,
   RefreshCcwDotIcon,
   UploadCloudIcon,
+  Link2Icon,
+  Link2Off,
+  Link2OffIcon,
 } from "lucide-react";
 import { FaTimesCircle } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import { Layer } from "recharts";
 
 // Central registry
@@ -157,6 +161,10 @@ export const LucideIcon = {
   Layers2Icon,
   Layers3,
   Layers3Icon,
+  Link,
+  Link2Icon,
+  Link2Off,
+  Link2OffIcon,
   List,
   ListCheck,
   Lock,

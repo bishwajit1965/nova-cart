@@ -38,10 +38,10 @@ const SuperAdminLayout = () => {
               location={page}
             />
           </div>
-          <div className="lg:min-h-[calc(100vh-150px)] lg:p-4 p-2 bg-base-200 shadow">
+          <div className="lg:min-h-[calc(100vh-200px)] lg:p-4 p-2 bg-base-200 shadow">
             <Outlet />
           </div>
-          <div className="text-base-content">
+          <div className="text-base-content mt-10">
             <Footer role="super-admin" />
           </div>
         </main>

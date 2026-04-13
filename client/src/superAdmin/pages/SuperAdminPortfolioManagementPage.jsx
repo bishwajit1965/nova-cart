@@ -16,8 +16,6 @@ import { useAuth } from "../../common/hooks/useAuth";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import useValidator from "../../common/hooks/useValidator";
 
-const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
-
 const SuperAdminPortfolioManagementPage = () => {
   const { user } = useAuth();
   const [confirmDelete, setConfirmDelete] = useState(null);
@@ -31,6 +29,8 @@ const SuperAdminPortfolioManagementPage = () => {
     bio: "",
     profileImage: null,
     profileImagePreview: "",
+    demoVideo: null,
+    demoVideoPreview: null,
     email: "",
     phone: "",
     location: "",
@@ -44,17 +44,21 @@ const SuperAdminPortfolioManagementPage = () => {
     createdAt: "",
   });
 
+  const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
+  const MAX_VIDEO_SIZE = 300 * 1024 * 1024; // 300MB
+
   // Prefill form when editing
   useEffect(() => {
     if (!editPortfolio) return;
-
     setFormData({
       owner: editPortfolio.owner || "",
       name: editPortfolio.name || "",
       title: editPortfolio.title || "",
       bio: editPortfolio.bio || "",
       profileImagePreview: editPortfolio.profileImage || "",
+      demoVideoPreview: editPortfolio.demoVideo || "",
       profileImage: editPortfolio.profileImage || null,
+      demoVideo: editPortfolio.demoVideo || null,
       email: editPortfolio.email || "",
       phone: editPortfolio.phone || "",
       location: editPortfolio.location || "",
@@ -110,24 +114,36 @@ const SuperAdminPortfolioManagementPage = () => {
       [field]: prev[field].filter((_, i) => i !== index),
     }));
 
-  const handleFile = (e) => {
+  const handleFile = (e, type) => {
     const file = e.target.files[0];
     if (!file) return;
+
     const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
 
-    if (file.size > MAX_FILE_SIZE) {
-      toast.error(`File is too large (${sizeMB} MB). Max allowed: 2MB`);
+    if (type === "image" && file.size > MAX_IMAGE_SIZE) {
+      toast.error(`Image too large (${sizeMB} MB). Max: 5MB`);
       return;
     }
 
-    // Revoke previous object URL to avoid memory leak
-    if (formData.profileImagePreview && formData.profileImage)
-      URL.revokeObjectURL(formData.profileImagePreview);
+    if (type === "video" && file.size > MAX_VIDEO_SIZE) {
+      toast.error(`Video too large (${sizeMB} MB). Max: 300MB`);
+      return;
+    }
+
+    const previewKey =
+      type === "image" ? "profileImagePreview" : "demoVideoPreview";
+
+    const fileKey = type === "image" ? "profileImage" : "demoVideo";
+
+    // Revoke previous preview URL safely
+    if (formData[previewKey]) {
+      URL.revokeObjectURL(formData[previewKey]);
+    }
 
     setFormData((prev) => ({
       ...prev,
-      profileImage: file,
-      profileImagePreview: URL.createObjectURL(file),
+      [fileKey]: file,
+      [previewKey]: URL.createObjectURL(file),
     }));
   };
 
@@ -174,7 +190,7 @@ const SuperAdminPortfolioManagementPage = () => {
             edu.degree &&
             edu.startYear &&
             edu.endYear &&
-            edu.description
+            edu.description,
         ),
     },
     experience: {
@@ -187,7 +203,7 @@ const SuperAdminPortfolioManagementPage = () => {
             exp.role &&
             exp.startDate &&
             exp.endDate &&
-            exp.description
+            exp.description,
         ),
     },
     projects: {
@@ -200,7 +216,7 @@ const SuperAdminPortfolioManagementPage = () => {
             p.description &&
             p.link &&
             Array.isArray(p.techStack) &&
-            p.techStack.length > 0
+            p.techStack.length > 0,
         ),
     },
     socialLinks: {
@@ -245,6 +261,8 @@ const SuperAdminPortfolioManagementPage = () => {
         bio: "",
         profileImage: null,
         profileImagePreview: "",
+        demoVideo: null,
+        demoVideoPreview: null,
         email: "",
         phone: "",
         location: "",
@@ -257,10 +275,24 @@ const SuperAdminPortfolioManagementPage = () => {
         isPublic: true,
         createdAt: "",
       });
+
       setEditPortfolio(null);
       setIsModalVisible(false);
     },
     onError: (err) => {
+      if (type === "image" && file.size > MAX_IMAGE_SIZE) {
+        toast.error(
+          `Image too large (${sizeMB} MB). Max allowed: ${(MAX_IMAGE_SIZE / (1024 * 1024)).toFixed(0)} MB`,
+        );
+        return;
+      }
+
+      if (type === "video" && file.size > MAX_VIDEO_SIZE) {
+        toast.error(
+          `Video too large (${sizeMB} MB). Max allowed: ${(MAX_VIDEO_SIZE / (1024 * 1024)).toFixed(0)} MB. Please compress if needed.`,
+        );
+        return;
+      }
       toast.error("Error saving portfolio!");
       console.error(err);
     },
@@ -288,8 +320,11 @@ const SuperAdminPortfolioManagementPage = () => {
 
       Object.entries(formData).forEach(([key, val]) => {
         if (key === "owner") return; // we already added it above
-        if (key === "profileImage" && val instanceof File) {
-          fd.append("profileImage", val);
+        if (
+          (key === "profileImage" || key === "demoVideo") &&
+          val instanceof File
+        ) {
+          fd.append(key, val);
         } else if (
           [
             "skills",
@@ -303,7 +338,7 @@ const SuperAdminPortfolioManagementPage = () => {
           fd.append(key, JSON.stringify(val));
         } else if (
           key !== "profileImagePreview" &&
-          key !== "coverImagePreview"
+          key !== "demoVideoPreview"
         ) {
           fd.append(key, val);
         }
@@ -360,6 +395,8 @@ const SuperAdminPortfolioManagementPage = () => {
       bio: "",
       profileImage: null,
       profileImagePreview: "",
+      demoVideo: null,
+      demoVideoPreview: null,
       coverImage: null, // new
       coverImagePreview: "", // new
       email: "",

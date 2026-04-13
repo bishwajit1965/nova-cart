@@ -1,4 +1,3 @@
-import PDFDocument from "pdfkit";
 import Portfolio from "../../models/Portfolio.js";
 import fs from "fs";
 import path from "path";
@@ -121,7 +120,7 @@ export const generatePortfolioPDF = async (req, res) => {
       <h3>Bio</h3>
       <p class="section-block">${(portfolio.bio || "").replace(
         /</g,
-        "&lt;"
+        "&lt;",
       )}</p>
 
       <!-- Skills -->
@@ -141,11 +140,11 @@ export const generatePortfolioPDF = async (req, res) => {
             <li>
               <strong>${String(p.name || "").replace(
                 /</g,
-                "&lt;"
+                "&lt;",
               )}</strong> — ${String(p.description || "").replace(
-              /</g,
-              "&lt;"
-            )}<br>
+                /</g,
+                "&lt;",
+              )}<br>
               <span style="font-size:12px; color:#555;">Tech: ${(
                 p.techStack || []
               )
@@ -153,9 +152,9 @@ export const generatePortfolioPDF = async (req, res) => {
                 .join(", ")}</span><br>
               <span style="font-size:12px;">${String(p.link || "").replace(
                 /</g,
-                "&lt;"
+                "&lt;",
               )}</span>
-            </li>`
+            </li>`,
           )
           .join("")}
       </ul>
@@ -169,16 +168,16 @@ export const generatePortfolioPDF = async (req, res) => {
             <li>
               <strong>${String(e.role || "").replace(
                 /</g,
-                "&lt;"
+                "&lt;",
               )}</strong>, ${String(e.company || "").replace(/</g, "&lt;")}<br>
               <span style="font-size:12px; color:#555;">${String(
-                e.startDate || ""
+                e.startDate || "",
               ).replace(/</g, "&lt;")} - ${String(e.endDate || "").replace(
-              /</g,
-              "&lt;"
-            )}</span><br>
+                /</g,
+                "&lt;",
+              )}</span><br>
               ${String(e.description || "").replace(/</g, "&lt;")}
-            </li>`
+            </li>`,
           )
           .join("")}
       </ul>
@@ -192,19 +191,19 @@ export const generatePortfolioPDF = async (req, res) => {
             <li>
               <strong>${String(ed.degree || "").replace(
                 /</g,
-                "&lt;"
+                "&lt;",
               )}</strong> — ${String(ed.institute || "").replace(
-              /</g,
-              "&lt;"
-            )}<br>
+                /</g,
+                "&lt;",
+              )}<br>
               <span style="font-size:12px; color:#555;">${String(
-                ed.startYear || ""
+                ed.startYear || "",
               ).replace(/</g, "&lt;")} - ${String(ed.endYear || "").replace(
-              /</g,
-              "&lt;"
-            )}</span><br>
+                /</g,
+                "&lt;",
+              )}</span><br>
               ${String(ed.description || "").replace(/</g, "&lt;")}
-            </li>`
+            </li>`,
           )
           .join("")}
       </ul>
@@ -237,7 +236,7 @@ export const generatePortfolioPDF = async (req, res) => {
       headerTemplate: `
         <div style="font-size:11px; padding:14px 20px; width:100%; text-align:left;">
           <strong style="font-size:17px;">${String(
-            portfolio.name || " "
+            portfolio.name || " ",
           ).replace(/</g, "&lt;")}</strong>
           <hr style="border:0; border-bottom:1px solid #ccc; margin-top:10px;">
         </div>
@@ -253,7 +252,7 @@ export const generatePortfolioPDF = async (req, res) => {
 
     const filename = `${(portfolio.name || "portfolio").replace(
       /[^a-z0-9_\-\.]/gi,
-      "_"
+      "_",
     )}.pdf`;
 
     res.set({
@@ -270,132 +269,10 @@ export const generatePortfolioPDF = async (req, res) => {
   }
 };
 
-// const buildPdfFromPortfolio = (doc, p) => {
-//   const pageWidth = doc.page.width;
-//   const margin = 50;
-
-//   // Header function
-//   const addHeader = () => {
-//     if (p.profileImage) {
-//       const imagePath = path.join(process.cwd(), p.profileImage); // Correct uploads path
-//       if (fs.existsSync(imagePath)) {
-//         doc.image(imagePath, margin, 40, { width: 60, height: 60 });
-//       }
-//     }
-
-//     doc
-//       .fontSize(20)
-//       .text(p.name || "No Name", margin + 70, 50, { align: "left" });
-
-//     if (p.title) doc.fontSize(12).text(p.title, { align: "left" });
-
-//     doc.moveDown(1);
-
-//     doc
-//       .moveTo(margin, 110)
-//       .lineTo(pageWidth - margin, 110)
-//       .stroke(); // underline
-//     doc.moveDown(2);
-//   };
-
-//   // Footer with page number
-//   const addFooter = () => {
-//     const range = doc.bufferedPageRange(); // { start: 0, count: n }
-//     for (let i = range.start; i < range.start + range.count; i++) {
-//       doc.switchToPage(i);
-//       doc
-//         .fontSize(8)
-//         .text(`Page ${i + 1} of ${range.count}`, 0, doc.page.height - 40, {
-//           align: "center",
-//         });
-//     }
-//   };
-
-//   // Start PDF content
-//   addHeader();
-
-//   // Bio
-//   if (p.bio) {
-//     doc.fontSize(10).text(p.bio, { align: "left" });
-//     doc.moveDown(0.5);
-//   }
-
-//   // Contact
-//   const contact = [];
-//   if (p.email) contact.push(`✉️ ${p.email}`);
-//   if (p.phone) contact.push(`☎️ ${p.phone}`);
-//   if (p.location) contact.push(`📍 ${p.location}`);
-//   if (contact.length) doc.fontSize(10).text(contact.join(" • "));
-//   doc.moveDown(0.6);
-
-//   // Skills
-//   if (p.skills?.length) {
-//     doc.fontSize(12).text("Skills:", { underline: true });
-//     doc.fontSize(10).text(p.skills.join(", "));
-//     doc.moveDown(0.5);
-//   }
-
-//   // Experience
-//   if (p.experience?.length) {
-//     doc.fontSize(12).text("Experience:", { underline: true });
-//     p.experience.forEach((e) => {
-//       doc
-//         .fontSize(11)
-//         .text(
-//           `${e.role} — ${e.company} (${e.startDate || ""} - ${e.endDate || ""})`
-//         );
-//       if (e.description) doc.fontSize(10).text(e.description);
-//       doc.moveDown(0.2);
-//     });
-//     doc.moveDown(0.3);
-//   }
-
-//   // Education
-//   if (p.education?.length) {
-//     doc.fontSize(12).text("Education:", { underline: true });
-//     p.education.forEach((ed) => {
-//       doc
-//         .fontSize(11)
-//         .text(
-//           `${ed.degree || ""} — ${ed.institute} (${ed.startYear || ""} - ${
-//             ed.endYear || ""
-//           })`
-//         );
-//       if (ed.description) doc.fontSize(10).text(ed.description);
-//       doc.moveDown(0.2);
-//     });
-//   }
-
-//   // Projects
-//   if (p.projects?.length) {
-//     doc.fontSize(12).text("Projects:", { underline: true });
-//     p.projects.forEach((proj) => {
-//       doc
-//         .fontSize(11)
-//         .text(`${proj.name} ${proj.link ? `— ${proj.link}` : ""}`);
-//       if (proj.description) doc.fontSize(10).text(proj.description);
-//       if (proj.techStack?.length)
-//         doc.fontSize(10).text(`Tech: ${proj.techStack.join(", ")}`);
-//       doc.moveDown(0.2);
-//     });
-//   }
-
-//   // Achievements
-//   if (p.achievements?.length) {
-//     doc.addPage();
-//     addHeader();
-//     doc.fontSize(16).text("Achievements & Awards", { underline: true });
-//     doc.moveDown(0.3);
-//     p.achievements.forEach((a) => doc.fontSize(10).list([a]));
-//   }
-
-//   // Footer with page numbers
-//   addFooter();
-// };
-
 export const createPortfolio = async (req, res) => {
   try {
     const payload = req.body;
+    console.log("Request body", req.body);
 
     // 🧠 Smart parser to handle both JSON and FormData
     const parseMaybeJSON = (value) => {
@@ -407,12 +284,16 @@ export const createPortfolio = async (req, res) => {
     };
 
     // 🧩 Fix nested fields that may come as JSON strings
-    payload.education = parseMaybeJSON(payload.education);
-    payload.experience = parseMaybeJSON(payload.experience);
-    payload.projects = parseMaybeJSON(payload.projects);
-    payload.skills = parseMaybeJSON(payload.skills);
-    payload.achievements = parseMaybeJSON(payload.achievements);
-    payload.socialLinks = parseMaybeJSON(payload.socialLinks);
+    if (payload.education)
+      payload.education = parseMaybeJSON(payload.education);
+    if (payload.experience)
+      payload.experience = parseMaybeJSON(payload.experience);
+    if (payload.projects) payload.projects = parseMaybeJSON(payload.projects);
+    if (payload.skills) payload.skills = parseMaybeJSON(payload.skills);
+    if (payload.achievements)
+      payload.achievements = parseMaybeJSON(payload.achievements);
+    if (payload.socialLinks)
+      payload.socialLinks = parseMaybeJSON(payload.socialLinks);
 
     if (
       payload.profileImage === "null" ||
@@ -422,13 +303,21 @@ export const createPortfolio = async (req, res) => {
       payload.profileImage = null;
     }
 
-    // 🖼️ Handle profile image if file uploaded
-    if (req.file) {
-      payload.profileImage = `/uploads/${req.file.filename}`;
+    // 🖼️ Handle uploaded files correctly (fields mode)
+    if (req.files) {
+      if (req.files.profileImage) {
+        payload.profileImage = `/uploads/${req.files.profileImage[0].filename}`;
+      }
+
+      if (req.files.demoVideo) {
+        payload.demoVideo = `/uploads/${req.files.demoVideo[0].filename}`;
+      }
     }
 
     const portfolio = new Portfolio(payload);
+
     console.log("🎯Portfolio", portfolio);
+
     await portfolio.save();
 
     res.status(201).json({
@@ -478,6 +367,11 @@ export const updatePortfolio = async (req, res) => {
   try {
     const { id } = req.params;
     const payload = req.body;
+    const portfolio = await Portfolio.findById(id);
+
+    if (!portfolio) {
+      return res.status(404).json({ success: false });
+    }
 
     const parseMaybeJSON = (value) => {
       try {
@@ -487,23 +381,54 @@ export const updatePortfolio = async (req, res) => {
       }
     };
 
-    payload.education = parseMaybeJSON(payload.education);
-    payload.experience = parseMaybeJSON(payload.experience);
-    payload.projects = parseMaybeJSON(payload.projects);
-    payload.skills = parseMaybeJSON(payload.skills);
-    payload.achievements = parseMaybeJSON(payload.achievements);
-    payload.socialLinks = parseMaybeJSON(payload.socialLinks);
+    if (payload.education)
+      payload.education = parseMaybeJSON(payload.education);
+    if (payload.experience)
+      payload.experience = parseMaybeJSON(payload.experience);
+    if (payload.projects) payload.projects = parseMaybeJSON(payload.projects);
+    if (payload.skills) payload.skills = parseMaybeJSON(payload.skills);
+    if (payload.achievements)
+      payload.achievements = parseMaybeJSON(payload.achievements);
+    if (payload.socialLinks)
+      payload.socialLinks = parseMaybeJSON(payload.socialLinks);
 
-    if (
-      payload.profileImage === "null" ||
-      payload.profileImage === "" ||
-      payload.profileImage === undefined
-    ) {
-      payload.profileImage = null;
+    const deleteFileIfExists = (filePath) => {
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    };
+    // Handle Profile Image
+    if (req.files?.profileImage) {
+      // Delete old file if exists
+      if (portfolio.profileImage) {
+        const oldPath = path.join(
+          process.cwd(),
+          "uploads",
+          path.basename(portfolio.profileImage),
+        );
+        deleteFileIfExists(oldPath);
+      }
+
+      payload.profileImage = `/uploads/${req.files.profileImage[0].filename}`;
+    } else {
+      // Prevent overwriting with undefined or empty string
+      delete payload.profileImage;
     }
 
-    if (req.file) {
-      payload.profileImage = `/uploads/${req.file.filename}`;
+    // Handle Demo Video
+    if (req.files?.demoVideo) {
+      if (portfolio.demoVideo) {
+        const oldPath = path.join(
+          process.cwd(),
+          "uploads",
+          path.basename(portfolio.demoVideo),
+        );
+        deleteFileIfExists(oldPath);
+      }
+
+      payload.demoVideo = `/uploads/${req.files.demoVideo[0].filename}`;
+    } else {
+      delete payload.demoVideo;
     }
 
     const updated = await Portfolio.findByIdAndUpdate(id, payload, {
@@ -534,50 +459,31 @@ export const updatePortfolio = async (req, res) => {
 
 export const deletePortfolio = async (req, res) => {
   try {
-    const removed = await Portfolio.findByIdAndDelete(req.params.id);
-    if (!removed)
-      return res.status(404).json({ success: false, message: "Not found" });
-    // Optionally delete the profile image file from disk if stored locally
-    if (removed.profileImage && removed.profileImage.startsWith("/uploads/")) {
-      const filePath = path.join(process.cwd(), removed.profileImage);
-      fs.unlink(filePath, (e) => {
-        if (e) console.warn("Could not delete file", e.message);
-      });
+    const { id } = req.params;
+
+    const portfolio = await Portfolio.findById(id);
+    if (!portfolio) {
+      return res.status(404).json({ success: false });
     }
-    res.json({ success: true, message: "Deleted" });
+
+    if (portfolio.profileImage) {
+      fs.unlinkSync(
+        path.join("uploads", path.basename(portfolio.profileImage)),
+      );
+    }
+
+    if (portfolio.demoVideo) {
+      fs.unlinkSync(path.join("uploads", path.basename(portfolio.demoVideo)));
+    }
+
+    await Portfolio.findByIdAndDelete(id);
+
+    res.json({ success: true, message: "Deleted successfully" });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: "Server error" });
+    res.status(500).json({ success: false });
   }
 };
-
-// export const generatePdf = async (req, res) => {
-//   try {
-//     const portfolio = await Portfolio.findById(req.params.id);
-//     if (!portfolio)
-//       return res.status(404).json({ success: false, message: "Not found" });
-
-//     res.setHeader("Content-Type", "application/pdf");
-//     res.setHeader(
-//       "Content-Disposition",
-//       `attachment; filename="${(portfolio.name || "resume").replace(
-//         /\s+/g,
-//         "_"
-//       )}.pdf"`
-//     );
-
-//     const doc = new PDFDocument({ size: "A4", margin: 50, bufferPages: true });
-//     doc.pipe(res);
-
-//     buildPdfFromPortfolio(doc, portfolio);
-
-//     doc.end();
-//   } catch (err) {
-//     console.error(err);
-//     if (!res.headersSent)
-//       res.status(500).json({ success: false, message: "Server error" });
-//   }
-// };
 
 export default {
   createPortfolio,
@@ -585,6 +491,5 @@ export default {
   getPortfolioById,
   updatePortfolio,
   deletePortfolio,
-  // generatePdf,
   generatePortfolioPDF,
 };

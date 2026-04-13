@@ -69,7 +69,8 @@ const SuperAdminProjectTable = ({ projects, onEdit, setConfirmDelete }) => {
                     <Button
                       onClick={() => onEdit(project)}
                       variant="indigo"
-                      className="btn btn-sm tooltip"
+                      size="xs"
+                      className="tooltip"
                       data-tip="Edit"
                     >
                       <Edit size={16} />
@@ -77,7 +78,8 @@ const SuperAdminProjectTable = ({ projects, onEdit, setConfirmDelete }) => {
                     <Button
                       onClick={() => setConfirmDelete(project)}
                       variant="danger"
-                      className="btn w btn-sm tooltip"
+                      size="xs"
+                      className="tooltip"
                       data-tip="Delete"
                     >
                       <Trash2 size={16} />

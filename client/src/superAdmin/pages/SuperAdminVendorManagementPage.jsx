@@ -175,7 +175,7 @@ const SuperAdminVendorManagementPage = () => {
         },
         onError: (error) => {
           toast.error(
-            error.response.data.message || "Error in deleting vendor"
+            error.response.data.message || "Error in deleting vendor",
           );
         },
       });
@@ -269,6 +269,7 @@ const SuperAdminVendorManagementPage = () => {
                   <Button
                     onClick={handleSubmit}
                     variant="indigo"
+                    size="sm"
                     disabled={vendorMutation.isPending}
                     className={`${
                       vendorMutation.isPending
@@ -286,13 +287,14 @@ const SuperAdminVendorManagementPage = () => {
                     {vendorMutation.isPending
                       ? "Updating..."
                       : editId
-                      ? "Update Vendor"
-                      : "Add Vendor"}
+                        ? "Update Vendor"
+                        : "Add Vendor"}
                   </Button>
                 </div>
                 <Button
                   onClick={resetForm}
                   variant="warning"
+                  size="sm"
                   className="btn lg:btn-md btn-sm"
                 >
                   <RefreshCcw /> Reset
@@ -331,14 +333,14 @@ const SuperAdminVendorManagementPage = () => {
                             <Button
                               onClick={() => handleEdit(vendor)}
                               variant="indigo"
-                              className="btn btn-sm"
+                              size="xs"
                             >
                               <LucideIcon.Edit size={15} /> Edit
                             </Button>
                             <Button
                               onClick={() => handleDelete(vendor._id)}
                               variant="danger"
-                              className="btn btn-sm"
+                              size="xs"
                             >
                               <LucideIcon.Trash2 size={15} /> Delete
                             </Button>
