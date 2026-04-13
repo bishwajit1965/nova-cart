@@ -98,7 +98,7 @@ const LandingPage = () => {
 
         <ScrollTopButton />
 
-        <ScrollProgressBar />
+        {/* <ScrollProgressBar /> */}
       </div>
     </div>
   );

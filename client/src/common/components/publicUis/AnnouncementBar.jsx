@@ -8,7 +8,7 @@ const AnnouncementBar = () => {
   if (!announcements.length) return null;
 
   return (
-    <div className="bg-linear-to-t from-blue-600 to-indigo-500 text-white py-2 px-4 rounded-sm shadow-md">
+    <div className="bg-linear-to-t from-base-300 to-base-100 text-base-content py-2 px-4 rounded-sm shadow-md">
       <div className="flex items-center gap-2 overflow-hidden whitespace-nowrap">
         <Marquee
           className="flex items-center gap-8"

@@ -61,7 +61,7 @@ const BannerSection = () => {
           badgeSize={{ lg: 48, sm: 28 }}
         />
       </motion.div>
-      <Marquee pauseOnHover speed={30} gradient={false}>
+      <Marquee pauseOnHover speed={30} gradient={true}>
         {banners?.map((banner, idx) => (
           <motion.div
             key={banner._id || idx}
@@ -97,40 +97,6 @@ const BannerSection = () => {
           </motion.div>
         ))}
       </Marquee>
-
-      {/* <Marquee pauseOnHover={true} speed={30} gradient={false}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  justify-between gap-5">
-          {banners?.map((banner, idx) => (
-            <motion.div
-              key={banner._id || idx}
-              className="relative rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1 }}
-            >
-              <a
-                href={banner.ctaLink || "#"}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <motion.img
-                  src={`${apiURL}/uploads/${banner.image}`}
-                  alt={banner.title}
-                  className="w-full h-60 object-cover"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 200 }}
-                />
-                <div className="absolute inset-0 bg-black/40 flex flex-col justify-center items-center text-center text-white p-4">
-                  <h3 className="text-lg font-semibold">{banner.title}</h3>
-                  {banner.subtitle && (
-                    <p className="text-sm mt-1">{banner.subtitle}</p>
-                  )}
-                </div>
-              </a>
-            </motion.div>
-          ))}
-        </div>
-      </Marquee> */}
     </section>
   );
 };

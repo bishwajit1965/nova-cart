@@ -47,14 +47,14 @@ const UnderConstruction = () => {
           transition={{ delay: 0.4 }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
-          <Link to="/">
+          <Link to="/super-admin">
             <Button variant="indigo" className="flex items-center gap-2">
               <Rocket size={18} />
               Go Home
             </Button>
           </Link>
 
-          <Link to="/products">
+          <Link to="/super-admin/product-management">
             <Button variant="outline" className="flex items-center gap-2">
               Explore Products
               <ArrowRight size={18} />

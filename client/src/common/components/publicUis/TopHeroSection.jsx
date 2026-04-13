@@ -25,7 +25,7 @@ const TopHeroSection = () => {
   return (
     <section className="relative w-full min-h-[50vh] bg-[url('../../../NovaHeroImage_F.png')] bg-cover bg-center rounded-xl shadow-2xl overflow-hidden">
       {/* Overlay */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-xs"></div>
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-xs"></div>
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-12 lg:py-20">
