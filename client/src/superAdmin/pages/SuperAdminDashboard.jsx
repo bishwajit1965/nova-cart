@@ -69,7 +69,7 @@ const SuperAdminDashboard = () => {
   return (
     <div className="lg:space-y-6 space-y-4">
       <div className="lg:mb-4 mb-2">
-        <h1 className="lg:text-2xl text-xl font-bold flex items-center gap-2">
+        <h1 className="lg:text-xl text-lg font-bold flex items-center gap-2 text-base-content/70">
           <TrendingUp /> Super Admin Analytics Dashboard
         </h1>
       </div>

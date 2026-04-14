@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import { useState } from "react";
 import useValidator from "../../common/hooks/useValidator";
+import { LucideIcon } from "../../common/lib/LucideIcons";
 
 const SuperAdminFeatureManagementPage = () => {
   const [showModal, setShowModal] = useState(false);
@@ -171,12 +172,20 @@ const SuperAdminFeatureManagementPage = () => {
       />
 
       <div className="">
-        <button
-          className="btn btn-primary mb-4"
-          onClick={() => setShowModal(true)}
-        >
-          <Puzzle /> Add New Feature
-        </button>
+        <div className="lg:mb-4 mb-2">
+          <h2 className="lg:text-xl text-lg font-bold flex items-center gap-2 text-base-content/70 lg:mb-4 mb-2">
+            <LucideIcon.Puzzle size={20} />
+            Feature Management
+          </h2>
+          <Button
+            variant="indigo"
+            size="sm"
+            className=" "
+            onClick={() => setShowModal(true)}
+          >
+            <Puzzle /> Add New Feature
+          </Button>
+        </div>
         {featuresDataStatus.status !== "success" ? (
           featuresDataStatus.content
         ) : (

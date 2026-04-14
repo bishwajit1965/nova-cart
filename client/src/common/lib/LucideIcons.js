@@ -112,6 +112,7 @@ import {
   BarChart,
   PieChart,
   ChartBar,
+  Puzzle,
 } from "lucide-react";
 import { FaCalendarWeek, FaTimesCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -202,6 +203,7 @@ export const LucideIcon = {
   PieChart,
   Plus,
   Phone,
+  Puzzle,
   RefreshCcw,
   RefreshCcwDot,
   RefreshCcwDotIcon,

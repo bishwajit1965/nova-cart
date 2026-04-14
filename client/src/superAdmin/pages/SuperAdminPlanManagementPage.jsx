@@ -15,6 +15,7 @@ import { useEffect } from "react";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import { useState } from "react";
 import useValidator from "../../common/hooks/useValidator";
+import { LucideIcon } from "../../common/lib/LucideIcons";
 
 const SuperAdminPlanManagementPage = () => {
   const [showModal, setShowModal] = useState(false);
@@ -187,7 +188,7 @@ const SuperAdminPlanManagementPage = () => {
 
   const handleFeatureToggle = (id) => {
     setSelectedFeatures((prev) =>
-      prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id],
     );
   };
 
@@ -215,12 +216,16 @@ const SuperAdminPlanManagementPage = () => {
       />
 
       <div className="">
-        <button
-          className="btn btn-primary mb-4"
-          onClick={() => setShowModal(true)}
-        >
-          <Layers /> Add New Plan
-        </button>
+        <div className="lg:mb-4 mb-2">
+          <h2 className="lg:text-xl text-lg flex items-center gap-2 font-extrabold text-base-content/70 mb-4">
+            <LucideIcon.CreditCard /> Plan Management Page
+          </h2>
+
+          <Button variant="indigo" size="sm" onClick={() => setShowModal(true)}>
+            <LucideIcon.UploadCloudIcon /> Add New Plan
+          </Button>
+        </div>
+
         {plansDataStatus.status !== "success" ? (
           plansDataStatus.content
         ) : (
@@ -341,6 +346,7 @@ const SuperAdminPlanManagementPage = () => {
                       <div className="">
                         <Button
                           variant="warning"
+                          size="xs"
                           onClick={() => {
                             setShowModal(false);
                             setEditPlan(null);
@@ -359,6 +365,7 @@ const SuperAdminPlanManagementPage = () => {
                         <Button
                           variant="indigo"
                           type="submit"
+                          size="xs"
                           onClick={handleSubmit}
                           disabled={planMutation.isPending}
                         >
