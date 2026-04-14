@@ -172,6 +172,7 @@ const PermissionManagement = () => {
           <div className="space-x-3">
             <Button
               type="submit"
+              size="sm"
               disabled={mutation.isPending}
               icon={LucideIcon.Edit}
             >
@@ -182,6 +183,7 @@ const PermissionManagement = () => {
                 type="button"
                 icon={LucideIcon.X}
                 variant="warning"
+                size="sm"
                 onClick={() => {
                   setEditingPermission(null);
                   setName("");
