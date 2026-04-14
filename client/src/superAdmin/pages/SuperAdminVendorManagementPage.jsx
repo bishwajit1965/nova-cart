@@ -192,7 +192,10 @@ const SuperAdminVendorManagementPage = () => {
         <>
           <Card className="mb-4">
             <CardHeader>
-              <CardTitle>{editId ? "Edit Vendor" : "Add New Vendor"}</CardTitle>
+              <CardTitle>
+                {editId ? <LucideIcon.Edit /> : <LucideIcon.UploadCloud />}
+                {editId ? "Edit Vendor" : "Add New Vendor"}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid lg:grid-cols-4 grid-cols-1 gap-4">

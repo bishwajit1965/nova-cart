@@ -10,16 +10,25 @@ import { useAuth } from "../hooks/useAuth";
 const SuperAdminLayout = () => {
   const { user } = useAuth();
   const location = useLocation();
-  const formatPathName = (pathname) => {
-    return pathname
-      .replace(/-/g, " ") // hyphens → spaces
-      .replace(/([a-z])([A-Z])/g, "$1 $2") // insert space before capital letters
-      .split(" ") // split into words
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // capitalize each
-      .join(" ");
+  const isRootAdmin = location.pathname === "/super-admin";
+  const formatPathName = (pathname = "") => {
+    return (
+      pathname
+        .split("?")[0] // remove query params
+        .split("#")[0] // remove hash
+        .replace(/-/g, " ") // hyphens → spaces
+        .trim()
+        .split("/")
+        .filter(Boolean) // remove empty parts
+        .pop() // last segment
+        ?.replace(/([a-z])([A-Z])/g, "$1 $2") // camelCase → spaces
+        ?.split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ") || "Dashboard"
+    );
   };
 
-  let page = formatPathName(location.pathname.trim().split("/").pop());
+  let page = formatPathName(location.pathname);
 
   return (
     <div className="min-h-screen">
@@ -35,7 +44,7 @@ const SuperAdminLayout = () => {
             <DashboardTitle
               decoratedText={user?.name}
               icon={<LucideIcon.CircleGauge />}
-              location={page}
+              location={isRootAdmin ? "Dashboard" : page}
             />
           </div>
           <div className="lg:min-h-[calc(100vh-200px)] lg:p-4 p-2 bg-base-200 shadow">

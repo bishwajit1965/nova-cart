@@ -38,7 +38,7 @@ const SuperAdminBillingSummaryCard = () => {
       ) : (
         <Card className="shadow-lg bg-base-100 border border-base-content/10 hover:shadow-2xl transition-all duration-300">
           <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-            <CardTitle className="flex items-center gap-2 text-xl font-extrabold text-indigo-700">
+            <CardTitle className="flex items-center gap-2 text-xl font-extrabold text-base-content/70">
               <DollarSign size={22} className="text-green-500" />
               Billing Summary
             </CardTitle>
@@ -52,7 +52,7 @@ const SuperAdminBillingSummaryCard = () => {
                 <Users className="text-indigo-500" />
                 <span className="text-lg font-semibold">
                   Total Users:{" "}
-                  <span className="font-bold text-indigo-700">
+                  <span className="font-bold text-base-content/70">
                     {totalUsers}
                   </span>
                 </span>

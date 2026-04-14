@@ -4,11 +4,13 @@ const SuperAdminPlanCard = ({ plan, onEdit, onDelete, isCurrent }) => {
   return (
     <div className="lg:col-span-3 col-span-12">
       <div className="lg:p-4 p-2 border border-base-content/15 rounded-lg shadow hover:shadow-md transition">
-        <h2 className="text-xl font-semibold">{plan.name}</h2>
+        <h2 className="lg:text-2xl text-lg font-bold">{plan.name}</h2>
 
-        <p className="text-gray-600 capitalize font-bold">{plan.duration}</p>
+        <p className="text-base-content/70 capitalize font-bold">
+          {plan.duration}
+        </p>
         <p className="font-bold">${plan.price}</p>
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-base-content/70">
           Features: {plan?.features?.length || 0}
         </p>
 

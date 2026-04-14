@@ -15,6 +15,7 @@ import { useEffect } from "react";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import { useState } from "react";
 import useValidator from "../../common/hooks/useValidator";
+import { LucideIcon } from "../../common/lib/LucideIcons";
 
 const SuperAdminFaqManagement = () => {
   const [confirmDelete, setConfirmDelete] = useState(null);
@@ -147,12 +148,12 @@ const SuperAdminFaqManagement = () => {
   return (
     <div className="lg:space-y-6 space-y-4">
       <div className="">
-        <h2 className="lg:text-2xl text-xl font-bold">
-          Question & Answer Data
+        <h2 className="lg:text-xl text-lg font-bold flex items-center gap-2 text-base-content/70">
+          <LucideIcon.List /> Question & Answer Table
         </h2>
       </div>
       <div className="">
-        <Button onClick={handleModalToggler} variant="indigo">
+        <Button onClick={handleModalToggler} variant="indigo" size="sm">
           <PlusCircle />
           Add FAQ
         </Button>
@@ -208,7 +209,8 @@ const SuperAdminFaqManagement = () => {
           editFaq={editFaq}
         >
           <div className="mb-2 text-base-content/60">
-            <h2 className="lg:text-2xl text-xl font-bold">
+            <h2 className="lg:text2xl text-lg font-bold flex items-center gap-2">
+              {editFaq ? <LucideIcon.Edit /> : <LucideIcon.UploadCloud />}{" "}
               {editFaq ? "Edit FAQ" : "Add FAQ"}
             </h2>
           </div>
@@ -256,8 +258,9 @@ const SuperAdminFaqManagement = () => {
                 <Button
                   type="submit"
                   variant="indigo"
+                  size="xs"
                   disabled={faqMutation.isPending}
-                  className="btn btn-sm"
+                  className=""
                 >
                   {faqMutation.isPending ? (
                     <Loader size={20} className="animate-spin" />
@@ -269,16 +272,17 @@ const SuperAdminFaqManagement = () => {
                   {faqMutation.isPending
                     ? "saving..."
                     : editFaq
-                    ? "Edit FAQ"
-                    : "Add FAQ"}
+                      ? "Edit FAQ"
+                      : "Add FAQ"}
                 </Button>
               </div>
 
               <Button
                 type="submit"
                 variant="warning"
+                size="xs"
                 onClick={handleCancelCrud}
-                className="btn btn-sm"
+                className=""
               >
                 <X size={20} />
                 {editFaq ? "Cancel Edit FAQ" : "Cancel Add FAQ"}

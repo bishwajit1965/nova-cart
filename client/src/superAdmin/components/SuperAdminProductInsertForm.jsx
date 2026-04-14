@@ -92,7 +92,7 @@ const SuperAdminProductInsertForm = ({
 
   return (
     <div className="lg:space-y-4">
-      <h2 className="lg:text-2xl text-xl font-bold flex items-center gap-2">
+      <h2 className="lg:text-xl text-lg font-bold flex items-center gap-2 text-base-content/70">
         {editingProduct ? <LucideIcon.Edit /> : <LucideIcon.Plus />}
         {editingProduct ? "Edit Product" : "Add Product"}
       </h2>
@@ -345,6 +345,7 @@ const SuperAdminProductInsertForm = ({
                 <Button
                   type="button"
                   variant="danger"
+                  size="sm"
                   icon={LucideIcon.Trash2}
                   onClick={() => removeVariant(idx)}
                   className=""
@@ -359,6 +360,7 @@ const SuperAdminProductInsertForm = ({
           <Button
             type="button"
             variant="indigo"
+            size="sm"
             onClick={addVariant}
             className="bg-indigo-600 text-white px-3 py-1 rounded"
           >
@@ -379,6 +381,7 @@ const SuperAdminProductInsertForm = ({
           <Button
             type="submit"
             variant="success"
+            size="sm"
             loading={onMutation.isPending}
             disabled={onMutation.isPending}
             icon={
@@ -386,7 +389,7 @@ const SuperAdminProductInsertForm = ({
                 ? LucideIcon.Check
                 : editingProduct
                   ? LucideIcon.Edit
-                  : LucideIcon.Plus
+                  : LucideIcon.UploadCloudIcon
             }
           >
             {onDelay ? "Saving..." : editingProduct ? "Update" : "Create"}
@@ -396,6 +399,7 @@ const SuperAdminProductInsertForm = ({
             <Button
               type="button"
               variant="warning"
+              size="sm"
               icon={LucideIcon.X}
               className="text-2xl"
               onClick={() => {

@@ -172,7 +172,7 @@ const RoleManagement = () => {
     setDescription(role.description);
     // permissions is an array of objects, map to _id
     setSelectedPermissions(
-      role.permissions ? role.permissions.map((p) => p._id) : []
+      role.permissions ? role.permissions.map((p) => p._id) : [],
     );
   };
 
@@ -186,7 +186,7 @@ const RoleManagement = () => {
     setSelectedPermissions((prev) =>
       prev.includes(permId)
         ? prev.filter((id) => id !== permId)
-        : [...prev, permId]
+        : [...prev, permId],
     );
   };
 
@@ -194,7 +194,7 @@ const RoleManagement = () => {
     setSelectedRoles((prev) =>
       prev.includes(roleId)
         ? prev.filter((id) => id !== roleId)
-        : [...prev, roleId]
+        : [...prev, roleId],
     );
   };
 
@@ -215,12 +215,13 @@ const RoleManagement = () => {
       <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-6 gap-4">
         {/* Form */}
         <div className="lg:col-span-4 col-span-12 bg-base-100 lg:p-4 p-2 rounded-xl shadow space-y-4">
-          <h2 className="text-2xl font-bold">
+          <h2 className="lg:text-xl text-lg font-bold flex items-center gap-2 text-base-content/70">
+            {editingRole ? <LucideIcon.Edit /> : <LucideIcon.UploadCloud />}
             {editingRole
               ? "Edit Role"
               : selectedUser
-              ? `Assign ${selectedUser?.name} Role`
-              : "Add Role"}
+                ? `Assign ${selectedUser?.name} Role`
+                : "Add Role"}
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -293,6 +294,7 @@ const RoleManagement = () => {
                     type="button"
                     disabled={isLoading}
                     variant="indigo"
+                    size="sm"
                     className="btn btn-primary cursor-not-allowed"
                   >
                     {isLoading ? (
@@ -307,6 +309,7 @@ const RoleManagement = () => {
                   type="button"
                   icon={LucideIcon.X}
                   variant="warning"
+                  size="sm"
                   onClick={() => {
                     setSelectedUser(null);
                     setDescription("");
@@ -383,7 +386,10 @@ const RoleManagement = () => {
 
         <div className="lg:col-span-8 col-span-12 bg-base-100 overflow-x-auto space-y-6 lg:p-4 p-2 rounded-xl shadow">
           <div className="">
-            <h2 className="text-2xl font-bold mb-4">Users List</h2>
+            <h2 className="lg:text-xl text-lg font-bold mb-4 flex items-center gap-2 text-base-content/70">
+              <LucideIcon.List />
+              Users Role List Table
+            </h2>
             <div className="overflow-x-auto">
               <table className="table table-xs w-full">
                 <thead className="bg-base-200">
@@ -424,7 +430,7 @@ const RoleManagement = () => {
                         <td>
                           {user?.roles?.length > 0
                             ? user?.roles?.flatMap(
-                                (role) => role.permissions || []
+                                (role) => role.permissions || [],
                               ).length > 0
                               ? user.roles
                                   .flatMap((role) => role.permissions || [])

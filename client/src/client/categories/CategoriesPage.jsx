@@ -271,7 +271,7 @@ const CategoriesPage = () => {
         ) : (
           <aside
             className={`
-            bg-base-200 shadow
+            bg-base-100 shadow
             lg:col-span-3 col-span-12
             fixed lg:sticky
             self-start
@@ -288,7 +288,7 @@ const CategoriesPage = () => {
             lg:max-h-[calc(100vh-6rem)] max-h-screen overflow-y-auto
           `}
           >
-            <div className="mb-4 text-sm text-gray-500 bg-base-300 lg:p-2 p-2 lg:text-2xl font-bold border border-base-content/10 lg:rounded-t-lg rounded-t-xs sticky top-0">
+            <div className="mb-4 text-sm text-base-content/70 bg-base-300 lg:p-2 p-2 lg:text-2xl font-bold border border-base-content/10 lg:rounded-t-lg rounded-t-xs sticky top-0">
               <h3
                 className={`lg:text-2xl text-lg font-bold flex items-center justify-between gap-2`}
               >
@@ -312,15 +312,14 @@ const CategoriesPage = () => {
                 <li
                   className={`${
                     selectedCategory
-                      ? "hover:bg-base-200"
-                      : "bg-base-200 border-b border-base-content/15 text-indigo-500 font-semibold hover:bg-base-200"
+                      ? "hover:bg-base-200 text-base-content/70"
+                      : "bg-base-200 border-b border-base-content/15 text-green-500 font-semibold hover:bg-base-200"
                   } `}
                 >
                   <Link
                     to="/product-categories"
                     className="flex items-center gap-2 font-bold"
                   >
-                    {" "}
                     <LucidePackageCheck size={20} /> All Products
                   </Link>
                 </li>
@@ -330,8 +329,8 @@ const CategoriesPage = () => {
                     <button
                       className={`rounded text-base-content/70 hover:bg-base-100 cursor-pointer w-full text-left flex items-center gap-2 font-bold ${
                         selectedCategory === cat.slug
-                          ? "bg-base-200 border-base-content/15 text-indigo-500 font-semibold cursor-pointer w-full border-b"
-                          : ""
+                          ? "bg-base-200 border-base-content/15 text-green-600 font-semibold cursor-pointer w-full border-b"
+                          : "text-base-content"
                       }`}
                       onClick={() => handleCategoryClick(cat.slug)}
                     >
@@ -344,11 +343,11 @@ const CategoriesPage = () => {
                           {cat.subcategories.map((sub) => (
                             <li key={sub._id}>
                               <button
-                                className={`px-2 py-1 rounded hover:bg-gray-100 flex items-center gap-2 ${
+                                className={`px-2 py-1 rounded hover:bg-base-200 text-base-content/70 hover:text-base-content hover:border border-base-content/15 flex items-center gap-2 w-full ${
                                   subCategorySlug.toString() ===
                                   sub.slug.toString()
-                                    ? "bg-base-200 text-indigo-500 font-semibold px-2 block cursor-pointer w-full"
-                                    : "cursor-pointer"
+                                    ? "bg-base-200 text-green-500 border-b font-semibold px-2 block cursor-pointer w-full"
+                                    : "cursor-pointer text-base-content/70"
                                 }`}
                                 onClick={() =>
                                   handleSubCategoryClick(cat.slug, sub.slug)
@@ -479,7 +478,7 @@ const CategoriesPage = () => {
         ) : (
           <main className="lg:col-span-9 col-span-12 rounded-lg">
             {/* Breadcrumb */}
-            <div className="mb-4 text-sm text-gray-500 bg-base-300 lg:p-2 p-1 rounded-t-lg border-t border-b border-base-content/10 flex items-center gap-2">
+            <div className="mb-4 text-sm text-base-content/70 bg-base-300 lg:p-2 p-1 rounded-t-lg border-t border-b border-base-content/10 flex items-center gap-2">
               <Link to="/" className="m-0 p-0 flex items-center">
                 <h3 className="lg:text-2xl text-lg font-bold flex items-center gap-2">
                   <LucideIcon.Home />
@@ -568,7 +567,7 @@ const CategoriesPage = () => {
                         <p className="text-sm font-semibold">
                           Brand: {p.brand}
                         </p>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-base-content/70">
                           {textShortener(p.description, 100)}
                         </p>
 

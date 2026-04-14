@@ -13,6 +13,7 @@ import { useApiMutation } from "../services/hooks/useApiMutation";
 import { useApiQuery } from "../services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import useValidator from "../../common/hooks/useValidator";
+import { LucideIcon } from "../../common/lib/LucideIcons";
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB limit
 
@@ -230,8 +231,12 @@ const SuperAdminAboutContentManagementPage = () => {
 
   return (
     <div className="space-y-6">
+      <h2 className="lg:text-xl text-lg font-bold mb-4 flex items-center gap-2 text-base-content/70">
+        <LucideIcon.List />
+        About Content Table
+      </h2>
       <div className="">
-        <Button variant="indigo" onClick={handleModalToggler}>
+        <Button variant="indigo" size="sm" onClick={handleModalToggler}>
           <PlusCircle />
           {isModalOpen ? "About Form is Open" : "Add About Content"}
         </Button>

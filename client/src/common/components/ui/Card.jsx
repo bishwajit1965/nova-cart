@@ -17,7 +17,7 @@ export const CardHeader = ({ children, className = "" }) => (
 
 export const CardTitle = ({ children, className = "" }) => (
   <h2
-    className={`text-xl font-bold text-base-content/90 tracking-wide ${className}`}
+    className={`text-xl font-bold text-base-content/70 tracking-wide flex items-center gap-2 ${className}`}
   >
     {children}
   </h2>

@@ -168,7 +168,8 @@ const CategoryManagement = () => {
     <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-8 gap-4">
       <div className="lg:col-span-6 col-span-12 bg-base-100 lg:p-4 p-2 rounded-xl border border-base-content/15 shadow-sm">
         <div className="lg:mb-4 mb-2">
-          <h2 className="lg:text-2xl text-xl font-bold">
+          <h2 className="lg:text-xl text-lg font-bold flex items-center gap-2 text-base-content/70">
+            {editingCategory ? <LucideIcon.Edit /> : <LucideIcon.UploadCloud />}{" "}
             {editingCategory ? "Update Category" : "Add Category"}
           </h2>
         </div>
@@ -243,6 +244,7 @@ const CategoryManagement = () => {
               type="submit"
               variant="indigo"
               disabled={mutation.isPending}
+              size="sm"
               icon={editingCategory ? LucideIcon.Edit : LucideIcon.Plus}
               className="lg:w-24 w-24"
             >
@@ -255,6 +257,7 @@ const CategoryManagement = () => {
                 paginatedData
                 className="lg:w-24 w-24"
                 variant="warning"
+                size="sm"
                 onClick={() => {
                   setEditingCategory(null);
                   setName("");
@@ -272,7 +275,10 @@ const CategoryManagement = () => {
       </div>
       <div className="lg:col-span-6 col-span-12 bg-base-100 lg:p-4 p-2 rounded-xl border border-base-content/15 shadow-sm">
         <div className="lg:mb-4 mb-2">
-          <h2 className="lg:text-2xl text-xl font-bold">Category List</h2>
+          <h2 className="lg:text-xl text-lg font-bold flex items-center gap-2 text-base-content/70">
+            <LucideIcon.List />
+            Category List Table
+          </h2>
         </div>
         <div className="lg:space-y-6 space-y-4">
           <div className="overflow-x-auto">

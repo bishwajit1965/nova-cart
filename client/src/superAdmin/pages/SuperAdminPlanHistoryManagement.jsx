@@ -11,6 +11,7 @@ import PageMeta from "../../common/components/ui/PageMeta";
 import { RefreshCcw } from "lucide-react";
 import { useApiQuery } from "../services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
+import { LucideIcon } from "../../common/lib/LucideIcons";
 
 const SuperAdminPlanHistoryManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -60,7 +61,7 @@ const SuperAdminPlanHistoryManagement = () => {
     if (filterAction && filterAction !== "All") {
       const actionFilter = filterAction.toLowerCase();
       filtered = filtered.filter(
-        (item) => (item?.action || "").toLowerCase() === actionFilter
+        (item) => (item?.action || "").toLowerCase() === actionFilter,
       );
     }
 
@@ -154,7 +155,10 @@ const SuperAdminPlanHistoryManagement = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle>Plan History Overview</CardTitle>
+              <CardTitle>
+                <LucideIcon.History />
+                Plan History Overview
+              </CardTitle>
             </CardHeader>
             <CardContent>
               {filteredAndSortedHistories?.length === 0 ? (

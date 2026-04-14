@@ -2,15 +2,13 @@ import API_PATHS from "../services/apiPaths/apiPaths";
 import Card from "../../common/components/ui/Card";
 import DownLoadPanel from "../../common/components/ui/DownLoadPanel";
 import SuperAdminBillingSummaryCard from "../components/SuperAdminBillingSummaryCard";
-import SuperAdminDeveloperJourneyTracker from "./SuperAdminDeveloperJourneyTracker";
-import SuperAdminMonthlyRevenueChart from "../components/SuperAdminMonthlyRevenueChart";
-import SuperAdminRevenueAnalyticsOverTimeChart from "../components/SuperAdminRevenueAnalyticsOverTimeChart";
 import SuperAdminRevenueTabs from "../components/SuperAdminRevenueTabs";
 import SuperAdminSalesOverviewChart from "../components/SuperAdminSalesOverviewChart";
 import SuperAdminSummaryCard from "../components/SuperAdminSummaryCard";
 import SuperAdminUsersGrowthChart from "../components/SuperAdminUsersGrowthChart";
 import { useApiQuery } from "../services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
+import { TrendingUp } from "lucide-react";
 
 const SuperAdminDashboard = () => {
   /*** ------> Users fetcher QUERY ------> */
@@ -71,8 +69,8 @@ const SuperAdminDashboard = () => {
   return (
     <div className="lg:space-y-6 space-y-4">
       <div className="lg:mb-4 mb-2">
-        <h1 className="lg:text-2xl text-xl font-bold">
-          Super Admin Analytics Dashboard
+        <h1 className="lg:text-2xl text-xl font-bold flex items-center gap-2">
+          <TrendingUp /> Super Admin Analytics Dashboard
         </h1>
       </div>
 
@@ -126,9 +124,6 @@ const SuperAdminDashboard = () => {
       <div className="">
         <div className="">
           <SuperAdminBillingSummaryCard />
-        </div>
-        <div className="">
-          {/* <SuperAdminRevenueAnalyticsOverTimeChart /> */}
         </div>
       </div>
 

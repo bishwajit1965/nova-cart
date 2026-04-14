@@ -16,24 +16,24 @@ const TopBar = ({ role }) => {
   const navigate = useNavigate();
 
   const navLinks = [
-    { path: "/super-admin", label: "Dashboard" },
-    { path: "/super-admin/user-management", label: "Users" },
-    {
-      path: "/super-admin/product-oversight-management",
-      label: "Products",
-    },
-    {
-      path: "/super-admin/orders-overview-management",
-      label: "Orders",
-    },
-    {
-      path: "/super-admin/system-settings-management",
-      label: "Settings",
-    },
-    { path: "/", label: "Home" },
-    { path: "/shop", label: "Shop" },
-    { path: "/contact", label: "Contact" },
-    { path: "/about", label: "About" },
+    // { path: "/super-admin", label: "Dashboard" },
+    // { path: "/super-admin/user-management", label: "Users" },
+    // {
+    //   path: "/super-admin/product-oversight-management",
+    //   label: "Products",
+    // },
+    // {
+    //   path: "/super-admin/orders-overview-management",
+    //   label: "Orders",
+    // },
+    // {
+    //   path: "/super-admin/system-settings-management",
+    //   label: "Settings",
+    // },
+    // { path: "/", label: "Home" },
+    // { path: "/shop", label: "Shop" },
+    // { path: "/contact", label: "Contact" },
+    // { path: "/about", label: "About" },
   ];
 
   const handleLogout = async () => {
@@ -68,7 +68,9 @@ const TopBar = ({ role }) => {
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-2">
           <Logo />
-          {role && <span className="text-sm opacity-70">{role}</span>}
+          {role && (
+            <span className="text-sm opacity-70 capitalize">Role: {role}</span>
+          )}
         </Link>
 
         {/* Desktop Nav */}

@@ -94,9 +94,14 @@ const SuperAdminAnnouncementManagementPage = () => {
   return (
     <div>
       <div className="lg:p-4 p-2 bg-base-200 rounded-lg shadow-lg lg:max-w-7xl mx-auto lg:space-y-4 space-y-2">
+        <h2 className="lg:text-xl text-lg font-bold flex items-center gap-2 text-base-content/70">
+          <Megaphone size={20} />
+          Announcement / Notification List
+        </h2>
         <div className="lg:flex grid items-center gap-2">
           <Button
             variant="primary"
+            size="sm"
             onClick={() => {
               setEditingAnnouncement(null);
               toggleForm();
@@ -104,10 +109,6 @@ const SuperAdminAnnouncementManagementPage = () => {
           >
             <PlusCircleIcon size={20} /> Add New Announcement
           </Button>
-          <h2 className="lg:text-2xl text-lg font-bold flex items-center gap-2 ">
-            <Megaphone size={20} />
-            Announcement List
-          </h2>
         </div>
 
         <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">

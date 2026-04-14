@@ -122,7 +122,14 @@ const PermissionManagement = () => {
     <div className="grid lg:grid-cols-12 grid-cols-1 justify-between lg:gap-6 gap-4">
       <div className="lg:col-span-6 col-span-12 bg-base-100 lg:p-4 p-2 rounded-xl border border-base-content/15 shadow-sm">
         <div className="lg:mb-4 mb-2">
-          <h1 className="lg:text-2xl font-bold">Permission Management</h1>
+          <h1 className="lg:text-xl text-lg font-bold flex items-center gap-2 text-base-content/70">
+            {editingPermission ? (
+              <LucideIcon.Edit />
+            ) : (
+              <LucideIcon.UploadCloud />
+            )}
+            {editingPermission ? "Update Permission" : "Add Permission"}
+          </h1>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -192,8 +199,8 @@ const PermissionManagement = () => {
       <div className="lg:col-span-6 col-span-12 bg-base-100 lg:p-4 p-2 rounded-xl border border-base-content/15 shadow-sm lg:space-y-6 space-y-4">
         <div className="overflow-x-auto">
           <div className="lg:mb-4 mb-2">
-            <h2 className="lg:text-2xl text-xl font-bold space-y-3">
-              Permission List
+            <h2 className="lg:text-xl text-lg font-bold space-y-3 flex items-center gap-2 text-base-content/70">
+              <LucideIcon.List /> Permission List Table
             </h2>
           </div>
           {permissionsStatus.status !== "success" ? (

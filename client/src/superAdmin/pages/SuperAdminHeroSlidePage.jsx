@@ -11,6 +11,7 @@ import { useApiQuery } from "../services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import ConfirmDialog from "../../common/components/ui/ConfirmDialog";
 import buildUrl from "../../common/hooks/useBuildUrl";
+import { LucideIcon } from "../../common/lib/LucideIcons";
 const apuURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 const SuperAdminHeroSlidePage = () => {
@@ -104,13 +105,13 @@ const SuperAdminHeroSlidePage = () => {
 
   return (
     <div className="lg:p-6 p-2 bg-base-200 rounded-lg shadow-lg max-w-7xl mx-auto lg:space-y-6 space-y-4">
+      <h2 className="lg:text-xl text-lg font-extrabold text-base-content/70 flex items-center gap-2">
+        <LucideIcon.List /> Hero & Banner Slides List
+      </h2>
       <div className="lg:flex grid items-center lg:gap-6 gap-2">
-        <Button variant="primary" onClick={toggleForm}>
+        <Button variant="primary" size="sm" onClick={toggleForm}>
           <PlusCircleIcon size={20} /> Add New Slide
         </Button>
-        <h2 className="lg:text-2xl text-lg font-extrabold text-base-content/70">
-          Hero & Banner Slides
-        </h2>
       </div>
 
       <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">

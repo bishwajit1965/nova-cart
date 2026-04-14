@@ -71,8 +71,8 @@ const PublicNavBar = () => {
               to={link.path}
               className={({ isActive }) =>
                 isActive
-                  ? "font-semibold text-blue-600 border-blue-600 transition ease-in duration-300 pl-2"
-                  : "text-base-content hover:text-blue-500 transition pl-2"
+                  ? "font-semibold text-green-600 border-green-600 border-b-2 transition ease-in duration-300 pl-"
+                  : "text-base-content hover:text-orange-400 transition pl-2"
               }
             >
               {link.label}
@@ -159,8 +159,8 @@ const PublicNavBar = () => {
               to={link.path}
               className={({ isActive }) =>
                 isActive
-                  ? "font-semibold text-blue-600 border-blue-600 transition ease-in duration-300 pl-2"
-                  : "text-base-content hover:text-blue-500 transition pl-2"
+                  ? "font-semibold text-green-600 border-green-600 border-b transition ease-in duration-300 pl-2"
+                  : "text-base-content hover:text-orange-400 transition pl-2"
               }
               onClick={() => setMenuOpen(false)}
             >

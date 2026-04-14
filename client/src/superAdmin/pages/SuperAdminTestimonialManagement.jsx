@@ -7,6 +7,7 @@ import Badge from "../../common/components/ui/Badge";
 import { useApiMutation } from "../services/hooks/useApiMutation";
 import { useState } from "react";
 import Pagination from "../../common/pagination/Pagination";
+import { LucideIcon } from "../../common/lib/LucideIcons";
 // import { Pagination } from "swiper/modules";
 
 export const SuperAdminTestimonialManagement = () => {
@@ -130,8 +131,8 @@ export const SuperAdminTestimonialManagement = () => {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-semibold">
-        Super Admin Testimonial Management
+      <h1 className="lg;text-xl text-lg font-semibold flex items-center gap-2 text-base-content/70">
+        <LucideIcon.MessageSquare /> Super Admin Testimonial Management Table
       </h1>
       {testimonialsDataStatus.status !== "success" ? (
         testimonialsDataStatus.content
@@ -163,10 +164,10 @@ export const SuperAdminTestimonialManagement = () => {
                         t.status === "approved"
                           ? "blue"
                           : t.status === "hidden"
-                          ? "red"
-                          : t.status === "pending"
-                          ? "gray"
-                          : "green"
+                            ? "red"
+                            : t.status === "pending"
+                              ? "gray"
+                              : "green"
                       }
                     >
                       <span className="capitalize">{t.status}</span>

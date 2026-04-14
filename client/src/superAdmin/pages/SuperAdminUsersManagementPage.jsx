@@ -7,6 +7,7 @@ import { useApiMutation } from "../../superAdmin/services/hooks/useApiMutation";
 import { useApiQuery } from "../services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import { useState } from "react";
+import { LucideIcon } from "../../common/lib/LucideIcons";
 
 const STATUSES = ["active", "inactive", "banned", "deleted", "pending"];
 const SuperAdminUsersManagementPage = () => {
@@ -71,7 +72,10 @@ const SuperAdminUsersManagementPage = () => {
       ) : (
         <div className="lg:space-y-6 space-y-4">
           <div className="">
-            <h1 className="lg:text-2xl text-xl font-bold">User Management</h1>
+            <h1 className="lg:text-xl text-lg font-bold flex items-center gap-2">
+              <LucideIcon.Users />
+              User Management Table
+            </h1>
           </div>
 
           <div className="overflow-x-auto">
@@ -110,8 +114,8 @@ const SuperAdminUsersManagementPage = () => {
                             user?.status === "active"
                               ? "green"
                               : user.status === "inactive"
-                              ? "gray"
-                              : "red"
+                                ? "gray"
+                                : "red"
                           }
                         >
                           {user?.status}

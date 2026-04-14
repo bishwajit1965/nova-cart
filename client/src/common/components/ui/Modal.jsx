@@ -12,11 +12,11 @@ export default function Modal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
       <div
         className={cn(
           "bg-base-100 lg:p-4 p-2 py- rounded-xl shadow-xl lg:w-[90%] w-[96%] max-w-lg relative lg:text-lg text-xs flex flex-col",
-          className
+          className,
         )}
       >
         {showClose && (

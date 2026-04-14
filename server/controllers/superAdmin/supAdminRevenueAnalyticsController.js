@@ -2,7 +2,7 @@ import Plan from "../../models/Plan.js";
 import PlanHistory from "../../models/PlanHistory.js";
 
 export const getSuperAdminRevenueAnalytics = async (req, res) => {
-  console.log("🎯 Controller is hit!");
+  console.log("🎯 Get super Amin Revenue Analytics Controller is hit!");
   try {
     // Last 7 days range
     const last7Days = Array.from({ length: 7 })
@@ -25,7 +25,7 @@ export const getSuperAdminRevenueAnalytics = async (req, res) => {
 
         const totalRevenue = histories.reduce(
           (sum, record) => sum + (record?.planId?.price || 0),
-          0
+          0,
         );
 
         return {
@@ -33,15 +33,15 @@ export const getSuperAdminRevenueAnalytics = async (req, res) => {
           totalRevenue,
           totalTransactions: histories.length,
         };
-      })
+      }),
     );
 
     // Calculate total revenue overall
     const totalRevenue = revenueOverTime.reduce(
       (sum, item) => sum + item.totalRevenue,
-      0
+      0,
     );
-
+    console.log("Total revenue", totalRevenue);
     res.status(200).json({
       success: true,
       message: "Super admin revenue analytics fetched successfully!",

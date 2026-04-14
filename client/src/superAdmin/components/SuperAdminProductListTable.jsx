@@ -68,8 +68,8 @@ const SuperAdminProductListTable = ({
   return (
     <div className="lg:space-y-4 space-y-2">
       <div className="">
-        <h2 className="lg:text-2xl text-xl font-bold flex items-center gap-2">
-          Super Admin Product List Table
+        <h2 className="lg:text-xl text-lg font-bold flex items-center gap-2 text-base-content/70">
+          <LucideIcon.List /> Super Admin Product List Table
           <span className="lg:w-7 lg:h-7 w-6 h-6 shadow-sm rounded-full bg-indigo-600 text-white border-2 border-base-100 text-sm p-1 flex items-center justify-center">
             {products ? products.length : 0}
           </span>

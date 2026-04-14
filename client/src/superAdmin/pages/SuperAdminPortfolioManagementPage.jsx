@@ -15,6 +15,7 @@ import { useApiQuery } from "../services/hooks/useApiQuery";
 import { useAuth } from "../../common/hooks/useAuth";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import useValidator from "../../common/hooks/useValidator";
+import { LucideIcon } from "../../common/lib/LucideIcons";
 
 const SuperAdminPortfolioManagementPage = () => {
   const { user } = useAuth();
@@ -426,7 +427,12 @@ const SuperAdminPortfolioManagementPage = () => {
 
   return (
     <div className="lg:space-y-6 space-y-4">
-      <Button onClick={toggleModal} variant="indigo">
+      <div className="">
+        <h2 className="lg:text-2xl text-lg font-bold flex items-center gap-2 text-base-content/70">
+          <LucideIcon.Briefcase /> Portfolio Management Data
+        </h2>
+      </div>
+      <Button onClick={toggleModal} variant="indigo" size="sm">
         <PlusCircle size={20} /> Add Portfolio
       </Button>
 

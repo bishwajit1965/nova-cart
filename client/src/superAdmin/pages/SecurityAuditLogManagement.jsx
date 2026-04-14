@@ -7,6 +7,7 @@ import { useApiQuery } from "../services/hooks/useApiQuery";
 import { useEffect } from "react";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import { useState } from "react";
+import { LucideIcon } from "../../common/lib/LucideIcons";
 
 const ACTIONS = [
   "CREATE_PRODUCT",
@@ -57,7 +58,7 @@ const SecurityAuditLogManagement = () => {
 
     if (searchTerm) {
       logs = logs.filter((log) =>
-        log?.user?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+        log?.user?.name?.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
 
@@ -69,8 +70,8 @@ const SecurityAuditLogManagement = () => {
   return (
     <div className="space-y-4">
       <div className="">
-        <h1 className="lg:text-2xl text-base-content text-xl font-bold">
-          Security & Audit Log Management
+        <h1 className="lg:text-xl text-lg font-bold flex items-center gap-2 text-base-content/70">
+          <LucideIcon.ShieldUserIcon /> Security & Audit Log Management Table
         </h1>
       </div>
 

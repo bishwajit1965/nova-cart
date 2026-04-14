@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import API_PATHS from "../services/apiPaths/apiPaths";
 import { useApiQuery } from "../services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
+import { LucideIcon } from "../../common/lib/LucideIcons";
 
 const SuperAdminRevenueAnalyticsOverTimeChart = () => {
   const [chartData, setChartData] = useState([]);
@@ -56,7 +57,10 @@ const SuperAdminRevenueAnalyticsOverTimeChart = () => {
       ) : (
         <Card>
           <CardHeader>
-            <CardTitle>Weekly Revenue</CardTitle>
+            <CardTitle>
+              <LucideIcon.CalendarDaysIcon />
+              Weekly Revenue
+            </CardTitle>
           </CardHeader>
 
           <CardContent>

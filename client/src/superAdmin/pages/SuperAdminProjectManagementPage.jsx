@@ -14,6 +14,7 @@ import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedData
 import SuperAdminProjectTable from "../components/SuperAdminProjectTable";
 import NoDataFound from "../../common/components/ui/NoDataFound";
 import ConfirmDialog from "../../common/components/ui/ConfirmDialog";
+import { LucideIcon } from "../../common/lib/LucideIcons";
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 
 const SuperAdminProjectManagementPage = () => {
@@ -308,7 +309,12 @@ const SuperAdminProjectManagementPage = () => {
 
   return (
     <div className="lg:space-y-6 space-y-4">
-      <Button onClick={toggleModal} variant="indigo">
+      <h2 className="lg:text-xl text-lg font-bold mb-4 flex items-center gap-2 text-base-content/70">
+        <LucideIcon.List />
+        Projects List Table
+      </h2>
+
+      <Button onClick={toggleModal} variant="indigo" size="sm">
         <PlusCircle size={20} /> Add Project
       </Button>
 

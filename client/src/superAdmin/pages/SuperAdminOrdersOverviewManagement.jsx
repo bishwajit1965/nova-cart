@@ -15,6 +15,7 @@ import { useApiQuery } from "../services/hooks/useApiQuery";
 import { useEffect } from "react";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import { useState } from "react";
+import { LucideIcon } from "../../common/lib/LucideIcons";
 
 const STATUSES = ["pending", "processing", "shipped", "delivered"];
 
@@ -69,7 +70,7 @@ const SuperAdminOrdersOverviewManagement = () => {
 
     if (paymentFilter) {
       tempOrders = tempOrders.filter(
-        (order) => order.paymentStatus === paymentFilter
+        (order) => order.paymentStatus === paymentFilter,
       );
     }
 
@@ -77,7 +78,7 @@ const SuperAdminOrdersOverviewManagement = () => {
       tempOrders = tempOrders.filter((order) =>
         order.shippingAddress.fullName
           ?.toLowerCase()
-          .includes(searchTerm.toLowerCase())
+          .includes(searchTerm.toLowerCase()),
       );
     }
 
@@ -151,6 +152,10 @@ const SuperAdminOrdersOverviewManagement = () => {
         ordersStatus.content
       ) : (
         <div className="">
+          <h2 className="lg:text-xl text-lg font-bold mb-4 flex items-center gap-2 text-base-content/70">
+            <LucideIcon.List />
+            Orders List Table
+          </h2>
           {/* -------> Search and filter ------> */}
           <div className="flex flex-wrap lg:gap-4 gap-2 mb-4 items-end justify-between">
             {/* Search */}
@@ -217,7 +222,7 @@ const SuperAdminOrdersOverviewManagement = () => {
                         {console.log(
                           "Order status=>",
                           order.orderId,
-                          order.status
+                          order.status,
                         )}
                         <td>
                           <div className="flex items-center gap-3">

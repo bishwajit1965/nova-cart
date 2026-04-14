@@ -55,7 +55,7 @@ const UnderConstruction = () => {
           </Link>
 
           <Link to="/super-admin/product-management">
-            <Button variant="outline" className="flex items-center gap-2">
+            <Button variant="success" className="flex items-center gap-2">
               Explore Products
               <ArrowRight size={18} />
             </Button>
