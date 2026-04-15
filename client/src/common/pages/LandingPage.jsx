@@ -46,7 +46,9 @@ const LandingPage = () => {
         description="Have a look on all in details."
       />
 
+      {/* <div className="min-h-screen"> */}
       <TopHeroSection />
+      {/* </div> */}
 
       <div className="lg:max-w-7xl mx-auto lg:space-y-12 space-y-6">
         {hasAccess?.isAuthenticated && <AnnouncementBar />}

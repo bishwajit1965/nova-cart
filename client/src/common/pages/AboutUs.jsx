@@ -12,6 +12,7 @@ import usePageTitle from "../../superAdmin/services/hooks/usePageTitle";
 import useSEO from "../hooks/useSeo.js";
 import { SEO_TEMPLATES } from "../../utils/seoTemplate.js";
 import { LucideIcon } from "../lib/LucideIcons.js";
+import SetTitle from "../utils/setTitle/SetTitle.jsx";
 
 const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 const skills = [
@@ -106,13 +107,13 @@ const AboutUs = () => {
             className="text-center space-y-4 bg-base-100 shadow lg:p-12 p-4 rounded-2xl hover:shadow-xl"
           >
             {aboutNovaCart.map((item) => (
-              <div className="lg:space-y-4 space-y-2">
-                <h1 className="lg:text-4xl text-xl font-extrabold text-base-content/70">
-                  <span className="text-indigo-600">{item.title}</span>
-                </h1>
-                <p className="text-lg text-base-content/50 max-w-2xl mx-auto">
-                  {item.content}
-                </p>
+              <div className="">
+                <SetTitle
+                  title={item.title}
+                  decoratedText="E-Commerce"
+                  description={item.content}
+                  icon={<LucideIcon.ShoppingCart />}
+                />
               </div>
             ))}
           </motion.div>

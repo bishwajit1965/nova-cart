@@ -19,6 +19,8 @@ import { useState } from "react";
 import useValidator from "../hooks/useValidator";
 import useSEO from "../hooks/useSeo";
 import { SEO_TEMPLATES } from "../../utils/seoTemplate";
+import SectionTitle from "../utils/sectionTitle/SectionTitle";
+import SetTitle from "../utils/setTitle/SetTitle";
 
 const ContactPage = () => {
   // SEO
@@ -128,19 +130,15 @@ const ContactPage = () => {
             variants={containerVariants}
             className="text-center"
           >
-            <motion.h1
-              className="lg:text-3xl text-xl font-extrabold text-primary mb-2"
-              variant={itemVariants}
-            >
-              Get in Touch
-            </motion.h1>
-            <motion.p
-              className="text-lg text-base-content/70"
-              variant={itemVariants}
-            >
-              We’d love to hear from you. Reach out with questions, feedback, or
-              support requests.
-            </motion.p>
+            <motion.div className="" variant={itemVariants}>
+              <SetTitle
+                title="Get in Touch"
+                decoratedText="Very Much"
+                icon={<LucideIcon.HeartPlus />}
+                description="We’d love to hear from you. Reach out with questions, feedback, or
+              support requests."
+              />
+            </motion.div>
           </motion.div>
 
           {/* Info Cards */}
@@ -155,7 +153,7 @@ const ContactPage = () => {
               className="bg-base-100 shadow rounded-xl lg:p-6 p-2 text-center hover:shadow-2xl transition"
               variants={itemVariants}
             >
-              <LucideIcon.MapPin className="w-8 h-8 text-primary mx-auto mb-3" />
+              <LucideIcon.MapPin className="w-8 h-8 text-base-content/70 mx-auto mb-3" />
               <h4 className="font-semibold">Address</h4>
               <p className="text-sm text-base-content/70">
                 123 Nova Street, Dhaka, BD
@@ -165,7 +163,7 @@ const ContactPage = () => {
               className="bg-base-100 shadow rounded-xl lg:p-6 p-2 text-center hover:shadow-2xl transition"
               variant={itemVariants}
             >
-              <LucideIcon.Phone className="w-8 h-8 text-primary mx-auto mb-3" />
+              <LucideIcon.Phone className="w-8 h-8 text-base-content/70 mx-auto mb-3" />
               <h4 className="font-semibold">Phone</h4>
               <p className="text-sm text-base-content/70">+880 1234 567 890</p>
             </motion.div>
@@ -173,7 +171,7 @@ const ContactPage = () => {
               className="bg-base-100 shadow rounded-xl lg:p-6 p-2 text-center hover:shadow-2xl transition"
               variant={itemVariants}
             >
-              <LucideIcon.Mail className="w-8 h-8 text-primary mx-auto mb-3" />
+              <LucideIcon.Mail className="w-8 h-8 text-base-content/70 mx-auto mb-3" />
               <h4 className="font-semibold">Email</h4>
               <p className="text-sm text-base-content/70">
                 support@nova-cart.com
@@ -183,7 +181,7 @@ const ContactPage = () => {
               className="bg-base-100 shadow rounded-xl lg:p-6 p-2 text-center hover:shadow-2xl transition"
               variants={itemVariants}
             >
-              <LucideIcon.Clock className="w-8 h-8 text-primary mx-auto mb-3" />
+              <LucideIcon.Clock className="w-8 h-8 text-base-content/70 mx-auto mb-3" />
               <h4 className="font-semibold">Working Hours</h4>
               <p className="text-sm text-base-content/70">
                 Sat–Thu: 9am – 6pm <br /> Fri: Closed
@@ -199,14 +197,16 @@ const ContactPage = () => {
             whileInView="visible"
             viewport={{ once: false }}
             variants={containerVariants}
-            className="lg:max-w-4xl mx-auto lg:px-6 px-"
+            className="lg:max-w-4xl mx-auto lg:px-6 px-2"
           >
-            <motion.h2
-              className="lg:text-3xl text-xl font-extrabold lg:mb-8 mb-4 text-center text-primary flex items-center gap-2"
-              variants={itemVariants}
-            >
-              <LucideIcon.MailPlus /> Send Message
-            </motion.h2>
+            <motion.div variants={itemVariants} className="">
+              <SetTitle
+                title="Send"
+                decoratedText="Message"
+                description="Do you have any query ? You can ask it freely 24/7"
+                icon={<LucideIcon.Mail />}
+              />
+            </motion.div>
             <motion.form
               onSubmit={handleSubmit}
               className="grid lg:grid-cols-12 grid-cols-1 lg:gap-6 gap-3 bg-base-100 lg:p-14 p-2 rounded-xl shadow hover:shadow-lg transition"
@@ -321,10 +321,6 @@ const ContactPage = () => {
           </motion.div>
         </div>
 
-        <div className="bg-base-200 shadow rounded-xl">
-          <FAQSection />
-        </div>
-
         {/* Map */}
         <div className="rounded-xl overflow-hidden shadow">
           <iframe
@@ -341,7 +337,7 @@ const ContactPage = () => {
           <p className="text-base-content/70">
             Looking for help?{" "}
             <a
-              href="/faq"
+              href="/frequently-asked-questions"
               className="text-primary font-semibold hover:underline"
             >
               Check our FAQ

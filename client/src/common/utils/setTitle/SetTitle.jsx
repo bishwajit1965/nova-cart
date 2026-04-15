@@ -1,6 +1,6 @@
 import React from "react";
 
-const SectionTitle = ({
+const SetTitle = ({
   title,
   subTitle,
   userStatus,
@@ -19,17 +19,17 @@ const SectionTitle = ({
   return (
     <div className="lg:space-y-3 space-y-2 text-center w-full z-30">
       <div className="text-base-content/90">
-        <h1 className="lg:text-4xl text-[16px] font-extrabold flex items-center justify-center space-x-1">
+        <h1 className="lg:text-2xl text-[18px] font-extrabold flex items-center justify-center space-x-1">
           {icon && (
-            <span className="lg:p-2 p-1 rounded-full bg-base-content/10 text-base-content/70 shadow-sm border border-base-content/10">
+            <span className="p-1 rounded-full bg-base-content/10 text-base-content/70 shadow-sm border border-base-content/10">
               {React.cloneElement(icon, {
-                className: "w-4 h-4 lg:w-6 lg:h-6",
+                className: "w-3 h-3 lg:w-5 lg:h-5",
               })}
             </span>
           )}
           <span className="capitalize">{userStatus}</span>
           <span className="lg:space-x-4 space-x-2">
-            <span>{title}</span>
+            <span className="text-base-content/70">{title}</span>
             <span className="text-amber-600 text-shadow-amber-500 shadow-amber-300">
               {decoratedText}
             </span>
@@ -53,29 +53,19 @@ const SectionTitle = ({
         </h1>
       </div>
 
-      <div className="">
-        {subTitle && (
-          <h2 className="lg:text-xl text-sm font-semibold text-base-content/60 max-w-xl mx-auto">
-            {subTitle}
-          </h2>
-        )}
-      </div>
+      {subTitle && (
+        <h2 className="lg:text-xl text-sm font-semibold text-base-content/60 max-w-xl mx-auto">
+          {subTitle}
+        </h2>
+      )}
 
-      <div className="">
-        <p className="lg:text-lg text-sm lg:max-w-96 mx-auto">{description}</p>
-      </div>
+      <p className="lg:text-normal text-sm lg:max-w-2xl mx-auto text-base-content/70">
+        {description}
+      </p>
 
-      {/* <div className="flex items-center mx-auto max-w-52 justify-between gap-1 border py-1 px-3 rounded-full bg-base-200 border-base-content/5 shadow">
-        <div className="h-1.5 bg-amber-600 w-20 rounded-xl shadow" />
-        <div className="w-2 h-2 p-1 rounded-full shadow-2xl bg-orange-400 flex items-center justify-center" />
-        <div className="w-4 h-4 p-2 rounded-full shadow-2xl border-2 border-amber-600 bg-orange-500 flex items-center justify-center" />
-        <div className="w-2 h-2 p-1 rounded-full shadow-2xl bg-orange-400 flex items-center justify-center" />
-        <div className="h-1.5 bg-amber-600 w-20 shadow rounded-xl" />
-      </div> */}
-
-      <div className="lg:w-32 w-28 h-1.5 bg-primary mx-auto lg:mb-5 mb-4 rounded-full shadow-md" />
+      <div className="lg:w-32 w-28 h-1 bg-primary mx-auto lg:mb-5 mb-4 rounded-full shadow-md" />
     </div>
   );
 };
 
-export default SectionTitle;
+export default SetTitle;

@@ -12,6 +12,8 @@ import { useApiQuery } from "../services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import { useState } from "react";
 import useValidator from "../../common/hooks/useValidator";
+import TextIconSwapper from "../utilHelper/TextIconSwapper";
+import HeaderSetter from "../utilHelper/HeaderSetter";
 
 const PermissionManagement = () => {
   const [name, setName] = useState("");
@@ -121,16 +123,13 @@ const PermissionManagement = () => {
   return (
     <div className="grid lg:grid-cols-12 grid-cols-1 justify-between lg:gap-6 gap-4">
       <div className="lg:col-span-6 col-span-12 bg-base-100 lg:p-4 p-2 rounded-xl border border-base-content/15 shadow-sm">
-        <div className="lg:mb-4 mb-2">
-          <h1 className="lg:text-xl text-lg font-bold flex items-center gap-2 text-base-content/70">
-            {editingPermission ? (
-              <LucideIcon.Edit />
-            ) : (
-              <LucideIcon.UploadCloud />
-            )}
-            {editingPermission ? "Update Permission" : "Add Permission"}
-          </h1>
-        </div>
+        <TextIconSwapper
+          dependency={editingPermission}
+          defaultText="Add Permission"
+          swapperText="Update Permission"
+          iconDefault={<LucideIcon.Edit />}
+          iconSwapped={<LucideIcon.UploadCloud />}
+        />
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="">
@@ -200,10 +199,11 @@ const PermissionManagement = () => {
 
       <div className="lg:col-span-6 col-span-12 bg-base-100 lg:p-4 p-2 rounded-xl border border-base-content/15 shadow-sm lg:space-y-6 space-y-4">
         <div className="overflow-x-auto">
-          <div className="lg:mb-4 mb-2">
-            <h2 className="lg:text-xl text-lg font-bold space-y-3 flex items-center gap-2 text-base-content/70">
-              <LucideIcon.List /> Permission List Table
-            </h2>
+          <div className="lg:mb- mb-">
+            <HeaderSetter
+              title="Permissions List Table"
+              icon={<LucideIcon.List />}
+            />
           </div>
           {permissionsStatus.status !== "success" ? (
             permissionsStatus.content
