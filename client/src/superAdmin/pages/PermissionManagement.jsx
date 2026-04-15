@@ -199,12 +199,11 @@ const PermissionManagement = () => {
 
       <div className="lg:col-span-6 col-span-12 bg-base-100 lg:p-4 p-2 rounded-xl border border-base-content/15 shadow-sm lg:space-y-6 space-y-4">
         <div className="overflow-x-auto">
-          <div className="lg:mb- mb-">
-            <HeaderSetter
-              title="Permissions List Table"
-              icon={<LucideIcon.List />}
-            />
-          </div>
+          <HeaderSetter
+            title="Permissions List Table"
+            icon={<LucideIcon.List />}
+          />
+
           {permissionsStatus.status !== "success" ? (
             permissionsStatus.content
           ) : (

@@ -113,6 +113,8 @@ import {
   PieChart,
   ChartBar,
   Puzzle,
+  ListOrdered,
+  ListOrderedIcon,
 } from "lucide-react";
 import { FaCalendarWeek, FaTimesCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -189,6 +191,8 @@ export const LucideIcon = {
   Link2OffIcon,
   List,
   ListCheck,
+  ListOrdered,
+  ListOrderedIcon,
   Lock,
   LogIn,
   Loader2,

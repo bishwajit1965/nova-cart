@@ -13,6 +13,8 @@ import { useApiQuery } from "../services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import { useState } from "react";
 import useValidator from "../../common/hooks/useValidator";
+import HeaderSetter from "../utilHelper/HeaderSetter";
+import TextIconSwapper from "../utilHelper/TextIconSwapper";
 
 const CategoryManagement = () => {
   const [name, setName] = useState("");
@@ -167,12 +169,14 @@ const CategoryManagement = () => {
   return (
     <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-8 gap-4">
       <div className="lg:col-span-6 col-span-12 bg-base-100 lg:p-4 p-2 rounded-xl border border-base-content/15 shadow-sm">
-        <div className="lg:mb-4 mb-2">
-          <h2 className="lg:text-xl text-lg font-bold flex items-center gap-2 text-base-content/70">
-            {editingCategory ? <LucideIcon.Edit /> : <LucideIcon.UploadCloud />}{" "}
-            {editingCategory ? "Update Category" : "Add Category"}
-          </h2>
-        </div>
+        <TextIconSwapper
+          dependency={editingCategory}
+          defaultText="Add Category"
+          swapperText="Update Category"
+          iconDefault={<LucideIcon.Edit />}
+          iconSwapped={<LucideIcon.UploadCloud />}
+        />
+
         <form onSubmit={handleSubmit} className="space-y-4 -z-50">
           <div className="">
             <Input
@@ -274,12 +278,11 @@ const CategoryManagement = () => {
         </form>
       </div>
       <div className="lg:col-span-6 col-span-12 bg-base-100 lg:p-4 p-2 rounded-xl border border-base-content/15 shadow-sm">
-        <div className="lg:mb-4 mb-2">
-          <h2 className="lg:text-xl text-lg font-bold flex items-center gap-2 text-base-content/70">
-            <LucideIcon.List />
-            Category List Table
-          </h2>
-        </div>
+        <HeaderSetter
+          title="Category List Table"
+          icon={<LucideIcon.ListOrdered />}
+        />
+
         <div className="lg:space-y-6 space-y-4">
           <div className="overflow-x-auto">
             {categoryDataStatus.status !== "success" ? (
@@ -306,7 +309,7 @@ const CategoryManagement = () => {
                     paginatedData.map((cat, idx) => (
                       <tr key={cat._id}>
                         <th>{idx + 1}</th>
-                        <td className="text-sm font-semibold">{cat.name}</td>
+                        <td className="">{cat.name}</td>
                         <td>{cat.description}</td>
                         <td>
                           {cat.subcategories && cat.subcategories.length > 0 ? (
@@ -314,7 +317,7 @@ const CategoryManagement = () => {
                               {cat.subcategories.map((sub) => (
                                 <span
                                   key={sub._id}
-                                  className="bg-indigo-100 text-indigo-800 text-xs px-2 py-0.5 rounded-full"
+                                  className="bg-base-content/10 text-base-content text-xs px-2 py-0.5 rounded-full"
                                 >
                                   {sub.name}
                                 </span>
