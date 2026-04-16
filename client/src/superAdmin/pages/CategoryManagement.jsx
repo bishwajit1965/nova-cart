@@ -172,9 +172,9 @@ const CategoryManagement = () => {
         <TextIconSwapper
           dependency={editingCategory}
           defaultText="Add Category"
-          swapperText="Update Category"
-          iconDefault={<LucideIcon.Edit />}
-          iconSwapped={<LucideIcon.UploadCloud />}
+          swapperText={`Edit Category • ${editingCategory ? editingCategory?.name : null}`}
+          iconDefault={<LucideIcon.UploadCloud />}
+          iconSwapped={<LucideIcon.Edit />}
         />
 
         <form onSubmit={handleSubmit} className="space-y-4 -z-50">
@@ -281,6 +281,7 @@ const CategoryManagement = () => {
         <HeaderSetter
           title="Category List Table"
           icon={<LucideIcon.ListOrdered />}
+          dataLength={categories ? categories?.length : null}
         />
 
         <div className="lg:space-y-6 space-y-4">

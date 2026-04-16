@@ -15,6 +15,7 @@ import SuperAdminProjectTable from "../components/SuperAdminProjectTable";
 import NoDataFound from "../../common/components/ui/NoDataFound";
 import ConfirmDialog from "../../common/components/ui/ConfirmDialog";
 import { LucideIcon } from "../../common/lib/LucideIcons";
+import HeaderSetter from "../utilHelper/HeaderSetter";
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 
 const SuperAdminProjectManagementPage = () => {
@@ -308,15 +309,19 @@ const SuperAdminProjectManagementPage = () => {
     return projectsDataStatus.content;
 
   return (
-    <div className="lg:space-y-6 space-y-4">
-      <h2 className="lg:text-xl text-lg font-bold mb-4 flex items-center gap-2 text-base-content/70">
-        <LucideIcon.List />
-        Projects List Table
-      </h2>
-
-      <Button onClick={toggleModal} variant="indigo" size="sm">
-        <PlusCircle size={20} /> Add Project
-      </Button>
+    <div className="space-y-2">
+      <div className="lg:flex grid items-center lg:gap-6 gap-4">
+        <HeaderSetter
+          title="Projects List Table"
+          icon={<LucideIcon.Briefcase />}
+          dataLength={projects ? projects?.length : null}
+        />
+        <div className="lg:mb-4 mb-2">
+          <Button onClick={toggleModal} variant="indigo" size="sm">
+            <PlusCircle size={20} /> Add Project
+          </Button>
+        </div>
+      </div>
 
       {/* Projects table */}
       {projects.length > 0 ? (

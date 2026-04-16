@@ -16,6 +16,7 @@ import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedData
 import { useState } from "react";
 import useValidator from "../../common/hooks/useValidator";
 import { LucideIcon } from "../../common/lib/LucideIcons";
+import HeaderSetter from "../utilHelper/HeaderSetter";
 
 const SuperAdminFaqManagement = () => {
   const [confirmDelete, setConfirmDelete] = useState(null);
@@ -146,17 +147,19 @@ const SuperAdminFaqManagement = () => {
   if (faqDataStatus.status !== "success") return faqDataStatus.content;
 
   return (
-    <div className="lg:space-y-6 space-y-4">
-      <div className="">
-        <h2 className="lg:text-xl text-lg font-bold flex items-center gap-2 text-base-content/70">
-          <LucideIcon.List /> Question & Answer Table
-        </h2>
-      </div>
-      <div className="">
-        <Button onClick={handleModalToggler} variant="indigo" size="sm">
-          <PlusCircle />
-          Add FAQ
-        </Button>
+    <div className="space-y-2">
+      <div className="lg:flex grid items-center lg:gap-6 gap-4">
+        <HeaderSetter
+          title="Question & Answer Table"
+          icon={<LucideIcon.TableCellsSplit />}
+          dataLength={faqs ? faqs?.length : null}
+        />
+        <div className="lg:mb-4 mb-2">
+          <Button onClick={handleModalToggler} variant="indigo" size="sm">
+            <PlusCircle />
+            Add FAQ
+          </Button>
+        </div>
       </div>
 
       <div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">

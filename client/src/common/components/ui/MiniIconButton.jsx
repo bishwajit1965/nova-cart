@@ -70,7 +70,7 @@ export function MiniIconButton({
       disabled={disabled}
       className={cn(
         baseSize[size],
-        "gap-1 cursor-pointer shadow-md",
+        "gap-1 cursor-pointer shadow-md hover:text-white text-white",
         className,
       )}
     >

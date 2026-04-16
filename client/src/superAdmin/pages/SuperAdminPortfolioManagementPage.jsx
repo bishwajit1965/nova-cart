@@ -16,6 +16,7 @@ import { useAuth } from "../../common/hooks/useAuth";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import useValidator from "../../common/hooks/useValidator";
 import { LucideIcon } from "../../common/lib/LucideIcons";
+import HeaderSetter from "../utilHelper/HeaderSetter";
 
 const SuperAdminPortfolioManagementPage = () => {
   const { user } = useAuth();
@@ -427,14 +428,18 @@ const SuperAdminPortfolioManagementPage = () => {
 
   return (
     <div className="lg:space-y-6 space-y-4">
-      <div className="">
-        <h2 className="lg:text-2xl text-lg font-bold flex items-center gap-2 text-base-content/70">
-          <LucideIcon.Briefcase /> Portfolio Management Data
-        </h2>
+      <div className="lg:flex grid items-center lg:gap-6 gap-4">
+        <HeaderSetter
+          title="Portfolio Management Data"
+          icon={<LucideIcon.Briefcase />}
+          dataLength={portfolios ? portfolios?.length : null}
+        />
+        <div className="lg:mb-4 mb-2">
+          <Button onClick={toggleModal} variant="indigo" size="sm">
+            <PlusCircle size={20} /> Add Portfolio
+          </Button>
+        </div>
       </div>
-      <Button onClick={toggleModal} variant="indigo" size="sm">
-        <PlusCircle size={20} /> Add Portfolio
-      </Button>
 
       {/* Portfolio form Modal */}
       {isModalVisible && (

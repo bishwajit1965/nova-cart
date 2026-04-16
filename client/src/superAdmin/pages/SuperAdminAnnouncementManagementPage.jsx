@@ -11,6 +11,8 @@ import { useEffect } from "react";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import { useState } from "react";
 import ConfirmDialog from "../../common/components/ui/ConfirmDialog";
+import HeaderSetter from "../utilHelper/HeaderSetter";
+import { LucideIcon } from "../../common/lib/LucideIcons";
 
 const SuperAdminAnnouncementManagementPage = () => {
   const [announcements, setAnnouncements] = useState([]);
@@ -94,21 +96,24 @@ const SuperAdminAnnouncementManagementPage = () => {
   return (
     <div>
       <div className="lg:p-4 p-2 bg-base-200 rounded-lg shadow-lg lg:max-w-7xl mx-auto lg:space-y-4 space-y-2">
-        <h2 className="lg:text-xl text-lg font-bold flex items-center gap-2 text-base-content/70">
-          <Megaphone size={20} />
-          Announcement / Notification List
-        </h2>
-        <div className="lg:flex grid items-center gap-2">
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => {
-              setEditingAnnouncement(null);
-              toggleForm();
-            }}
-          >
-            <PlusCircleIcon size={20} /> Add New Announcement
-          </Button>
+        <div className="lg:flex grid items-center lg:gap-6 gap-2">
+          <HeaderSetter
+            title="Announcement / Notification List"
+            icon={<LucideIcon.MegaphoneIcon />}
+            dataLength={announcements ? announcements?.length : null}
+          />
+          <div className="lg:mb-4 mb-2">
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => {
+                setEditingAnnouncement(null);
+                toggleForm();
+              }}
+            >
+              <PlusCircleIcon size={20} /> Add New Announcement
+            </Button>
+          </div>
         </div>
 
         <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">

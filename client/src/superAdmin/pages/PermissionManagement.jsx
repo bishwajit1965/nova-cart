@@ -126,9 +126,9 @@ const PermissionManagement = () => {
         <TextIconSwapper
           dependency={editingPermission}
           defaultText="Add Permission"
-          swapperText="Update Permission"
-          iconDefault={<LucideIcon.Edit />}
-          iconSwapped={<LucideIcon.UploadCloud />}
+          swapperText={`Edit Permission • ${editingPermission ? editingPermission?.name : null}`}
+          iconDefault={<LucideIcon.UploadCloud />}
+          iconSwapped={<LucideIcon.Edit />}
         />
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -202,6 +202,7 @@ const PermissionManagement = () => {
           <HeaderSetter
             title="Permissions List Table"
             icon={<LucideIcon.List />}
+            dataLength={permissions ? permissions?.length : null}
           />
 
           {permissionsStatus.status !== "success" ? (
@@ -220,7 +221,7 @@ const PermissionManagement = () => {
                 </thead>
                 <tbody>
                   {paginatedData?.length === 0 ? (
-                    <tr className="text-xl font-bold text-center">
+                    <tr className="text-xl ">
                       <td>
                         <NoDataFound label="Permissions" />
                       </td>
@@ -229,8 +230,8 @@ const PermissionManagement = () => {
                     paginatedData.map((perm, idx) => (
                       <tr key={perm._id}>
                         <th>{idx + 1}</th>
-                        <td className="text-sm font-semibold">{perm.name}</td>
-                        <td className="text-sm font-semibold">{perm.key}</td>
+                        <td className="">{perm.name}</td>
+                        <td className="">{perm.key}</td>
                         <td>{perm.description}</td>
                         <td className="space-x-2 flex justify-end">
                           <MiniIconButton

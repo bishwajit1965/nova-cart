@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import { useState } from "react";
 import { LucideIcon } from "../../common/lib/LucideIcons";
+import HeaderSetter from "../utilHelper/HeaderSetter";
 
 const ACTIONS = [
   "CREATE_PRODUCT",
@@ -69,11 +70,10 @@ const SecurityAuditLogManagement = () => {
 
   return (
     <div className="space-y-4">
-      <div className="">
-        <h1 className="lg:text-xl text-lg font-bold flex items-center gap-2 text-base-content/70">
-          <LucideIcon.ShieldUserIcon /> Security & Audit Log Management Table
-        </h1>
-      </div>
+      <HeaderSetter
+        title="Security & Audit Log Management Table"
+        icon={<LucideIcon.ShieldUserIcon />}
+      />
 
       <div className="flex flex-wrap gap-4 items-end">
         <SearchBox

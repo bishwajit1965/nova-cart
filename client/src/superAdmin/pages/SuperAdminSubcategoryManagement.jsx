@@ -14,6 +14,8 @@ import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedData
 import { useState } from "react";
 import useSubmitDelayedValue from "../services/hooks/useSubmitDelayedValue";
 import useValidator from "../../common/hooks/useValidator";
+import TextIconSwapper from "../utilHelper/TextIconSwapper";
+import HeaderSetter from "../utilHelper/HeaderSetter";
 
 const SuperAdminSubcategoryManagement = () => {
   const [editingSubcategory, setEditingSubCategory] = useState(null);
@@ -202,16 +204,14 @@ const SuperAdminSubcategoryManagement = () => {
     <div className="">
       <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-6 gap-4 justify-center">
         <div className="lg:col-span-6 col-span-12 lg:space-y-4 bg-base-100 lg:p-4 p-2 rounded-xl border border-base-content/15 shadow-sm">
-          <div className="">
-            <h2 className="lg:text-xl text-lg font-bold flex items-center gap-2 text-base-content/70">
-              {editingSubcategory ? (
-                <LucideIcon.Edit />
-              ) : (
-                <LucideIcon.UploadCloud />
-              )}{" "}
-              {editingSubcategory ? " Update Sub Category" : "Add Sub Category"}
-            </h2>
-          </div>
+          <TextIconSwapper
+            dependency={editingSubcategory}
+            defaultText="Add Sub Category"
+            swapperText={`Edit Sub Category • ${editingSubcategory ? editingSubcategory?.name : null}`}
+            iconDefault={<LucideIcon.UploadCloud />}
+            iconSwapped={<LucideIcon.Edit />}
+          />
+
           <div className=" ">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="">
@@ -307,9 +307,11 @@ const SuperAdminSubcategoryManagement = () => {
           </div>
         </div>
         <div className="lg:col-span-6 col-span-12 lg:space-y-4 space-y-2 bg-base-100 lg:p-4 p-2 rounded-xl border border-base-content/15 shadow-sm">
-          <h2 className="lg:text-xl text-lg font-bold flex items-center gap-2 text-base-content/70">
-            <LucideIcon.List /> Subcategories List Table
-          </h2>
+          <HeaderSetter
+            title="Subcategories List Table"
+            icon={<LucideIcon.ListOrdered />}
+            dataLength={subCategories ? subCategories?.length : "N/A"}
+          />
 
           {subCategoryDataStatus.status !== "success" ? (
             subCategoryDataStatus.content

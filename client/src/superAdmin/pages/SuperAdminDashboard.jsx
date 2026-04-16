@@ -9,6 +9,8 @@ import SuperAdminUsersGrowthChart from "../components/SuperAdminUsersGrowthChart
 import { useApiQuery } from "../services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import { TrendingUp } from "lucide-react";
+import HeaderSetter from "../utilHelper/HeaderSetter";
+import { LucideIcon } from "../../common/lib/LucideIcons";
 
 const SuperAdminDashboard = () => {
   /*** ------> Users fetcher QUERY ------> */
@@ -68,11 +70,10 @@ const SuperAdminDashboard = () => {
 
   return (
     <div className="lg:space-y-6 space-y-4">
-      <div className="lg:mb-4 mb-2">
-        <h1 className="lg:text-xl text-lg font-bold flex items-center gap-2 text-base-content/70">
-          <TrendingUp /> Super Admin Analytics Dashboard
-        </h1>
-      </div>
+      <HeaderSetter
+        title="Super Admin Analytics Dashboard"
+        icon={<LucideIcon.TrendingUp />}
+      />
 
       <div className="">
         {usersDataStatus.status !== "success" ? (

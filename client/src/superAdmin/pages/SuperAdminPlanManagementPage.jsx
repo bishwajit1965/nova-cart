@@ -16,6 +16,8 @@ import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedData
 import { useState } from "react";
 import useValidator from "../../common/hooks/useValidator";
 import { LucideIcon } from "../../common/lib/LucideIcons";
+import HeaderSetter from "../utilHelper/HeaderSetter";
+import TextIconSwapper from "../utilHelper/TextIconSwapper";
 
 const SuperAdminPlanManagementPage = () => {
   const [showModal, setShowModal] = useState(false);
@@ -216,14 +218,21 @@ const SuperAdminPlanManagementPage = () => {
       />
 
       <div className="">
-        <div className="lg:mb-4 mb-2">
-          <h2 className="lg:text-xl text-lg flex items-center gap-2 font-extrabold text-base-content/70 mb-4">
-            <LucideIcon.CreditCard /> Plan Management Page
-          </h2>
+        <div className="flex items-center lg:gap-4 gap-2">
+          <HeaderSetter
+            title="Plan Management Page"
+            icon={<LucideIcon.CreditCard />}
+          />
 
-          <Button variant="indigo" size="sm" onClick={() => setShowModal(true)}>
-            <LucideIcon.UploadCloudIcon /> Add New Plan
-          </Button>
+          <div className="lg:mb-4 mb-2">
+            <Button
+              variant="indigo"
+              size="sm"
+              onClick={() => setShowModal(true)}
+            >
+              <LucideIcon.UploadCloudIcon /> Add New Plan
+            </Button>
+          </div>
         </div>
 
         {plansDataStatus.status !== "success" ? (
@@ -259,9 +268,14 @@ const SuperAdminPlanManagementPage = () => {
               <h2>{editPlan?.name}</h2>
               <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
                 <div className="bg-base-100 p-6 rounded shadow w-96">
-                  <h2 className="text-xl font-bold mb-4">
-                    {editPlan ? "Edit Plan" : "Add Plan"}
-                  </h2>
+                  <TextIconSwapper
+                    dependency={editPlan}
+                    defaultText="Add Plan"
+                    swapperText="Edit Plan"
+                    iconDefault={<LucideIcon.Edit />}
+                    iconSwapped={<LucideIcon.UploadCloud />}
+                  />
+
                   <form action="" onSubmit={handleSubmit}>
                     <div className="">
                       <Input

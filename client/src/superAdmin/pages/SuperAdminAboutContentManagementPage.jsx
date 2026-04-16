@@ -14,6 +14,7 @@ import { useApiQuery } from "../services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import useValidator from "../../common/hooks/useValidator";
 import { LucideIcon } from "../../common/lib/LucideIcons";
+import HeaderSetter from "../utilHelper/HeaderSetter";
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB limit
 
@@ -230,16 +231,19 @@ const SuperAdminAboutContentManagementPage = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <h2 className="lg:text-xl text-lg font-bold mb-4 flex items-center gap-2 text-base-content/70">
-        <LucideIcon.List />
-        About Content Table
-      </h2>
-      <div className="">
-        <Button variant="indigo" size="sm" onClick={handleModalToggler}>
-          <PlusCircle />
-          {isModalOpen ? "About Form is Open" : "Add About Content"}
-        </Button>
+    <div className="space-y-2">
+      <div className="lg:flex grid items-center lg:gap-6 gap-2">
+        <HeaderSetter
+          title="About Content Table"
+          icon={<LucideIcon.Table />}
+          dataLength={aboutContents ? aboutContents?.length : null}
+        />
+        <div className="lg:mb-4 mb-2">
+          <Button variant="indigo" size="sm" onClick={handleModalToggler}>
+            <PlusCircle />
+            {isModalOpen ? "About Form is Open" : "Add About Content"}
+          </Button>
+        </div>
       </div>
       {aboutContents.length > 0 ? (
         <SuperAdminAboutContentTable

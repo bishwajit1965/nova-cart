@@ -8,6 +8,7 @@ import { useApiMutation } from "../services/hooks/useApiMutation";
 import { useState } from "react";
 import Pagination from "../../common/pagination/Pagination";
 import { LucideIcon } from "../../common/lib/LucideIcons";
+import HeaderSetter from "../utilHelper/HeaderSetter";
 // import { Pagination } from "swiper/modules";
 
 export const SuperAdminTestimonialManagement = () => {
@@ -131,9 +132,12 @@ export const SuperAdminTestimonialManagement = () => {
 
   return (
     <div className="space-y-6">
-      <h1 className="lg;text-xl text-lg font-semibold flex items-center gap-2 text-base-content/70">
-        <LucideIcon.MessageSquare /> Super Admin Testimonial Management Table
-      </h1>
+      <HeaderSetter
+        title="Super Admin Testimonial Management Table"
+        icon={<LucideIcon.MessageCircleCodeIcon />}
+        dataLength={testimonials ? testimonials?.length : null}
+      />
+
       {testimonialsDataStatus.status !== "success" ? (
         testimonialsDataStatus.content
       ) : (

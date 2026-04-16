@@ -1,5 +1,4 @@
-import { Loader, PlusCircle } from "lucide-react";
-
+import { Loader, LoaderCircle, LoaderIcon, PlusCircle } from "lucide-react";
 import API_PATHS from "../services/apiPaths/apiPaths";
 import Button from "../../common/components/ui/Button";
 import { Input } from "../../common/components/ui/Input";
@@ -12,6 +11,8 @@ import { useApiMutation } from "../services/hooks/useApiMutation";
 import { useApiQuery } from "../services/hooks/useApiQuery";
 import { useState } from "react";
 import useValidator from "../../common/hooks/useValidator";
+import TextIconSwapper from "../utilHelper/TextIconSwapper";
+import HeaderSetter from "../utilHelper/HeaderSetter";
 
 const RoleManagement = () => {
   const [name, setName] = useState("");
@@ -205,7 +206,21 @@ const RoleManagement = () => {
   };
   console.log("USERS", users);
 
-  if (userLoading || rolesLoading || permsLoading) return <p>Loading...</p>;
+  /**------------------------------
+   * HELPERS TO DISPLAY PROPER TEXT
+   * ------------------------------*/
+  selectedUser
+    ? `Assign ${selectedUser?.name} Role/(s)`
+    : `Assign ${name} Permission/(s)`;
+  const title = selectedUser
+    ? `Assign ${selectedUser.name} Role(s)`
+    : `Assign ${name} Permission(s)`;
+
+  /**----------------------------
+   * LOADING AND ERROR MANAGEMENT
+   * ----------------------------*/
+  if (userLoading || rolesLoading || permsLoading)
+    return <LoaderIcon className="animate-spin flex mx-auto" />;
   if (rolesError) return <p>Error loading roles: {rolesErrorObj.message}</p>;
   if (permsError)
     return <p>Error loading permissions: {permsErrorObj.message}</p>;
@@ -215,14 +230,13 @@ const RoleManagement = () => {
       <div className="grid lg:grid-cols-12 grid-cols-1 lg:gap-6 gap-4">
         {/* Form */}
         <div className="lg:col-span-4 col-span-12 bg-base-100 lg:p-4 p-2 rounded-xl shadow space-y-4">
-          <h2 className="lg:text-xl text-lg font-bold flex items-center gap-2 text-base-content/70">
-            {editingRole ? <LucideIcon.Edit /> : <LucideIcon.UploadCloud />}
-            {editingRole
-              ? "Edit Role"
-              : selectedUser
-                ? `Assign ${selectedUser?.name} Role`
-                : "Add Role"}
-          </h2>
+          <TextIconSwapper
+            dependency={editingRole || selectedUser}
+            defaultText="Add Role"
+            swapperText={title}
+            iconDefault={<LucideIcon.UploadCloud />}
+            iconSwapped={<LucideIcon.Edit />}
+          />
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {" "}
@@ -350,7 +364,8 @@ const RoleManagement = () => {
                   type="submit"
                   variant="indigo"
                   disabled={isLoading}
-                  className="btn"
+                  size="sm"
+                  className=""
                 >
                   {isLoading ? (
                     <Loader className="animate-spin" />
@@ -368,6 +383,7 @@ const RoleManagement = () => {
                   type="button"
                   icon={LucideIcon.X}
                   variant="warning"
+                  size="sm"
                   onClick={() => {
                     setEditingRole(null);
                     setSelectedUser(null);
@@ -387,7 +403,7 @@ const RoleManagement = () => {
         <div className="lg:col-span-8 col-span-12 bg-base-100 overflow-x-auto space-y-6 lg:p-4 p-2 rounded-xl shadow">
           <div className="">
             <h2 className="lg:text-xl text-lg font-bold mb-4 flex items-center gap-2 text-base-content/70">
-              <LucideIcon.List />
+              <LucideIcon.Table />
               Users Role List Table
             </h2>
             <div className="overflow-x-auto">
@@ -482,10 +498,15 @@ const RoleManagement = () => {
               />
             </div>
           </div>
-          <div className="divider m-0"></div>
-          {/* Roles Table */}
+          <div className="divider"></div>
+
+          {/* Permissions Table */}
           <div className="">
-            <h2 className="text-2xl font-bold mb-4">Roles List</h2>
+            <HeaderSetter
+              title="Permissions List Table"
+              icon={<LucideIcon.Table />}
+            />
+
             <div className="overflow-x-auto">
               <table className="table table-xs w-full">
                 <thead className="bg-base-200">
@@ -498,14 +519,14 @@ const RoleManagement = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {roles.length === 0 ? (
+                  {roles?.length === 0 ? (
                     <tr>
                       <td colSpan={5} className="text-center font-semibold">
                         No roles found
                       </td>
                     </tr>
                   ) : (
-                    roles.map((role, idx) => (
+                    roles?.map((role, idx) => (
                       <tr key={role._id}>
                         <td>{idx + 1}</td>
                         <td className="font-semibold">{role.name}</td>

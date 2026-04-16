@@ -23,6 +23,8 @@ import { useApiMutation } from "../services/hooks/useApiMutation";
 import { useApiQuery } from "../services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import useValidator from "../../common/hooks/useValidator";
+import TextIconSwapper from "../utilHelper/TextIconSwapper";
+import HeaderSetter from "../utilHelper/HeaderSetter";
 
 const SuperAdminVendorManagementPage = () => {
   const [vendors, setVendors] = useState([]);
@@ -193,8 +195,13 @@ const SuperAdminVendorManagementPage = () => {
           <Card className="mb-4">
             <CardHeader>
               <CardTitle>
-                {editId ? <LucideIcon.Edit /> : <LucideIcon.UploadCloud />}
-                {editId ? "Edit Vendor" : "Add New Vendor"}
+                <TextIconSwapper
+                  dependency={editId}
+                  defaultText="Add New Vendor"
+                  swapperText="Edit Vendor"
+                  iconDefault={<LucideIcon.Edit />}
+                  iconSwapped={<LucideIcon.UploadCloud />}
+                />
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -307,9 +314,11 @@ const SuperAdminVendorManagementPage = () => {
           </Card>
 
           <Card>
-            <CardHeader>
-              <CardTitle>Vendors List</CardTitle>
-            </CardHeader>
+            <HeaderSetter
+              title="Vendors List Table"
+              icon={<LucideIcon.ListOrdered />}
+            />
+
             <CardContent>
               <div className="overflow-x-auto">
                 <table className="table table-xs min-w-full">

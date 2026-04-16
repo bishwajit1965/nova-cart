@@ -3,6 +3,7 @@ import { Input } from "../../common/components/ui/Input";
 import { LucideIcon } from "../../common/lib/LucideIcons";
 import Textarea from "../../common/components/ui/Textarea";
 import { LucidePlug2 } from "lucide-react";
+import TextIconSwapper from "../utilHelper/TextIconSwapper";
 
 const SuperAdminProductInsertForm = ({
   formData,
@@ -21,7 +22,7 @@ const SuperAdminProductInsertForm = ({
   const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
   const hasVariants = formData.variants && formData.variants.length > 0;
-
+  console.log("Editing Product", editingProduct);
   const getPreviewURL = (img) => {
     // If File → temporary preview
     if (img instanceof File) return URL.createObjectURL(img);
@@ -92,10 +93,13 @@ const SuperAdminProductInsertForm = ({
 
   return (
     <div className="lg:space-y-4">
-      <h2 className="lg:text-xl text-lg font-bold flex items-center gap-2 text-base-content/70">
-        {editingProduct ? <LucideIcon.Edit /> : <LucideIcon.Plus />}
-        {editingProduct ? "Edit Product" : "Add Product"}
-      </h2>
+      <TextIconSwapper
+        dependency={editingProduct}
+        defaultText="Add Product"
+        swapperText={`Edit Product • ${editingProduct ? editingProduct?.name : null}`}
+        iconDefault={<LucideIcon.UploadCloud />}
+        iconSwapped={<LucideIcon.Edit />}
+      />
 
       <form
         onSubmit={onFormSubmit}
@@ -362,7 +366,7 @@ const SuperAdminProductInsertForm = ({
             variant="indigo"
             size="sm"
             onClick={addVariant}
-            className="bg-indigo-600 text-white px-3 py-1 rounded"
+            className=""
           >
             <LucidePlug2 size={18} /> Add Variant
           </Button>

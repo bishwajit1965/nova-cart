@@ -16,6 +16,7 @@ import { useEffect } from "react";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import { useState } from "react";
 import { LucideIcon } from "../../common/lib/LucideIcons";
+import HeaderSetter from "../utilHelper/HeaderSetter";
 
 const STATUSES = ["pending", "processing", "shipped", "delivered"];
 
@@ -151,11 +152,9 @@ const SuperAdminOrdersOverviewManagement = () => {
       {ordersStatus.status !== "success" ? (
         ordersStatus.content
       ) : (
-        <div className="">
-          <h2 className="lg:text-xl text-lg font-bold mb-4 flex items-center gap-2 text-base-content/70">
-            <LucideIcon.List />
-            Orders List Table
-          </h2>
+        <div>
+          <HeaderSetter title="Orders List Table" icon={<LucideIcon.Table />} />
+
           {/* -------> Search and filter ------> */}
           <div className="flex flex-wrap lg:gap-4 gap-2 mb-4 items-end justify-between">
             {/* Search */}

@@ -37,10 +37,10 @@ const Button = ({
       "bg-gray-200 text-gray-800 hover:text-base-800 hover:bg-gray-300 shadow-md rounded-md",
 
     indigo:
-      "bg-indigo-800 text-white text-base-content hover:text-base-300 hover:bg-indigo-900 hover:text-base-300 text-white hover:text-base-content shadow-md rounded-md",
+      "bg-indigo-800 text-gray-200 text-base-content hover:bg-indigo-600 hover:text-white shadow-md rounded-md",
 
     indigoRounded:
-      "bg-indigo-800 hover:bg-indigo-700 text-white hover:text-base-300 hover:bg-indigo-900 shadow-md rounded-full lg:px-4 px-2 py-2",
+      "bg-indigo-800 hover:bg-indigo-700 text-gray-200 hover:text-white shadow-md rounded-full lg:px-4 px-2 py-2",
 
     danger:
       "bg-red-600 text-white hover:text-base-100 hover:bg-red-700 shadow-md outline-none border-none rounded-md",

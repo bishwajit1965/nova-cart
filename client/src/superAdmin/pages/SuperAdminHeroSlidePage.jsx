@@ -12,6 +12,7 @@ import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedData
 import ConfirmDialog from "../../common/components/ui/ConfirmDialog";
 import buildUrl from "../../common/hooks/useBuildUrl";
 import { LucideIcon } from "../../common/lib/LucideIcons";
+import HeaderSetter from "../utilHelper/HeaderSetter";
 const apuURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 const SuperAdminHeroSlidePage = () => {
@@ -105,13 +106,17 @@ const SuperAdminHeroSlidePage = () => {
 
   return (
     <div className="lg:p-6 p-2 bg-base-200 rounded-lg shadow-lg max-w-7xl mx-auto lg:space-y-6 space-y-4">
-      <h2 className="lg:text-xl text-lg font-extrabold text-base-content/70 flex items-center gap-2">
-        <LucideIcon.List /> Hero & Banner Slides List
-      </h2>
       <div className="lg:flex grid items-center lg:gap-6 gap-2">
-        <Button variant="primary" size="sm" onClick={toggleForm}>
-          <PlusCircleIcon size={20} /> Add New Slide
-        </Button>
+        <HeaderSetter
+          title="Hero & Banner Slides List"
+          icon={<LucideIcon.TableCellsSplit />}
+          dataLength={slidesBanner ? slidesBanner?.length : null}
+        />
+        <div className="lg:mb-4 mb-2">
+          <Button variant="primary" size="sm" onClick={toggleForm}>
+            <PlusCircleIcon size={20} /> Add New Slide
+          </Button>
+        </div>
       </div>
 
       <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">

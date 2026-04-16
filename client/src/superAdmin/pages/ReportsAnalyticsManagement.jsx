@@ -20,6 +20,7 @@ import { useApiQuery } from "../services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import { useState } from "react";
 import { LucideIcon } from "../../common/lib/LucideIcons";
+import HeaderSetter from "../utilHelper/HeaderSetter";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#A28DD0"];
 
@@ -131,9 +132,11 @@ const ReportsAnalyticsManagement = () => {
 
   return (
     <div className="lg:space-y-6 space-y-4">
-      <h2 className="lg:text-xl text-lg font-extrabold text-base-content/70 flex items-center gap-2">
-        <LucideIcon.PieChart /> Analytics Management Data Charts
-      </h2>
+      <HeaderSetter
+        title="Analytics Management Data Charts"
+        icon={<LucideIcon.PieChart />}
+      />
+
       <div className="mb-4 lg:flex max-w-md flex-wrap lg:gap-4 gap-4 lg:my-4 my-2">
         <div>
           <label>Start Date:</label>

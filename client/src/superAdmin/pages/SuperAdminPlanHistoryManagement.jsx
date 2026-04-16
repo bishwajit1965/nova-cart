@@ -12,6 +12,7 @@ import { RefreshCcw } from "lucide-react";
 import { useApiQuery } from "../services/hooks/useApiQuery";
 import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedDataStatusHandler";
 import { LucideIcon } from "../../common/lib/LucideIcons";
+import HeaderSetter from "../utilHelper/HeaderSetter";
 
 const SuperAdminPlanHistoryManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -154,12 +155,11 @@ const SuperAdminPlanHistoryManagement = () => {
           </div>
 
           <Card>
-            <CardHeader>
-              <CardTitle>
-                <LucideIcon.History />
-                Plan History Overview
-              </CardTitle>
-            </CardHeader>
+            <HeaderSetter
+              title="Plan History Overview"
+              icon={<LucideIcon.History />}
+            />
+
             <CardContent>
               {filteredAndSortedHistories?.length === 0 ? (
                 <p>No plan history records found.</p>

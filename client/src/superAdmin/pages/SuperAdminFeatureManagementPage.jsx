@@ -15,6 +15,7 @@ import useFetchedDataStatusHandler from "../../common/utils/hooks/useFetchedData
 import { useState } from "react";
 import useValidator from "../../common/hooks/useValidator";
 import { LucideIcon } from "../../common/lib/LucideIcons";
+import HeaderSetter from "../utilHelper/HeaderSetter";
 
 const SuperAdminFeatureManagementPage = () => {
   const [showModal, setShowModal] = useState(false);
@@ -172,19 +173,21 @@ const SuperAdminFeatureManagementPage = () => {
       />
 
       <div className="">
-        <div className="lg:mb-4 mb-2">
-          <h2 className="lg:text-xl text-lg font-bold flex items-center gap-2 text-base-content/70 lg:mb-4 mb-2">
-            <LucideIcon.Puzzle size={20} />
-            Feature Management
-          </h2>
-          <Button
-            variant="indigo"
-            size="sm"
-            className=" "
-            onClick={() => setShowModal(true)}
-          >
-            <Puzzle /> Add New Feature
-          </Button>
+        <div className="flex items-center lg:gap-4 gap-2">
+          <HeaderSetter
+            title="Feature Data Management"
+            icon={<LucideIcon.Puzzle />}
+          />
+          <div className="lg:mb-4 mb-2">
+            <Button
+              variant="indigo"
+              size="xs"
+              className=""
+              onClick={() => setShowModal(true)}
+            >
+              <Puzzle /> Add New Feature
+            </Button>
+          </div>
         </div>
         {featuresDataStatus.status !== "success" ? (
           featuresDataStatus.content
@@ -254,7 +257,7 @@ const SuperAdminFeatureManagementPage = () => {
                   <div className="flex justify-end items-center gap-2">
                     <Button
                       variant="warning"
-                      className=" "
+                      size="xs"
                       onClick={() => {
                         setShowModal(false);
                         setEditFeature(null);
@@ -273,7 +276,7 @@ const SuperAdminFeatureManagementPage = () => {
                       <Button
                         variant="indigo"
                         type="submit"
-                        className=""
+                        size="xs"
                         disabled={featureMutation.isPending}
                       >
                         {featureMutation?.isPending ? (
