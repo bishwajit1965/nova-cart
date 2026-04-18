@@ -222,6 +222,7 @@ const SuperAdminPlanManagementPage = () => {
           <HeaderSetter
             title="Plan Management Page"
             icon={<LucideIcon.CreditCard />}
+            dataLength={plans ? plans?.length : null}
           />
 
           <div className="lg:mb-4 mb-2">
@@ -271,7 +272,7 @@ const SuperAdminPlanManagementPage = () => {
                   <TextIconSwapper
                     dependency={editPlan}
                     defaultText="Add Plan"
-                    swapperText="Edit Plan"
+                    swapperText={`${editPlan ? `Edit Plan • ${editPlan?.name}` : null}`}
                     iconDefault={<LucideIcon.Edit />}
                     iconSwapped={<LucideIcon.UploadCloud />}
                   />

@@ -74,26 +74,28 @@ const PublicFooter = () => {
           <Link to="/" className="text-primary">
             <div className="mb-4">
               {systemSettings && (
-                <div className="flex items-center-safe space-x-1">
-                  <img
-                    src={`${apiURL}/uploads/${systemSettings?.logo}`}
-                    alt={systemSettings?.appName}
-                    className="w-12 h-12 object-contain"
-                  />
+                <div className="">
                   <div className="hidden lg:block">
-                    <div className="text-xl font-extrabold uppercase">
+                    <div className="lg:text-2xl text-xl font-extrabold uppercase text-shadow-pink-300 block bg-gradient-to-r from-indigo-400 via-pink-400 to-yellow-400 bg-clip-text text-transparent">
                       {systemSettings?.appName}
                     </div>
+                  </div>
+                  <div className="flex items-center -mt-3">
+                    <img
+                      src={`${apiURL}/uploads/${systemSettings?.logo}`}
+                      alt={systemSettings?.appName}
+                      className="w-32 h-32 object-cover -mt- -ml-6 -mr-3"
+                    />
+                    <p className="text-sm text-base-content/70">
+                      {systemSettings?.tagline ||
+                        "Your Trusted E-commerce Platform"}
+                      Trusted by thousands of customers.
+                    </p>
                   </div>
                 </div>
               )}
             </div>
           </Link>
-
-          <p className="text-sm">
-            {systemSettings?.tagline || "Your Trusted E-commerce Platform"}
-            Trusted by thousands of happy customers.
-          </p>
         </div>
 
         {/* Quick Links */}

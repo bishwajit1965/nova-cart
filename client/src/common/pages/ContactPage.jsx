@@ -21,6 +21,7 @@ import useSEO from "../hooks/useSeo";
 import { SEO_TEMPLATES } from "../../utils/seoTemplate";
 import SectionTitle from "../utils/sectionTitle/SectionTitle";
 import SetTitle from "../utils/setTitle/SetTitle";
+import Avatar from "../../assets/bishwajit-1.jpg";
 
 const ContactPage = () => {
   // SEO
@@ -207,6 +208,20 @@ const ContactPage = () => {
                 icon={<LucideIcon.Mail />}
               />
             </motion.div>
+            <div className="lg:-mb-20">
+              <div className="w-full space-y-1">
+                <div className="flex justify-center">
+                  <img
+                    src={Avatar}
+                    alt="Founder"
+                    className="w-22 h-22 rounded-full p-1 border-2 border-base-content/15 z-10 bg-base-100 shadow-sm"
+                  />
+                </div>
+                <p className="text-center text-base-content/70 pb-8">
+                  Send Me Message
+                </p>
+              </div>
+            </div>
             <motion.form
               onSubmit={handleSubmit}
               className="grid lg:grid-cols-12 grid-cols-1 lg:gap-6 gap-3 bg-base-100 lg:p-14 p-2 rounded-xl shadow hover:shadow-lg transition"

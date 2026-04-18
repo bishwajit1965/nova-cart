@@ -28,7 +28,7 @@ export default function Modal({
           </button>
         )}
         {title && (
-          <h2 className="lg:text-xl font-bold flex items-center gap-x-24 mb-2 pb-1 border-b border-base-content/20">
+          <h2 className="lg:text-xl font-bold flex items-center gap-x-4 mb-2 pb-1 border-b border-base-content/20">
             {title}
           </h2>
         )}

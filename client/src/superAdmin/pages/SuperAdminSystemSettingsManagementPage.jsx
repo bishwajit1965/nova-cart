@@ -24,7 +24,7 @@ const SuperAdminSystemSettingsManagementPage = () => {
               onClick={() => setActiveTab(tab.id)}
               className={`pb-2 px-4 font-medium transition cursor-pointer ${
                 activeTab === tab.id
-                  ? "border-b-2 border-blue-500 text-blue-600 cursor-pointer"
+                  ? "border-b-2 border-blue-500 text-base-content/70 cursor-pointer"
                   : "text-gray-500 hover:text-gray-700 cursor-pointer"
               }`}
             >

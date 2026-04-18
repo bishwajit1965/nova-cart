@@ -26,7 +26,7 @@ const FunFacts = () => {
             className="lg:col-span-3 col-span-12 bg-base-100 shadow-md hover:shadow-xl rounded-2xl lg:p-6 p-2"
             variants={itemVariants}
           >
-            <h3 className="text-4xl font-extrabold text-indigo-600">
+            <h3 className="text-4xl font-extrabold text-base-content/70">
               <CountUp end={fact.value} duration={3} />+
             </h3>
             <p className="mt-2 text-base-content/70">{fact.label}</p>

@@ -34,6 +34,7 @@ const SuperAdminVendorManagementPage = () => {
   const [address, setAddress] = useState("");
   const [editId, setEditId] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState("");
 
   // Validation
   const validationRules = {
@@ -144,6 +145,10 @@ const SuperAdminVendorManagementPage = () => {
   useEffect(() => {
     if (vendorsData) setVendors(vendorsData);
   }, [vendorsData]);
+
+  const filteredVendors = vendors.filter((v) =>
+    v.name.toLowerCase().includes(search.toLowerCase()),
+  );
 
   const vendorDataStatus = useFetchedDataStatusHandler({
     isLoading: isLoadingVendors,
@@ -314,10 +319,22 @@ const SuperAdminVendorManagementPage = () => {
           </Card>
 
           <Card>
-            <HeaderSetter
-              title="Vendors List Table"
-              icon={<LucideIcon.ListOrdered />}
-            />
+            <div className="flex items-center gap-4 w-full">
+              <CardHeader className="w-full flex items-center justify-between">
+                <HeaderSetter
+                  title="Vendors List Table"
+                  icon={<LucideIcon.ListOrdered />}
+                />
+                <div className="flex justify-end">
+                  <Input
+                    placeholder="Search vendors..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="mb-4 w-full lg:w-72"
+                  />
+                </div>
+              </CardHeader>
+            </div>
 
             <CardContent>
               <div className="overflow-x-auto">
@@ -333,8 +350,8 @@ const SuperAdminVendorManagementPage = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {vendors?.length > 0 ? (
-                      vendors?.map((vendor, idx) => (
+                    {filteredVendors?.length > 0 ? (
+                      filteredVendors?.map((vendor, idx) => (
                         <tr key={vendor._id}>
                           <td>{idx + 1}</td>
                           <td>{vendor.name}</td>

@@ -13,6 +13,8 @@ import useSEO from "../hooks/useSeo.js";
 import { SEO_TEMPLATES } from "../../utils/seoTemplate.js";
 import { LucideIcon } from "../lib/LucideIcons.js";
 import SetTitle from "../utils/setTitle/SetTitle.jsx";
+import HeaderSetter from "../../superAdmin/utilHelper/HeaderSetter.jsx";
+import Button from "../components/ui/Button.jsx";
 
 const apiURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 const skills = [
@@ -125,10 +127,11 @@ const AboutUs = () => {
 
           {/* Fun facts */}
           <div className="text-center space-y-4 bg-base-100 shadow lg:p-12 p-4 rounded-2xl hover:shadow-xl">
-            <h2 className="lg:text-2xl text-xl font-bold text-base-content/70 mb-6 text-center">
-              🎈 Fun Facts
-            </h2>
-
+            <SetTitle
+              title="Fun Facts"
+              decoratedText="From Developer 🎈"
+              icon={<LucideIcon.LaughIcon />}
+            />
             <FunFacts />
           </div>
 
@@ -150,9 +153,11 @@ const AboutUs = () => {
             <div className="space-y-4">
               {developerMission.map((mission) => (
                 <div className="">
-                  <h2 className="text-2xl font-bold text-base-content/70">
-                    🚀{mission.title}
-                  </h2>
+                  <SetTitle
+                    title={mission.title}
+                    decoratedText="→ Indomitable"
+                    icon={<LucideIcon.Target />}
+                  />
                   <p className="text-base-content/50">{mission.content}</p>
                 </div>
               ))}
@@ -169,9 +174,11 @@ const AboutUs = () => {
           >
             {developerExperience?.map((experience) => (
               <div className="lg:space-y-4 space-y-2">
-                <h2 className="lg:text-2xl text-xl font-bold text-base-content/70 mb-6 text-center">
-                  💼 Experience
-                </h2>
+                <SetTitle
+                  title="Experience"
+                  decoratedText="That Matters"
+                  icon={<LucideIcon.Briefcase />}
+                />
                 <div className="space-y-4">
                   <div>
                     <h3 className="font-semibold text-base-content/50">
@@ -204,9 +211,12 @@ const AboutUs = () => {
             variants={containerVariants}
             className="bg-base-100 lg:space-y-5 space-y-4 rounded-2xl lg:p-12 p-4 hover:shadow-xl w-full"
           >
-            <h2 className="lg:text-2xl text-xl font-bold mb-6 text-center text-base-content/70">
-              🛠 Skills
-            </h2>
+            <SetTitle
+              title="Skills"
+              decoratedText="Achieved"
+              icon={<LucideIcon.Wrench />}
+            />
+
             {skills.map((skill, idx) => (
               <div className="w-full border border-base-content/15 rounded-2xl shadow">
                 <motion.div
@@ -250,12 +260,24 @@ const AboutUs = () => {
                   alt="Founder"
                   className="w-28 h-28 rounded-full mx-auto border-4 border-base-300 shadow-md"
                 />
-                <h3 className="lg:text-2xl text-xl font-semibold text-base-content/70">
-                  👨‍💻 {developer.title}
-                </h3>
+                <SetTitle
+                  title={developer.title}
+                  decoratedText="& Founder"
+                  icon={<LucideIcon.UserCircle />}
+                />
+
                 <p className="text-base-content/50 max-w-2xl mx-auto">
                   {developer.content}
                 </p>
+                <div className="">
+                  <Button
+                    href="/contact-us"
+                    variant="success"
+                    size="lg"
+                    label="Reach the Founder"
+                    icon={LucideIcon.MessageCircle}
+                  />
+                </div>
               </div>
             ))}
           </motion.div>
@@ -268,9 +290,11 @@ const AboutUs = () => {
             variants={containerVariants}
             className="text-center space-y-4 bg-base-100 shadow lg:p-12 p-4 rounded-2xl hover:shadow-xl"
           >
-            <h2 className="lg:text-2xl text-xl font-bold text-base-content/70 mb-6 text-center">
-              🎈 Interested in working with us?
-            </h2>
+            <SetTitle
+              title="Interested in"
+              decoratedText="working with us ?🎈"
+              icon={<LucideIcon.Workflow />}
+            />
 
             <CallToAction />
           </motion.div>

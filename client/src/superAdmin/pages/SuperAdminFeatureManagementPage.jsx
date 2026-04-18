@@ -16,6 +16,7 @@ import { useState } from "react";
 import useValidator from "../../common/hooks/useValidator";
 import { LucideIcon } from "../../common/lib/LucideIcons";
 import HeaderSetter from "../utilHelper/HeaderSetter";
+import TextIconSwapper from "../utilHelper/TextIconSwapper";
 
 const SuperAdminFeatureManagementPage = () => {
   const [showModal, setShowModal] = useState(false);
@@ -221,9 +222,14 @@ const SuperAdminFeatureManagementPage = () => {
           >
             <div className="fixed inset-0 p-6 bg-black bg-opacity-40 flex justify-center items-center z-50">
               <div className="bg-base-100 p-6 rounded shadow w-96">
-                <h2 className="text-xl font-bold mb-4">
-                  {editFeature ? "Edit Feature" : "Add Feature"}
-                </h2>
+                <TextIconSwapper
+                  dependency={editFeature}
+                  defaultText="Add Feature"
+                  swapperText={`${editFeature ? `Edit Feature • ${editFeature ? editFeature?.title : null}` : ""}`}
+                  iconDefault={<LucideIcon.UploadCloudIcon />}
+                  iconSwapped={<LucideIcon.Edit />}
+                />
+
                 <form onSubmit={handleSubmit} action="">
                   <Input
                     className="input mb-2 w-full"

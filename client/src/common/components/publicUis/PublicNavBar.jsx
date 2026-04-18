@@ -42,8 +42,8 @@ const PublicNavBar = () => {
   };
 
   return (
-    <header className="bg-base-200 shadow-md">
-      <div className="max-w-7xl mx-auto px-2 lg:py-0 py-2 flex items-center justify-between">
+    <header className="bg-base-200 shadow-md border-b border-base-content/15">
+      <div className="max-w-7xl mx-auto p-2 lg:py-0 flex items-center justify-between">
         {/* Site Logo */}
 
         <Link to="/" className="lg:text-xl font-bold text-primary">
@@ -52,12 +52,12 @@ const PublicNavBar = () => {
               <img
                 src={`${apiURL}/uploads/${systemSettings?.logo}`}
                 alt={systemSettings?.appName || "Nova Cart"}
-                className="lg:w-10 lg:h-10 h-8 w-8 object-contain flex items-center"
+                className="lg:w-20 lg:h-20 h-18 w-18 lg:object-cover bg-contain flex items-center -mt-2 -mb-2 lg:-ml-6 -mr-1"
               />
               <div className="hidden lg:block">
-                <div className="text-xl font-extrabold uppercase">
+                <h2 className="lg:text-2xl text-xl font-extrabold uppercase text-shadow-pink-300 block bg-gradient-to-r from-indigo-400 via-pink-400 to-yellow-400 bg-clip-text text-transparent">
                   {systemSettings?.appName}
-                </div>
+                </h2>
               </div>
             </div>
           )}
